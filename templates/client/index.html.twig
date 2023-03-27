@@ -1,16 +1,10 @@
-{% extends 'base.html.twig' %}
+{% extends 'baseClient.html.twig' %}
 
 {% block title %}Hello ClientController!{% endblock %}
 
 {% block body %}
 
-    {% if app.user %}
-            <div class="mb-3">
-                You are logged in as {{ app.user.userIdentifier }}, <a href="{{ path('app_logout') }}">Logout</a>
-            </div>
-        {% endif %}
-
-
+hello
 
 
 {% endblock %}

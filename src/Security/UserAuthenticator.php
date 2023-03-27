@@ -14,6 +14,7 @@ use Symfony\Component\Security\Http\Authenticator\Passport\Badge\UserBadge;
 use Symfony\Component\Security\Http\Authenticator\Passport\Credentials\PasswordCredentials;
 use Symfony\Component\Security\Http\Authenticator\Passport\Passport;
 use Symfony\Component\Security\Http\Util\TargetPathTrait;
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 
 class UserAuthenticator extends AbstractLoginFormAuthenticator
 {
@@ -50,15 +51,20 @@ class UserAuthenticator extends AbstractLoginFormAuthenticator
 
         if($user->getRoles() == 'ROLE_ADMIN'){
             return new RedirectResponse($this->urlGenerator->generate('app_admin'));
-            
+
         }elseif($user->getRoles() == 'ROLE_PARTNER' and $user->getEtat() == 0 ){
             return new RedirectResponse($this->urlGenerator->generate('app_partner'));
+
         }elseif($user->getRoles() == 'ROLE_PARTNER' and $user->getEtat() == 1 ){
             $request->getSession()->getFlashBag()->add('info', 'Account pending approval. Please check your email for further instructions.');
             return new RedirectResponse($this->urlGenerator->generate('app_login'));
+
+        }elseif($user->getEtat() == -1 ){
+            $request->getSession()->getFlashBag()->add('error', 'Account restricted.');
+            return new RedirectResponse($this->urlGenerator->generate('app_login'));
         }
 
-        return new RedirectResponse($this->urlGenerator->generate('app_client'));
+        return new RedirectResponse($this->urlGenerator->generate('app_home'));
 
         // For example:
         // return new RedirectResponse($this->urlGenerator->generate('some_route'));

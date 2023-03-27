@@ -13,6 +13,8 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[UniqueEntity(fields: ['email'], message: 'There is already an account with this email')]
+#[UniqueEntity(fields: ['phone'], message: 'There is already an account with this phone number')]
+
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
     #[ORM\Id]
@@ -50,7 +52,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(length: 10)]
     private ?string $genre = null;
 
-    #[ORM\Column(length: 50)]
+    #[ORM\Column(length: 50, unique: true)]
     private ?string $phone = null;
 
     #[ORM\Column(options: ['default' => 0])]
@@ -416,4 +418,59 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
         return $this;
     }
+
+   
+    #[ORM\Column(length: 255,nullable:true)]
+    private ?string $resetToken;
+
+    #[ORM\Column(length: 255)]
+    private ?string $ville = null;
+
+    public function getResetToken(): ?string
+    {
+        return $this->resetToken;
+    }
+
+    public function setResetToken(?string $resetToken): self
+    {
+        $this->resetToken = $resetToken;
+
+        return $this;
+    }
+
+    // second
+
+    public function setForgotPasswordToken(string $token): self
+    {
+        $this->forgotPasswordToken = $token;
+
+        return $this;
+    }
+    public function setForgotPasswordTokenCreatedAt(\DateTimeImmutable $dateTime): self
+    {
+        $this->forgotPasswordTokenCreatedAt = $dateTime;
+    
+        return $this;
+    }
+
+    public function setForgotPasswordTokenMustBeVerifiedBefore(\DateTimeImmutable $dateTime): self
+    {
+        $this->forgotPasswordTokenMustBeVerifiedBefore = $dateTime;
+
+        return $this;
+    }
+
+    public function getVille(): ?string
+    {
+        return $this->ville;
+    }
+
+    public function setVille(string $ville): self
+    {
+        $this->ville = $ville;
+
+        return $this;
+    }
+
+    
 }

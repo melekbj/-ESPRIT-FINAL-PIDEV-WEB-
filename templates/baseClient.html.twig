@@ -1,0 +1,594 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+        {# we begin #}
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0"/>
+        <link rel="icon" type="image/png" href="{{asset('Assets/img/icon.png')}}"> 
+
+
+        <title>{% block title %}Welcome!{% endblock %}</title>
+       
+        {# Run `composer require symfony/webpack-encore-bundle` to start using Symfony UX #}
+        {% block stylesheets %}
+
+            {# dashboard admin we begin #}
+
+            <!-- Icons. Uncomment required icon fonts -->
+            <link rel="stylesheet" href="{{ asset('ClientAssets/vendor/fonts/boxicons.css')}}" />
+
+            <!-- Core CSS -->
+            <link rel="stylesheet" href="{{ asset('ClientAssets/vendor/css/core.css')}}" class="template-customizer-core-css" />
+            <link rel="stylesheet" href="{{ asset('ClientAssets/vendor/css/theme-default.css')}}" class="template-customizer-theme-css" />
+            <link rel="stylesheet" href="{{ asset('ClientAssets/css/demo.css')}}" />
+
+            <!-- Vendors CSS -->
+            <link rel="stylesheet" href="{{ asset('ClientAssets/vendor/libs/perfect-scrollbar/perfect-scrollbar.css')}}" />
+
+            <link rel="stylesheet" href="{{ asset('ClientAssets/vendor/libs/apex-charts/apex-charts.css')}}" />
+
+            <!-- Page CSS -->
+
+            <!-- Helpers -->
+            <script src="{{ asset('ClientAssets/vendor/js/helpers.js')}}"></script>
+
+            <!--! Template customizer & Theme config files MUST be included after core stylesheets and helpers.js in the <head> section -->
+            <!--? Config:  Mandatory theme config file contain global vars & default theme options, Set your preferred theme option in this file.  -->
+            <script src="{{ asset('ClientAssets/js/config.js')}}"></script>
+
+            {# base #}
+
+            <link href="https://fonts.googleapis.com/css?family=Montserrat:400,500,700" rel="stylesheet">
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" integrity="sha512-9usAa10IRO0HhonpyAIVpjrylPvoDwiPUiKdWk5t3PyolY1cOd4DSE0Ga+ri4AuTroPR5aQvXU9xC6qOPnzFeg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+            <!-- Bootstrap -->
+            <link type="text/css" rel="stylesheet" href="{{asset('Assets/css/bootstrap.min.css')}}"/>
+
+            <!-- Slick -->
+            <link type="text/css" rel="stylesheet" href="{{asset('Assets/css/slick.css')}}"/>
+            <link type="text/css" rel="stylesheet" href="{{asset('Assets/css/slick-theme.css')}}"/>
+
+            <!-- nouislider -->
+            <link type="text/css" rel="stylesheet" href="{{asset('Assets/css/nouislider.min.css')}}"/>
+
+            <!-- Font Awesome Icon -->
+            <link rel="stylesheet" href="{{asset('Assets/css/font-awesome.min.css')}}">
+
+            <!-- Custom stlylesheet -->
+            <link type="text/css" rel="stylesheet" href="{{asset('Assets/css/style.css')}}"/>
+
+            {# for login page #}
+	        <link rel="stylesheet" type="text/css" href="{{ asset('LoginAssets/css/main.css')}}">
+
+        {% endblock %}
+
+        {% block javascripts %}
+   
+        {# Dash we begin #}
+                <!-- Core JS -->
+            <!-- build:js assets/vendor/js/core.js -->
+            <script src="{{ asset('ClientAssets/vendor/libs/jquery/jquery.js')}}"></script>
+            <script src="{{ asset('ClientAssets/vendor/libs/popper/popper.js')}}"></script>
+            <script src="{{ asset('ClientAssets/vendor/js/bootstrap.js')}}"></script>
+            <script src="{{ asset('ClientAssets/vendor/libs/perfect-scrollbar/perfect-scrollbar.js')}}"></script>
+
+            <script src="{{ asset('ClientAssets/vendor/js/menu.js')}}"></script>
+            <!-- endbuild -->
+
+            <!-- Vendors JS -->
+            <script src="{{ asset('ClientAssets/vendor/libs/apex-charts/apexcharts.js')}}"></script>
+
+            <!-- Main JS -->
+            <script src="{{ asset('ClientAssets/js/main.js')}}"></script>
+
+            <!-- Page JS -->
+            <script src="{{ asset('ClientAssets/js/dashboards-analytics.js')}}"></script>
+
+            <!-- Place this tag in your head or just before your close body tag. -->
+            <script async defer src="https://buttons.github.io/buttons.js"></script>
+
+            <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+            <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
+            <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
+
+
+            <script>
+                // set a timeout of 3 seconds before removing the alerts
+                setTimeout(function() {
+                    var alerts = document.querySelectorAll('.alert');
+                    for (var i = 0; i < alerts.length; i++) {
+                        alerts[i].style.display = 'none';
+                    }
+                }, 5000);
+            </script>
+
+            {# base #}
+
+             <script src="{{ asset('Assets/js/jquery.min.js') }}"></script>
+            <script src="{{ asset('Assets/js/bootstrap.min.js') }}"></script>
+            <script src="{{ asset('Assets/js/slick.min.js') }}"></script>
+            <script src="{{ asset('Assets/js/nouislider.min.js') }}"></script>              
+            <script src="{{ asset('Assets/js/jquery.zoom.min.js') }}"></script>
+            <script src="{{ asset('Assets/js/main.js') }}"></script>
+            <script>
+                // set a timeout of 3 seconds before removing the alerts
+                setTimeout(function() {
+                    var alerts = document.querySelectorAll('.alert');
+                    for (var i = 0; i < alerts.length; i++) {
+                        alerts[i].style.display = 'none';
+                    }
+                }, 5000);
+            </script>
+
+
+        {% endblock %}
+    </head>
+
+
+    
+    <body>
+    {% block Header %}
+            <!-- HEADER -->
+                <header>
+                    <!-- TOP HEADER -->
+                    <div id="top-header">
+                        <div class="container">
+                            <ul class="header-links pull-left">
+                                <li><a href="{{ path('app_home') }}"> BUY WITHOUT LIFTING A FINGER</a></li>
+                             
+                            </ul>
+                            <ul class="header-links pull-right">
+
+                            {% if app.user and app.user.getEtat()== 0 %}
+                            <li><a href="{{ path('app_client') }}"><i class="fa fa-user-o"></i> {{app.user.nom}}</a></li>
+                                <li><a href="{{ path('app_logout') }}"><i class='fa-solid fa-right-from-bracket'></i> Logout</a></li>
+                                
+
+                            {% else %}
+                                <li><a href="{{ path('app_login') }}"><i class='fa-solid fa-right-to-bracket'></i> Sign in</a></li>
+                                <li><a href="{{ path('app_registration') }}"><i class="fa fa-user-o"></i> Sign Up</a></li>
+                            {% endif %}
+                            </ul>
+                        </div>
+                    </div>
+                    <!-- /TOP HEADER -->
+
+                    <!-- MAIN HEADER -->
+                    <div id="header">
+                        <!-- container -->
+                        <div class="container">
+                            <!-- row -->
+                            <div class="row">
+                                <!-- LOGO -->
+                                <div class="col-md-3">
+                                    <div class="header-logo">
+                                        <a href="{{ path('app_home') }}" class="logo">
+                                            <img src="{{asset('Assets/img/logo3.png')}}" alt="">
+                                        </a>
+                                    </div>
+                                </div>
+                                <!-- /LOGO -->
+
+                                <!-- SEARCH BAR -->
+                                <div class="col-md-6">
+                                    <div class="header-search">
+                                        <form>
+                                            <select class="input-select">
+                                                <option value="0">All Categories</option>
+                                                <option value="1">Category 01</option>
+                                                <option value="1">Category 02</option>
+                                            </select>
+                                            <input class="input" placeholder="Search here">
+                                            <button class="search-btn">Search</button>
+                                        </form>
+                                    </div>
+                                </div>
+                                <!-- /SEARCH BAR -->
+
+                                <!-- ACCOUNT -->
+                                <div class="col-md-3 clearfix">
+                                    <div class="header-ctn">
+                                        <!-- Wishlist -->
+                                        {% if app.user %}
+                                         <div>
+                                            <a href="#">
+                                                <i class="fa fa-heart-o"></i>
+                                                <span>Your Wishlist</span>
+                                                <div class="qty">2</div>
+                                            </a>
+                                        </div>
+                                        
+                                        {% endif %}
+                                        
+                                       
+                                        <!-- /Wishlist -->
+
+                                        <!-- Cart -->
+                                        <div class="dropdown">
+                                            <a class="dropdown-toggle" data-toggle="dropdown" aria-expanded="true">
+                                                <i class="fa fa-shopping-cart"></i>
+                                                <span>Your Cart</span>
+                                                <div class="qty">3</div>
+                                            </a>
+                                            <div class="cart-dropdown">
+                                                <div class="cart-list">
+                                                    <div class="product-widget">
+                                                        <div class="product-img">
+                                                            <img src="{{asset('Assets/img/product01.png')}}" alt="">
+                                                        </div>
+                                                        <div class="product-body">
+                                                            <h3 class="product-name"><a href="#">product name goes here</a></h3>
+                                                            <h4 class="product-price"><span class="qty">1x</span>$980.00</h4>
+                                                        </div>
+                                                        <button class="delete"><i class="fa fa-close"></i></button>
+                                                    </div>
+
+                                                    <div class="product-widget">
+                                                        <div class="product-img">
+                                                            <img src="{{asset('Assets/img/product02.png')}}" alt="">
+                                                        </div>
+                                                        <div class="product-body">
+                                                            <h3 class="product-name"><a href="#">product name goes here</a></h3>
+                                                            <h4 class="product-price"><span class="qty">3x</span>$980.00</h4>
+                                                        </div>
+                                                        <button class="delete"><i class="fa fa-close"></i></button>
+                                                    </div>
+                                                </div>
+                                                <div class="cart-summary">
+                                                    <small>3 Item(s) selected</small>
+                                                    <h5>SUBTOTAL: $2940.00</h5>
+                                                </div>
+                                                <div class="cart-btns">
+                                                    <a href="#">View Cart</a>
+                                                    <a href="#">Checkout  <i class="fa fa-arrow-circle-right"></i></a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <!-- /Cart -->
+
+                                        <!-- Menu Toogle -->
+                                        <div class="menu-toggle">
+                                            <a href="#">
+                                                <i class="fa fa-bars"></i>
+                                                <span>Menu</span>
+                                            </a>
+                                        </div>
+                                        <!-- /Menu Toogle -->
+                                    </div>
+                                </div>
+                                <!-- /ACCOUNT -->
+                            </div>
+                            <!-- row -->
+                        </div>
+                        <!-- container -->
+                    </div>
+                    <!-- /MAIN HEADER -->
+                </header>
+            <!-- /HEADER -->
+            <!-- NAVIGATION -->
+                <nav id="navigation">
+                    <!-- container -->
+                    <div class="container ">
+                        <!-- responsive-nav -->
+                        <div id="responsive-nav ">
+                            <!-- NAV -->
+                         <ul class="main-nav nav navbar-nav">
+                            <li class="active"><a href="{{ path('app_home') }}">Home</a></li>
+                            <li><a href="{{ path('app_produit') }}">Products</a></li>
+                            <li><a href="{{ path('app_store') }}">Stores</a></li>
+                            <li><a href="{{ path('app_about') }}">About</a></li>
+                           
+                        </ul>
+                            <!-- /NAV -->
+                        </div>
+                        <!-- /responsive-nav -->
+                    </div>
+                    <!-- /container -->
+                </nav>
+            <!-- /NAVIGATION -->
+    {% endblock %}
+ <!-- Layout wrapper -->
+    <div class="layout-wrapper layout-content-navbar">
+      <div class="layout-container">
+        <!-- Menu -->
+
+        <aside id="layout-menu" class="layout-menu menu-vertical menu bg-menu-theme">
+          <div class="app-brand demo">
+            <a href="{{ path('app_home') }}" class="app-brand-link">
+              <span class="app-brand-logo demo">
+               {# <img src="{{asset('Assets/img/logo3.png')}}" alt=""> #}
+               <h4>Lina Belhadj</h4>
+              </span>
+              {# <span class="app-brand-text demo menu-text fw-bolder ms-2">StoreShip</span> #}
+            </a>
+
+            <a href="javascript:void(0);" class="layout-menu-toggle menu-link text-large ms-auto d-block d-xl-none">
+              <i class="bx bx-chevron-left bx-sm align-middle"></i>
+            </a>
+          </div>
+
+          <div class="menu-inner-shadow"></div>
+
+          <ul class="menu-inner py-1">
+            <!-- Dashboard -->
+            <li class="menu-item active mt-3">
+              <a href="{{ path('app_admin') }}" class="menu-link">
+                <i class="menu-icon tf-icons bx bx-home-circle"></i>
+                <div data-i18n="Analytics">Dashboard</div>
+              </a>
+            </li>
+
+            
+
+            <li class="menu-header small text-uppercase">
+              <span class="menu-header-text">Pages</span>
+            </li>
+
+            <li class="menu-item">
+              <a href="{{ path('app_users') }}" class="menu-link menu-toggle">
+                <i class="menu-icon tf-icons bx bx-dock-top"></i>
+                <div data-i18n="Account Settings">Liste des utilisateurs</div>
+              </a>
+            </li>
+
+            <li class="menu-item">
+              <a href="{{ path('app_partners') }}" class="menu-link menu-toggle">
+                <i class="menu-icon tf-icons bx bx-collection"></i>
+                <div data-i18n="Account Settings">Liste des demandes partenaires</div>
+              </a>
+            </li>
+
+            <li class="menu-item">
+              <a href="{{ path('app_users') }}" class="menu-link menu-toggle">
+                <i class="menu-icon tf-icons bx bx-box"></i>
+                <div data-i18n="Account Settings">Liste des commandes</div>
+              </a>
+            </li>
+
+            <li class="menu-item">
+              <a href="{{ path('app_users') }}" class="menu-link menu-toggle">
+                <i class="menu-icon tf-icons bx bx-copy"></i>
+                <div data-i18n="Account Settings">Liste des produits approvés</div>
+              </a>
+            </li>
+            
+          </ul>
+        </aside>
+        <!-- / Menu -->
+
+        <!-- Layout container -->
+        <div class="layout-page">
+          <!-- Navbar -->
+
+          <nav
+            class="layout-navbar container-xxl navbar navbar-expand-xl navbar-detached align-items-center bg-navbar-theme"
+            id="layout-navbar"
+          >
+            <div class="layout-menu-toggle navbar-nav align-items-xl-center me-3 me-xl-0 d-xl-none">
+              <a class="nav-item nav-link px-0 me-xl-4" href="javascript:void(0)">
+                <i class="bx bx-menu bx-sm"></i>
+              </a>
+            </div>
+
+            <div class="navbar-nav-right d-flex align-items-center" id="navbar-collapse">
+              <!-- Search -->
+              {# <div class="navbar-nav align-items-center">
+                <div class="nav-item d-flex align-items-center">
+                  <i class="bx bx-search fs-4 lh-0"></i>
+                  <input
+                    type="text"
+                    class="form-control border-0 shadow-none"
+                    placeholder="Search..."
+                    aria-label="Search..."
+                  />
+                </div>
+              </div> #}
+              <!-- /Search -->
+
+              <ul class="navbar-nav flex-row align-items-center ms-auto">
+                <!-- Place this tag where you want the button to render. -->
+                <!-- User -->
+                <li class="nav-item navbar-dropdown dropdown-user dropdown">
+                  <a class="nav-link dropdown-toggle hide-arrow" href="javascript:void(0);" data-bs-toggle="dropdown">
+                    <div class="avatar avatar-online">
+                      <img src="{{ asset('ClientAssets/img/avatars/1.png')}}" alt class="w-px-40 h-auto rounded-circle" />
+                    </div>
+                  </a>
+                  <ul class="dropdown-menu dropdown-menu-end">
+                    <li>
+                      <a class="dropdown-item" href="#">
+                        <div class="d-flex">
+                          <div class="flex-shrink-0 me-3">
+                            <div class="avatar avatar-online">
+                              <img src="{{ asset('ClientAssets/img/avatars/1.png')}}" alt class="w-px-40 h-auto rounded-circle" />
+                            </div>
+                          </div>
+                          <div class="flex-grow-1">
+                            <span class="fw-semibold d-block">
+                            {{ app.user.getNom() }} {{ app.user.getPrenom() }}</span>
+                            <small class="text-muted">Admin</small>
+                          </div>
+                        </div>
+                      </a>
+                    </li>
+                    <li>
+                      <div class="dropdown-divider"></div>
+                    </li>
+                    <li>
+                      <a class="dropdown-item" href="{{ path('app_profile') }}">
+                        <i class="bx bx-user me-2"></i>
+                        <span class="align-middle">My Profile</span>
+                      </a>
+                    </li>
+                    <li>
+                      <div class="dropdown-divider"></div>
+                    </li>
+                    <li>
+                      <a class="dropdown-item" href="{{ path('app_logout') }}">
+                        <i class="bx bx-power-off me-2"></i>
+                        <span class="align-middle">Log Out</span>
+                      </a>
+                    </li>
+                  </ul>
+                </li>
+                <!--/ User -->
+              </ul>
+            </div>
+          </nav>
+
+          <!-- / Navbar -->
+
+           <!-- Content wrapper -->
+          {% block body %}{% endblock %}
+          <!-- Content wrapper --> 
+        </div>
+        <!-- / Layout page -->
+      </div>
+
+      <!-- Overlay -->
+      <div class="layout-overlay layout-menu-toggle"></div>
+    </div>
+    <!-- / Layout wrapper -->
+
+    {% block footer %}
+    	<!-- NEWSLETTER -->
+		<div id="newsletter" class="section">
+			<!-- container -->
+			<div class="container">
+				<!-- row -->
+				<div class="row">
+					<div class="col-md-12">
+						<div class="newsletter">
+							<p>Sign Up for the <strong>NEWSLETTER</strong></p>
+							<form>
+								<input class="input" type="email" placeholder="Enter Your Email">
+								<button class="newsletter-btn"><i class="fa fa-envelope"></i> Subscribe</button>
+							</form>
+							<ul class="newsletter-follow">
+								<li>
+									<a href="#"><i class="fa fa-facebook"></i></a>
+								</li>
+								<li>
+									<a href="#"><i class="fa fa-twitter"></i></a>
+								</li>
+								<li>
+									<a href="#"><i class="fa fa-instagram"></i></a>
+								</li>
+								<li>
+									<a href="#"><i class="fa fa-pinterest"></i></a>
+								</li>
+							</ul>
+						</div>
+					</div>
+				</div>
+				<!-- /row -->
+			</div>
+			<!-- /container -->
+		</div>
+		<!-- /NEWSLETTER -->
+
+		<!-- FOOTER -->
+		<footer id="footer">
+			<!-- top footer -->
+			<div class="section">
+				<!-- container -->
+				<div class="container">
+					<!-- row -->
+					<div class="row">
+						<div class="col-md-3 col-xs-6">
+							<div class="footer">
+								<h3 class="footer-title">About Us</h3>
+								<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut.</p>
+								<ul class="footer-links">
+									<li><a href="#"><i class="fa fa-map-marker"></i>1734 Stonecoal Road</a></li>
+									<li><a href="#"><i class="fa fa-phone"></i>+021-95-51-84</a></li>
+									<li><a href="#"><i class="fa fa-envelope-o"></i>email@email.com</a></li>
+								</ul>
+							</div>
+						</div>
+
+						<div class="col-md-3 col-xs-6">
+							<div class="footer">
+								<h3 class="footer-title">Categories</h3>
+								<ul class="footer-links">
+									<li><a href="#">Hot deals</a></li>
+									<li><a href="#">Laptops</a></li>
+									<li><a href="#">Smartphones</a></li>
+									<li><a href="#">Cameras</a></li>
+									<li><a href="#">Accessories</a></li>
+								</ul>
+							</div>
+						</div>
+
+						<div class="clearfix visible-xs"></div>
+
+						<div class="col-md-3 col-xs-6">
+							<div class="footer">
+								<h3 class="footer-title">Information</h3>
+								<ul class="footer-links">
+									<li><a href="#">About Us</a></li>
+									<li><a href="#">Contact Us</a></li>
+									<li><a href="#">Privacy Policy</a></li>
+									<li><a href="#">Orders and Returns</a></li>
+									<li><a href="#">Terms & Conditions</a></li>
+								</ul>
+							</div>
+						</div>
+
+						<div class="col-md-3 col-xs-6">
+							<div class="footer">
+								<h3 class="footer-title">Service</h3>
+								<ul class="footer-links">
+									<li><a href="{{ path('app_login') }}">My Account</a></li>
+									<li><a href="#">View Cart</a></li>
+									<li><a href="#">Wishlist</a></li>
+									<li><a href="#">Track My Order</a></li>
+									<li><a href="#">Help</a></li>
+								</ul>
+							</div>
+						</div>
+					</div>
+					<!-- /row -->
+				</div>
+				<!-- /container -->
+			</div>
+			<!-- /top footer -->
+
+			<!-- bottom footer -->
+			<div id="bottom-footer" class="section">
+				<div class="container">
+					<!-- row -->
+					<div class="row">
+						<div class="col-md-12 text-center">
+							<ul class="footer-payments">
+								<li><a href="#"><i class="fa fa-cc-visa"></i></a></li>
+								<li><a href="#"><i class="fa fa-credit-card"></i></a></li>
+								<li><a href="#"><i class="fa fa-cc-paypal"></i></a></li>
+								<li><a href="#"><i class="fa fa-cc-mastercard"></i></a></li>
+								<li><a href="#"><i class="fa fa-cc-discover"></i></a></li>
+								<li><a href="#"><i class="fa fa-cc-amex"></i></a></li>
+							</ul>
+							<span class="copyright">
+								<!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
+								Copyright &copy;<script>document.write(new Date().getFullYear());</script> All rights reserved | This template is made with <i class="fa fa-heart-o" aria-hidden="true"></i> by <a href="https://colorlib.com" target="_blank">Colorlib</a>
+							<!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
+							</span>
+						</div>
+					</div>
+						<!-- /row -->
+				</div>
+				<!-- /container -->
+			</div>
+			<!-- /bottom footer -->
+		</footer>
+		<!-- /FOOTER -->
+    
+    {% endblock %}
+
+    </body>
+</html>
+
+
+

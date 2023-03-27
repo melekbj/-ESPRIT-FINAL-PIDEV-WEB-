@@ -23,13 +23,13 @@ class DetailCommande
     private ?string $etat = null;
 
     #[ORM\ManyToOne(inversedBy: 'detailCommandes')]
-    private ?commande $commande = null;
+    private ?Commande $commande = null;
 
     #[ORM\ManyToOne(inversedBy: 'detailCommandes')]
-    private ?store $store = null;
+    private ?Store $store = null;
 
     #[ORM\ManyToOne(inversedBy: 'detailCommandes')]
-    private ?produit $produit = null;
+    private ?Produit $produit = null;
 
     public function getId(): ?int
     {
