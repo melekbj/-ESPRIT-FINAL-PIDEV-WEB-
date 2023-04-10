@@ -42,11 +42,15 @@ class Produit
     #[ORM\OneToMany(mappedBy: 'produit', targetEntity: Reclamation::class)]
     private Collection $reclamations;
 
+    #[ORM\OneToMany(mappedBy: 'produit', targetEntity: RatingProduit::class)]
+    private Collection $ratingProduits;
+
     public function __construct()
     {
         $this->stores = new ArrayCollection();
         $this->detailCommandes = new ArrayCollection();
         $this->reclamations = new ArrayCollection();
+        $this->ratingProduits = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -219,6 +223,36 @@ class Produit
             // set the owning side to null (unless already changed)
             if ($reclamation->getProduit() === $this) {
                 $reclamation->setProduit(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, RatingProduit>
+     */
+    public function getRatingProduits(): Collection
+    {
+        return $this->ratingProduits;
+    }
+
+    public function addRatingProduit(RatingProduit $ratingProduit): self
+    {
+        if (!$this->ratingProduits->contains($ratingProduit)) {
+            $this->ratingProduits->add($ratingProduit);
+            $ratingProduit->setProduit($this);
+        }
+
+        return $this;
+    }
+
+    public function removeRatingProduit(RatingProduit $ratingProduit): self
+    {
+        if ($this->ratingProduits->removeElement($ratingProduit)) {
+            // set the owning side to null (unless already changed)
+            if ($ratingProduit->getProduit() === $this) {
+                $ratingProduit->setProduit(null);
             }
         }
 

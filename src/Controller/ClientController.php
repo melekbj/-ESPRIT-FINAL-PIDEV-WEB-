@@ -9,6 +9,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 class ClientController extends AbstractController
 {
+     
     #[Route('/client', name: 'app_client')]
     public function index(): Response
     {
@@ -17,17 +18,25 @@ class ClientController extends AbstractController
         ]);
     }
 
-    #[Route('/listcommande', name: 'app_commande')]
-    public function readC(): Response
+    #[Route('/mon_profil', name: 'app_profile_client')]
+    public function indexProfileClient(): Response
     {
-        //recuperer le repository
-        $repository = $this->getDoctrine()->getRepository(Commande::class);
-        //utiliser findAll() pour recuperer toutes les classes
-        $commande = $repository->findAll();
-        return $this->render('client/listcommande.html.twig', [
-            'c' => $commande,
+        return $this->render('client/profile.html.twig', [
+            // 'controller_name' => 'ClientController',
         ]);
     }
+
+    // #[Route('/listcommande', name: 'app_commande')]
+    // public function readC(): Response
+    // {
+    //     //recuperer le repository
+    //     $repository = $this->getDoctrine()->getRepository(Commande::class);
+    //     //utiliser findAll() pour recuperer toutes les classes
+    //     $commande = $repository->findAll();
+    //     return $this->render('client/listcommande.html.twig', [
+    //         'c' => $commande,
+    //     ]);
+    // }
 
 
 

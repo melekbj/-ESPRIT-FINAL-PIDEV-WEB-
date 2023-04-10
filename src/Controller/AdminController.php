@@ -4,7 +4,9 @@ namespace App\Controller;
 
 use App\Entity\User;
 use App\Form\UserType;
+use Twilio\Rest\Client;
 use App\Form\RegisterType;
+use App\Service\SendSmsService;
 use App\Service\SendMailService;
 use App\Repository\UserRepository;
 use Doctrine\Persistence\ManagerRegistry;
@@ -13,24 +15,52 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use App\Service\SendSmsService;
-use Twilio\Rest\Client;
+use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 
 class AdminController extends AbstractController
 {
     #[Route('/admin', name: 'app_admin')]
     public function index(): Response
     {
+        // Get the current user
+        $user = $this->getUser();
+        
+        // Get the image associated with the user
+        $image = $user->getImage();
         return $this->render('admin/index.html.twig', [
             'controller_name' => 'AdminController',
+            'image' => $image,
         ]);
     }
 
-    #[Route('/profile', name: 'app_profile')]
-    public function indexProfile(): Response
+    // #[Route('/profile', name: 'app_profile')]
+    // public function indexProfile(): Response
+    // {
+    //     // Get the current user
+    //     $user = $this->getUser();
+        
+    //     // Get the image associated with the user
+    //     $image = $user->getImage();
+        
+    //     return $this->render('admin/profile.html.twig', [
+    //         'controller_name' => 'AdminController',
+    //         'image' => $image,
+    //     ]);
+    // }
+
+    // #[Route('/profile', name: 'app_profile')]
+    public function Baseindex(): Response
     {
-        return $this->render('admin/profile.html.twig', [
+        // Get the current user
+        $user = $this->getUser();
+        
+        // Get the image associated with the user
+        $image = $user->getImage();
+        
+        return $this->render('baseAdmin.html.twig', [
             'controller_name' => 'AdminController',
+            'image' => $image,
+
         ]);
     }
 
@@ -38,12 +68,18 @@ class AdminController extends AbstractController
     #[Route('/liste_des_utilisateurs', name: 'app_users')]
     public function ListeU(): Response
     {
+        // Get the current user
+        $user = $this->getUser();
+        
+        // Get the image associated with the user
+        $image = $user->getImage();
         //recuperer le repository
         $repository = $this->getDoctrine()->getRepository(User::class);
         //utiliser findAll() pour recuperer toutes les classes
         $users = $repository->createQueryBuilder('u')
         ->where('u.roles LIKE :roles1 OR u.roles LIKE :roles2')
         ->andWhere('u.etat <> :etat')
+        ->orderBy('u.nom', 'ASC') 
         ->setParameters([
             'roles1' => '%ROLE_CLIENT%',
             'roles2' => '%ROLE_PARTNER%',
@@ -55,12 +91,18 @@ class AdminController extends AbstractController
 
         return $this->render('admin/ListeUsers.html.twig', [
             'users' => $users,
+            'image' => $image,
         ]);
     }
 
     #[Route('/liste_des_partenaires', name: 'app_partners')]
     public function ListeP(): Response
     {
+        // Get the current user
+        $user = $this->getUser();
+        
+        // Get the image associated with the user
+        $image = $user->getImage();
         //recuperer le repository
         $repository = $this->getDoctrine()->getRepository(User::class);
         //utiliser findAll() pour recuperer toutes les classes
@@ -68,6 +110,7 @@ class AdminController extends AbstractController
 
         return $this->render('admin/ListePartners.html.twig', [
             'users' => $users,
+            'image' => $image,
         ]);
     }
 
@@ -91,6 +134,11 @@ class AdminController extends AbstractController
     #[Route('/updateU/{id}', name: 'app_updateU')]
     public function updateU($id, Request $request, UserRepository $rep, ManagerRegistry $doctrine): Response
     {
+        // Get the current user
+        $user = $this->getUser();
+        
+        // Get the image associated with the user
+        $image = $user->getImage();
         // récupérer la classe à modifier
         $users = $rep->find($id);
         // créer un formulaire
@@ -111,40 +159,107 @@ class AdminController extends AbstractController
         }
         return $this->render('admin/EditUsers.html.twig', [
             'form' => $form->createView(),
+            'image' => $image,
         ]);
     }
 
     
 
 
-    #[Route('/updateProfil', name: 'update_profile')]
+    // #[Route('/updateProfil', name: 'update_profile')]
+    // public function updateProfile(Request $request)
+    // {
+
+    //     // retrieve form data
+    //     $nom = $request->request->get('nom');
+    //     $prenom = $request->request->get('prenom');
+    //     $age = $request->request->get('age');
+    //     $phone = $request->request->get('phone');
+    //     $adresse = $request->request->get('adresse');
+    //     $ville = $request->request->get('ville');
+    //     // update user's information in the database
+    //     $entityManager = $this->getDoctrine()->getManager();
+    //     $user = $this->getUser(); 
+    //     if($user){
+    //         $user->setNom($nom);
+    //         $user->setPrenom($prenom);
+    //         $user->setAge($age);
+    //         $user->setPhone($phone);
+    //         $user->setAdresse($adresse);
+    //         $user->setVille($ville);
+    //         $entityManager->persist($user);
+    //         $entityManager->flush();
+
+    //         $request->getSession()->getFlashBag()->add('success', 'Profile updated successfully!');
+    //         return $this->redirectToRoute('app_profile');
+    //     }
+        
+
+    //     $request->getSession()->getFlashBag()->add('error', 'profile failed to update');
+    //     return $this->redirectToRoute('app_profile');
+    // }
+
+    #[Route('/profile', name: 'app_profile')]
     public function updateProfile(Request $request)
     {
-
-        // retrieve form data
-        $nom = $request->request->get('nom');
-        $prenom = $request->request->get('prenom');
-        $age = $request->request->get('age');
-        $phone = $request->request->get('phone');
-        $adresse = $request->request->get('adresse');
-        // update user's information in the database
         $entityManager = $this->getDoctrine()->getManager();
-        $user = $this->getUser(); 
-        if($user){
-            $user->setNom($nom);
-            $user->setPrenom($prenom);
-            $user->setAge($age);
-            $user->setPhone($phone);
-            $user->setAdresse($adresse);
+        $user = $this->getUser();
+        // Get the image associated with the user
+        $image = $user->getImage();
+
+        // Create a new userType form and populate it with the user's data
+        $form = $this->createForm(UserType::class, $user);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            // Save the updated user information to the database
             $entityManager->persist($user);
             $entityManager->flush();
 
-            $request->getSession()->getFlashBag()->add('success', 'Profile updated successfully!');
+            // Redirect to the user's profile page with a success message
+            $this->addFlash('success', 'Profile updated successfully!');
+            return $this->redirectToRoute('app_profile');
+        }
+
+        // If the form was not submitted or is not valid, render the profile edit form
+        return $this->render('admin/profile.html.twig', [
+            'user' => $user,
+            'form' => $form->createView(),
+            'image' => $image,
+        ]);
+    }
+
+    
+    #[Route('/updatePassword', name: 'update_password', methods:['POST'])] 
+    public function updatePassword(Request $request, UserPasswordEncoderInterface $passwordEncoder)
+    {
+        // Get the current user
+        $user = $this->getUser();
+ 
+        // Get the submitted form data
+        $actualPassword = $request->request->get('actualPassword');
+        $newPassword = $request->request->get('newPassword');
+        $confirmPassword = $request->request->get('ConfirmPassword');
+        
+        // Check that the current password is correct
+        if (!$passwordEncoder->isPasswordValid($user, $actualPassword)) {
+            $this->addFlash('error', 'Current password is incorrect.');
             return $this->redirectToRoute('app_profile');
         }
         
-
-        $request->getSession()->getFlashBag()->add('error', 'profile failed to update');
+        // Check that the new password and confirm password match
+        if ($newPassword !== $confirmPassword) {
+            $this->addFlash('error', 'New password and confirm password do not match.');
+            return $this->redirectToRoute('app_profile');
+        }
+        
+        // Encode the new password and update the user's password
+        $newEncodedPassword = $passwordEncoder->encodePassword($user, $newPassword);
+        $user->setPassword($newEncodedPassword);
+        $this->getDoctrine()->getManager()->flush();
+        
+        // Redirect to a success page
+        $this->addFlash('success', 'Password updated successfully.');
         return $this->redirectToRoute('app_profile');
     }
 
@@ -262,22 +377,22 @@ class AdminController extends AbstractController
             ]
         );
 
-        $accountSid = 'ACa141e95e70a02a529768fb9df90ebcea';
-        $authToken = '5b7aa8ad0221159b8c404931b54487ef';
-        $fromNumber = '+15076288954';
+        // $accountSid = 'ACa141e95e70a02a529768fb9df90ebcea';
+        // $authToken = '5b7aa8ad0221159b8c404931b54487ef';
+        // $fromNumber = '+15076288954';
     
-        // Instantiate the Twilio client
-        $twilio = new Client($accountSid, $authToken);
+        // // Instantiate the Twilio client
+        // $twilio = new Client($accountSid, $authToken);
     
-        // Instantiate the SendSmsService and set the required parameters
-        $sms = new SendSmsService();
-        $sms->setAccountSid($accountSid);
-        $sms->setAuthToken($authToken);
-        $sms->setFromNumber($fromNumber);
-        $sms->setClient($twilio);
+        // // Instantiate the SendSmsService and set the required parameters
+        // $sms = new SendSmsService();
+        // $sms->setAccountSid($accountSid);
+        // $sms->setAuthToken($authToken);
+        // $sms->setFromNumber($fromNumber);
+        // $sms->setClient($twilio);
     
-        // Send an SMS to the user
-        $sms->send($user->getPhone(), 'Your account has been disapproved.');
+        // // Send an SMS to the user
+        // $sms->send($user->getPhone(), 'Your account has been disapproved.');
     
         //flash message
         $this->addFlash('error', 'User Disapproved !');
@@ -286,74 +401,6 @@ class AdminController extends AbstractController
     }
     
 
-    
-    
-    
-
-
-
-
-
-
-
-    // #[Route('/admin/{id}', name: 'app_profile')]
-    // public function edit($id,Request $request, UserRepository $rep, ManagerRegistry $doctrine,): Response
-    // {
-    //     $form->handleRequest($request); 
-    //     //recuperer la classe a modifier
-    //     $profile = $rep->find($id);
-    //     //creer un formulaire
-    //     $form = $this->createForm(ProfileFormType::class, $profile);
-    //     //recuperer les donnees saisies
-    //     $form->handleRequest($request);
-    //     //verifier si le formulaire est soumis et valide
-    //     if($form->isSubmitted() && $form->isValid()){
-    //         //recuperer les donnees saisies
-    //         $profile = $form->getData();
-    //         //persister les donnees
-    //         $rep=$doctrine->getManager();
-    //         $rep->persist($profile);
-    //         $rep->flush();
-    //         $flashynotif->success('profile updated successfully');
-           
-    //         return $this->redirectToRoute('app_profile');
-
-    //     }
-    //     return $this->render('admin/profile.html.twig', [
-    //         'controller_name' => 'AdminController',
-    //         'form' => $form->createView(),
-    //     ]);
-    // }
-    
-    // public function updateC($id,Request $request, ClassroomRepository $rep, ManagerRegistry $doctrine, FlashyNotifier $flashynotif ): Response
-    // {
-   
-    //     $form->handleRequest($request); 
-    //     //recuperer la classe a modifier
-    //     $classroom = $rep->find($id);
-    //     //creer un formulaire
-    //     $form = $this->createForm(ClassroomType::class, $classroom);
-    //     //recuperer les donnees saisies
-    //     $form->handleRequest($request);
-    //     //verifier si le formulaire est soumis et valide
-    //     if($form->isSubmitted() && $form->isValid()){
-    //         //recuperer les donnees saisies
-    //         $classroom = $form->getData();
-    //         //persister les donnees
-    //         $rep=$doctrine->getManager();
-    //         $rep->persist($classroom);
-    //         $rep->flush();
-    //         $flashynotif->success('Classroom updated successfully');
-           
-    //         return $this->redirectToRoute('app_readC');
-    //     }
-    //     return $this->render('classroom/addC.html.twig', [
-    //         'form' => $form->createView(),
-    //     ]);
-
-        
-  
-    // }
 
 
 }

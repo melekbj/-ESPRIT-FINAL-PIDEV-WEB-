@@ -3,22 +3,27 @@
 {% block title %}Sign Up{% endblock %}
 
 {% block body %}
+<br><br><br><br><br>
 
 <div class="limiter">
 		<div class="container-login101">
 			<div class="wrap-login100">
+           
 				<div class="login100-pic js-tilt" data-tilt>
+                <hr><hr><hr><hr><hr><hr><hr><hr><hr>
 					<img class="imgLogin" src="{{ asset('LoginAssets/images/login2.png')}}" alt="IMG">
+                <hr><hr><hr><hr><hr><hr><hr><hr><hr>     
 				</div>
+                
 
             {{ form_start(registerForm) }}
 
-            <h2>Role Information</h2>
+            <h4>Role Information</h4>
             {{ form_row(registerForm.roles) }}
 
             <hr>
             
-            <h2>Personal Information</h2>
+            <h4>Personal Information</h4>
             <div class="wrap-sign100">
             {{ form_row(registerForm.nom) }}
             &nbsp;
@@ -26,18 +31,23 @@
             </div>
             <div class="wrap-sign100">
             {{ form_row(registerForm.age) }}
-            <div class="select100">
-            {{ form_row(registerForm.genre) }}
-            </div>
-            </div>
-            {{ form_row(registerForm.ville) }}
             {{ form_row(registerForm.adresse) }}
+            </div>
+            <div class="wrap-sign100">
+            {{ form_row(registerForm.genre) }}
+            {{ form_row(registerForm.ville) }}
+            <div class="select100">
+            
+            </div>
+            </div>
+            
+            
             {{ form_row(registerForm.phone) }}
-            {{ form_row(registerForm.image) }}
+            {{ form_row(registerForm.imageFile) }}
 
             <hr>
 
-            <h2>Account Information</h2>
+            <h4>Account Information</h4>
             {{ form_row(registerForm.email) }}
             {{ form_row(registerForm.password.first) }}
             {{ form_row(registerForm.password.second) }}
@@ -46,7 +56,7 @@
             {{ form_row(registerForm._token) }}
             <hr>
             <div class="text-center">
-                {{ form_widget(registerForm.save, {'label': 'Register', 'attr': {'class': 'btn btn-primary'}}) }}
+                {{ form_widget(registerForm.save, {'label': 'Create Account', 'attr': {'class': 'btn btn-primary'}}) }}
             </div>
             {{ form_end(registerForm) }}
 

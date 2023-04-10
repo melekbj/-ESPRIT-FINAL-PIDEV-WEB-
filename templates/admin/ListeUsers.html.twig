@@ -1,14 +1,10 @@
 {% extends 'baseAdmin.html.twig' %}
 
-{% block title %}Hello AdminController!{% endblock %}
+{% block title %}Liste des utilisateurs{% endblock %}
 
 {% block body %}
 
-    {# {% if app.user %}
-        <div class="mb-3">
-            You are logged in as {{ app.user.userIdentifier }}, <a href="{{ path('app_logout') }}">Logout</a>
-        </div>
-    {% endif %} #}
+  
 
 
       <!-- Layout wrapper -->
@@ -75,8 +71,8 @@
                         {% else %}
                             <tr class="table-info">
                         {% endif %}
-                             
-                        <td>{{ user.nom }} </td>
+                        {# les noms majuscules #}
+                        <td>{{ user.nom|upper }}</td>
                         <td>{{ user.prenom }}</td>
                         <td>{{ user.email }}</td>
                         <td>{{ user.age }}</td>

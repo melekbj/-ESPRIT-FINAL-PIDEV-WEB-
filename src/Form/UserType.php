@@ -14,21 +14,44 @@ class UserType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            // ->add('email')
+            ->add('email')
             ->add('nom')
             ->add('prenom')
             ->add('age')
-            ->add('adresse')
-            ->add('genre', ChoiceType::class, [
+            ->add('ville', ChoiceType::class, [
                 'required' => true,
                 'multiple' => false,
                 'expanded' => false,
+                'placeholder' => 'Choose state',
                 'choices'  => [
-                    'Homme' => 'Homme',
-                    'Femme' => 'Femme',
-                    'Autre' => 'Autre',
+                    'Ariana' => 'Ariana',
+                    'Beja' => 'Beja',
+                    'Ben Arous' => 'Ben Arous',
+                    'Bizerte' => 'Bizerte',
+                    'Gabes' => 'Gabes',
+                    'Gafsa' => 'Gafsa',
+                    'Jendouba' => 'Jendouba',
+                    'Kairouan' => 'Kairouan',
+                    'Kasserine' => 'Kasserine',
+                    'Kebili' => 'Kebili',
+                    'Kef' => 'Kef',
+                    'Mahdia' => 'Mahdia',
+                    'Manouba' => 'Manouba',
+                    'Medenine' => 'Medenine',
+                    'Monastir' => 'Monastir',
+                    'Nabeul' => 'Nabeul',
+                    'Sfax' => 'Sfax',
+                    'Sidi Bouzid' => 'Sidi Bouzid',
+                    'Siliana' => 'Siliana',
+                    'Sousse' => 'Sousse',
+                    'Tataouine' => 'Tataouine',
+                    'Tozeur' => 'Tozeur',
+                    'Tunis' => 'Tunis',
+                    'Zaghouan' => 'Zaghouan',
                 ],
             ])
+            ->add('adresse')
+            ->add('genre')
             ->add('phone')
             ->add('save', SubmitType::class, [
                 'label' => 'Confirm changes',

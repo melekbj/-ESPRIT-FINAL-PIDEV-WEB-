@@ -3,8 +3,7 @@
 {% block title %}Log in!{% endblock %}
 
 {% block body %}
-
-
+<br><br><br><br><br>
 	<div class="limiter">
 		<div class="container-login100">
 			<div class="wrap-login100">
@@ -26,9 +25,15 @@
                         <div class="alert alert-info">{{ flash_message }}</div>
                     {% endfor %}
 
-                    {% if error %}
+                    {# {% if error %}
                         <div class="alert alert-danger">
                             {{ error.messageKey|trans(error.messageData, 'security') }}
+                        </div>
+                    {% endif %} #}
+
+                    {% if error %}
+                        <div class="alert alert-danger">
+                            {{ error }}
                         </div>
                     {% endif %}
 
@@ -39,10 +44,10 @@
                         </div>
                     {% endif %}
 
-					<span class="login100-form-title ">
-						Join us 
+					<span class="title">
+						<h3>Join us </h3>
 					</span>
-                    <div class="login100-form-gif col-md-offset-2">
+                    <div class="gif">
                      <img src="{{ asset('LoginAssets/images/Ripple.gif')}}" alt="Loading" />
                     </div>
                     
@@ -59,14 +64,36 @@
                         <input class="input100" type="password" placeholder="Password" name="password" id="inputPassword" class="form-control" autocomplete="current-password" required>
                         <span class="focus-input100"></span>
                             <span class="symbol-input100">
-                                <i class="fa fa-lock" aria-hidden="true"></i>
+                                <i class="fa fa-lock" aria-hidden="true"></i>  
                             </span>
+                            <span class="symbol-input" ><i class="fa fa-eye toggle-password" aria-hidden="true"></i></span>
+                            
                     </div>
+
+                    {# <div class="wrap-input100 validate-input" data-validate="Password is required" style="display: flex; justify-content: ;">
+                        <input class="input100" type="password" placeholder="Password" name="password" id="inputPassword" class="form-control" autocomplete="current-password" required>
+                        <span class="focus-input100"></span>
+                        <span class="symbol-input100">
+                            <i class="fa fa-lock" aria-hidden="true"></i>  
+                        </span>
+                        <span><i class="fa fa-eye toggle-password" aria-hidden="true"></i></span>
+                    </div> #}
 
                     <input type="hidden" name="_csrf_token"
                         value="{{ csrf_token('authenticate') }}"
                     >
+                    <script>
+                        const togglePassword = document.querySelector('.toggle-password');
+                        const password = document.querySelector('#inputPassword');
 
+                        togglePassword.addEventListener('click', function (e) {
+                            // toggle the type attribute
+                            const type = password.getAttribute('type') === 'password' ? 'text' : 'password';
+                            password.setAttribute('type', type);
+                            // toggle the eye slash icon
+                            this.classList.toggle('fa-eye-slash');
+                        });
+                    </script>
 
                     
 
@@ -98,7 +125,7 @@
 		</div>
 	</div>
 
-
+<br><br><br>
 
 
 

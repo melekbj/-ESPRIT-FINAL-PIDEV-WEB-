@@ -16,18 +16,18 @@ class HomeController extends AbstractController
         ]);
     }
 
-    #[Route('/produit', name: 'app_produit')]
+    #[Route('/products', name: 'app_products')]
     public function produitIndex(): Response
     {
-        return $this->render('home/produit.html.twig', [
+        return $this->render('home/products.html.twig', [
             'controller_name' => 'HomeController',
         ]);
     }
 
-    #[Route('/store', name: 'app_store')]
+    #[Route('products/details', name: 'app_detail')]
     public function storeIndex(): Response
     {
-        return $this->render('home/store.html.twig', [
+        return $this->render('home/detail.html.twig', [
             'controller_name' => 'HomeController',
         ]);
     }
@@ -36,6 +36,14 @@ class HomeController extends AbstractController
     public function aboutIndex(): Response
     {
         return $this->render('home/about.html.twig', [
+            'controller_name' => 'HomeController',
+        ]);
+    }
+
+    #[Route('/contact', name: 'app_contact')]
+    public function contactIndex(): Response
+    {
+        return $this->render('home/contact.html.twig', [
             'controller_name' => 'HomeController',
         ]);
     }

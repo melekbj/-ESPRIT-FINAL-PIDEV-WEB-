@@ -14,6 +14,12 @@ security:
                 class: App\Entity\User
                 property: email
     firewalls:
+        protected_route:
+            pattern: ^/protected
+            # anonymous: ~
+            form_login:
+                login_path: /login
+                check_path: /protected/login_check
         dev:
             pattern: ^/(_(profiler|wdt)|css|images|js)/
             security: false
@@ -24,7 +30,7 @@ security:
             logout:
                 path: app_logout
                 # where to redirect after logout
-                target: app_home
+                target: app_login
 
             # activate different ways to authenticate
             # https://symfony.com/doc/current/security.html#the-firewall

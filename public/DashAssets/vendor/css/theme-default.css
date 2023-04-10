@@ -652,6 +652,11 @@ a:hover {
   background-color:  #011126 !important;
   color: white;
 }
+
+.bg-menu-themeclient {
+  background-color:   #F2EDDC !important;
+  color: white;
+}
 .bg-menu-theme .menu-link,
 .bg-menu-theme .menu-horizontal-prev,
 .bg-menu-theme .menu-horizontal-next {

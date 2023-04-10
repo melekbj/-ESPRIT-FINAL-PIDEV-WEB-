@@ -42,15 +42,24 @@
 {# we began #}
 
 
-<link rel="stylesheet" type="text/css" href="{{ asset('Assets2/styles/bootstrap4/bootstrap.min.css')}}">
-<link href="{{ asset('Assets2/plugins/font-awesome-4.7.0/css/font-awesome.min.css')}}" rel="stylesheet" type="text/css">
-<link rel="stylesheet" type="text/css" href="{{ asset('Assets2/plugins/OwlCarousel2-2.2.1/owl.carousel.css')}}">
-<link rel="stylesheet" type="text/css" href="{{ asset('Assets2/plugins/OwlCarousel2-2.2.1/owl.theme.default.css')}}">
-<link rel="stylesheet" type="text/css" href="{{ asset('Assets2/plugins/OwlCarousel2-2.2.1/animate.css')}}">
-<link rel="stylesheet" type="text/css" href="{{ asset('Assets2/styles/main_styles.css')}}">
-<link rel="stylesheet" type="text/css" href="{{ asset('Assets2/styles/responsive.css')}}">
-
-    
+<link rel="stylesheet" type="text/css" href="{{ asset('Assets/styles/bootstrap4/bootstrap.min.css')}}">
+<link href="{{ asset('Assets/plugins/font-awesome-4.7.0/css/font-awesome.min.css')}}" rel="stylesheet" type="text/css">
+<link rel="stylesheet" type="text/css" href="{{ asset('Assets/plugins/OwlCarousel2-2.2.1/owl.carousel.css')}}">
+<link rel="stylesheet" type="text/css" href="{{ asset('Assets/plugins/OwlCarousel2-2.2.1/owl.theme.default.css')}}">
+<link rel="stylesheet" type="text/css" href="{{ asset('Assets/plugins/OwlCarousel2-2.2.1/animate.css')}}">
+<link rel="stylesheet" type="text/css" href="{{ asset('Assets/styles/main_styles.css')}}">
+<link rel="stylesheet" type="text/css" href="{{ asset('Assets/styles/responsive.css')}}">
+{# Categories #}
+<link rel="stylesheet" type="text/css" href="{{ asset('Assets/plugins/jquery-ui-1.12.1.custom/jquery-ui.css')}}">
+<link rel="stylesheet" type="text/css" href="{{ asset('Assets/styles/categories_styles.css')}}">
+<link rel="stylesheet" type="text/css" href="{{ asset('Assets/styles/categories_responsive.css')}}">
+{# details #}
+<link rel="stylesheet" href="{{ asset('Assets/plugins/themify-icons/themify-icons.css')}}">
+<link rel="stylesheet" type="text/css" href="{{ asset('Assets/styles/single_styles.css')}}">
+<link rel="stylesheet" type="text/css" href="{{ asset('Assets/styles/single_responsive.css')}}">
+{# Contact #}
+<link rel="stylesheet" type="text/css" href="{{ asset('Assets/styles/contact_styles.css')}}">
+<link rel="stylesheet" type="text/css" href="{{ asset('Assets/styles/contact_responsive.css')}}">
 
         {% endblock %}
 
@@ -73,13 +82,22 @@
             </script>
 
     {# we began #}
-        <script src="{{ asset('Assets2/js/jquery-3.2.1.min.js')}}"></script>
-        <script src="{{ asset('Assets2/styles/bootstrap4/popper.js')}}"></script>
-        <script src="{{ asset('Assets2/styles/bootstrap4/bootstrap.min.js')}}"></script>
-        <script src="{{ asset('Assets2/plugins/Isotope/isotope.pkgd.min.js')}}"></script>
-        <script src="{{ asset('Assets2/plugins/OwlCarousel2-2.2.1/owl.carousel.js')}}"></script>
-        <script src="{{ asset('Assets2/plugins/easing/easing.js')}}"></script>
-        <script src="{{ asset('Assets2/js/custom.js')}}"></script> 
+        <script src="{{ asset('Assets/js/jquery-3.2.1.min.js')}}"></script>
+        <script src="{{ asset('Assets/styles/bootstrap4/popper.js')}}"></script>
+        <script src="{{ asset('Assets/styles/bootstrap4/bootstrap.min.js')}}"></script>
+        <script src="{{ asset('Assets/plugins/Isotope/isotope.pkgd.min.js')}}"></script>
+        <script src="{{ asset('Assets/plugins/OwlCarousel2-2.2.1/owl.carousel.js')}}"></script>
+        <script src="{{ asset('Assets/plugins/easing/easing.js')}}"></script>
+        <script src="{{ asset('Assets/js/custom.js')}}"></script> 
+        {# Categories #}
+		<script src="{{ asset('Assets/plugins/jquery-ui-1.12.1.custom/jquery-ui.js')}}"></script>
+        <script src="{{ asset('Assets/js/categories_custom.js')}}"></script>
+        {# details #}
+        <script src="{{ asset('Assets/js/single_custom.js')}}"></script>
+        {# Contact #}
+        <script src="https://maps.googleapis.com/maps/api/js?v=3.exp&key=AIzaSyCIwF204lFZg1y4kPSIhKaHEXMLYxxuMhA"></script>
+        <script src="{{ asset('Assets/js/contact_custom.js')}}"></script>
+
 
         {% endblock %}
     </head>
@@ -249,7 +267,102 @@
                 </nav>
             <!-- /NAVIGATION -->
     {% endblock %} #}
+	
+    {% block header %}
+		<header class="header trans_300">
+
+			<!-- Top Navigation -->
+
+			<div class="top_nav">
+				<div class="container">
+					<div class="row">
+						<div class="col-md-6">
+							<div class="top_nav_left">By Without Lifting A Finger</div>
+						</div>
+						<div class="col-md-6 text-right">
+							<div class="top_nav_right">
+								<ul class="top_nav_menu">
+
+									<!-- Currency / Language / My Account -->
+
+									<li class="account">
+										<a href="#">
+											My Account
+											<i class="fa fa-angle-down"></i>
+										</a>
+										<ul class="account_selection">
+                                        {% if app.user and app.user.getEtat()==0 %}
+                                        											<li><a href="{{ path('app_logout') }}"><i class="fa fa-sign-out" aria-hidden="true"></i>Log out</a></li>
+
+                                        {% else %}
+                                        
+											<li><a href="{{ path('app_login') }}"><i class="fa fa-sign-in" aria-hidden="true"></i>Sign In</a></li>
+											<li><a href="{{ path('app_registration') }}"><i class="fa fa-user-plus" aria-hidden="true"></i>Sign Up</a></li>
+										{% endif %}
+                                        </ul>
+									</li>
+								</ul>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<!-- Main Navigation -->
+
+			<div class="main_nav_container">
+				<div class="container">
+					<div class="row">
+						<div class="col-lg-12 text-right">
+							<div class="logo_container">
+								{# <img src="{{asset("Assets/images/logo3.png")}}" alt=""> #}
+								<a href="{{ path('app_home') }}">Store<span>Ship</span></a>
+							</div>
+							<nav class="navbar">
+								<ul class="navbar_menu">
+									<li><a href="{{ path('app_home') }}">home</a></li>
+									{# <li><a href="#">shop</a></li> #}
+									<li><a href="{{ path('app_products') }}">Products</a></li>
+									{# <li><a href="#">pages</a></li> #}
+									<li><a href="{{ path('app_about') }}">About</a></li>
+									<li><a href="{{ path('app_contact') }}">Contact</a></li>
+								</ul>
+								<ul class="navbar_user">
+									<li><a href="#"><i class="fa fa-search" aria-hidden="true"></i></a></li>
+                                    {% if app.user and app.user.getRoles() == 'ROLE_CLIENT'%}
+                                    <li><a href="{{path('app_client')}}"><i class="fa fa-user" aria-hidden="true"></i></a></li>
+                                    
+                                    {% elseif app.user and app.user.getRoles() == 'ROLE_ADMIN' %}
+                                    <li><a href="{{path('app_admin')}}"><i class="fa fa-user" aria-hidden="true"></i></a></li>
+{% elseif app.user and app.user.getRoles() == 'ROLE_PARTNER' %}
+                                    <li><a href="{{path('app_partner')}}"><i class="fa fa-user" aria-hidden="true"></i></a></li>
+{% else %}
+                                        <li><a href="{{path('app_login')}}"><i class="fa fa-user" aria-hidden="true"></i></a></li>
+
+                                    {% endif %}
+                                    
+									
+									<li class="checkout">
+										<a href="#">
+											<i class="fa fa-shopping-cart" aria-hidden="true"></i>
+											<span id="checkout_items" class="checkout_items">2</span>
+										</a>
+									</li>
+								</ul>
+								<div class="hamburger_container">
+									<i class="fa fa-bars" aria-hidden="true"></i>
+								</div>
+							</nav>
+						</div>
+					</div>
+				</div>
+			</div>
+
+		</header>
+    {% endblock %}
+
     {% block body %}{% endblock %}
+
     {# {% block footer %}
     	<!-- NEWSLETTER -->
 		<div id="newsletter" class="section">
@@ -384,5 +497,42 @@
 		<!-- /FOOTER -->
     
     {% endblock %} #}
+
+    {% block footer %}
+        <footer class="footer">
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-6">
+                        <div class="footer_nav_container d-flex flex-sm-row flex-column align-items-center justify-content-lg-start justify-content-center text-center">
+                            <ul class="footer_nav">
+                                <li><a href="#">Blog</a></li>
+                                <li><a href="#">FAQs</a></li>
+                                <li><a href="contact.html">Contact us</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="col-lg-6">
+                        <div class="footer_social d-flex flex-row align-items-center justify-content-lg-end justify-content-center">
+                            <ul>
+                                <li><a href="#"><i class="fa fa-facebook" aria-hidden="true"></i></a></li>
+                                <li><a href="#"><i class="fa fa-twitter" aria-hidden="true"></i></a></li>
+                                <li><a href="#"><i class="fa fa-instagram" aria-hidden="true"></i></a></li>
+                                <li><a href="#"><i class="fa fa-skype" aria-hidden="true"></i></a></li>
+                                <li><a href="#"><i class="fa fa-pinterest" aria-hidden="true"></i></a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-12">
+                        <div class="footer_nav_container">
+                            <div class="cr">©2018 All Rights Reserverd. Made with <i class="fa fa-heart-o" aria-hidden="true"></i> by <a href="#">Colorlib</a> &amp; distributed by <a href="https://themewagon.com">ThemeWagon</a></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </footer> 
+    {% endblock %}
+
     </body>
 </html>

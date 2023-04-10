@@ -21,7 +21,7 @@ class ResetPasswordRequestFormType extends AbstractType
                 ]
             ])
             ->add('Envoyer', SubmitType::class, [
-                'label' => 'Register',
+                'label' => 'Envoyer',
                 'attr' => [
                     'class' => 'btn btn-primary'
                 ]
