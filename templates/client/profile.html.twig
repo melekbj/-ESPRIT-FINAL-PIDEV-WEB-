@@ -1,234 +1,243 @@
-{% extends 'baseClient.html.twig' %}
+{% extends "baseClient.html.twig" %}
+
+{% block title %}SS | Mon Profil{% endblock %}
 
 
 {% block body %}
-       <!-- Layout wrapper -->
-    <div class="layout-wrapper layout-content-navbar">
-      <div class="layout-container">
-  
 
-        <!-- Layout container -->
-        <div class="layout-page">
-          <!-- Navbar -->
-
-  
-
-          <!-- / Navbar -->
-
-          <!-- Content wrapper -->
-          <div class="content-wrapper">
-            <!-- Content -->
-
-            <div class="container-xxl flex-grow-1 container-p-y">
-
-              <div class="row">
-                <div class="col-md-12">
-                
-                  <div class="card mb-4">
-                    <h5 class="card-header">Profile Details</h5>
-                    <!-- Account -->
-                    <div class="card-body">
-                      <div class="d-flex align-items-start align-items-sm-center gap-4">
-                        <img
-                          src="{{asset('DashAssets/img/avatars/1.png')}}"
-                          alt="user-avatar"
-                          class="d-block rounded"
-                          height="100"
-                          width="100"
-                          id="uploadedAvatar"
-                        />
-                        <div class="button-wrapper">
-                          <label for="upload" class="btn btn-primary me-2 mb-4" tabindex="0">
-                            <span class="d-none d-sm-block">Upload new photo</span>
-                            <i class="bx bx-upload d-block d-sm-none"></i>
-                            <input
-                              type="file"
-                              id="upload"
-                              class="account-file-input"
-                              hidden
-                              accept="image/png, image/jpeg"
-                            />
-                          </label>
-                          <button type="button" class="btn btn-outline-secondary account-image-reset mb-4">
-                            <i class="bx bx-reset d-block d-sm-none"></i>
-                            <span class="d-none d-sm-block">Reset</span>
-                          </button>
-
-                          <p class="text-muted mb-0">Allowed JPG, GIF or PNG. Max size of 800K</p>
-                        </div>
-                      </div>
-                    </div>
-                    <hr class="my-0" />
-                    <div class="card-body">
-                   
-                      <form id="formAccountSettings" method="POST" action="{{ path('update_profile') }}">
-                      {# <input type="hidden" name="_token" value="{{ csrf_token() }}">
-                      {{ form_widget(form._token) }} #}
-
-
-                      {% for flash_message in app.session.flashbag.get('error') %}
-                        <div class="alert alert-danger">{{ flash_message }}</div>
-                      {% endfor %}
-
-                      {% for flash_message in app.session.flashbag.get('success') %}
-                        <div class="alert alert-success">{{ flash_message }}</div>
-                      {% endfor %}
-
-
-                    
-
-                        <div class="row">
-                          <div class="mb-3 col-md-6">
-                            <label for="nom" class="form-label">Nom</label>
-                            <input
-                              class="form-control"
-                              type="text"
-                              id="nom"
-                              name="nom"
-                              value={{app.user.nom}}
-                              autofocus
-                            />
-                          </div>
-                          <div class="mb-3 col-md-6">
-                            <label for="prenom" class="form-label">Prenom</label>
-                            <input class="form-control" type="text" name="prenom" id="prenom" value={{app.user.prenom}} />
-                          </div>
-
-                          
-                           <div class="mb-3 col-md-6">
-                            <label class="form-label" for="genre">Genre</label>
-                            <div class="input-group input-group-merge">
-                              <input
-                                type="text"
-                                id="genre"
-                                name="genre"
-                                class="form-control"
-                                value={{app.user.genre}}
-                                readOnly
-                              />
-                            </div>
-                          </div>
-
-
-                          <div class="mb-3 col-md-6">
-                            <label for="age" class="form-label">Age</label>
-                            <input
-                              type="number"
-                              class="form-control"
-                              id="age"
-                              name="age"
-                              value={{app.user.age}}
-                            />
-                          </div>
-                          <div class="mb-3 col-md-6">
-                            <label class="form-label" for="phone">Phone Number</label>
-                            <div class="input-group input-group-merge">
-                              <span class="input-group-text">code (+216)</span>
-                              <input
-                                type="text"
-                                id="phone"
-                                name="phone"
-                                class="form-control"
-                                value={{app.user.phone}}
-                              />
-                            </div>
-                          </div>
-                          <div class="mb-3 col-md-6">
-                            <label for="adresse" class="form-label">Address</label>
-                            <input 
-                              type="text" 
-                              class="form-control" 
-                              id="adresse" 
-                              name="adresse" 
-                              value={{app.user.adresse}} 
-                            />
-                          </div>
-                         
-                         
-                         <div class="mb-3 col-md-6">
-                            <label for="email" class="form-label">E-mail</label>
-                            <input
-                              class="form-control"
-                              type="text"
-                              id="email"
-                              name="email"
-                              value={{app.user.email}}
-                              readOnly
-                            />
-                          </div>
-
-                        </div>
-                        <div class="mt-2">
-                          <button type="submit" class="btn btn-primary me-2">Save changes</button>
-                          <button type="reset" class="btn btn-outline-secondary">Cancel</button>
-                        </div>
-                      </form>
-
-                    </div>
-                    <!-- /Account -->
-                  </div>
-                  <div class="card">
-                    <h5 class="card-header">Change Password</h5>
-                    <div class="card-body">
-                      <div class="mb-3 col-12 mb-0">
-                        {# <div class="alert alert-warning">
-                          <h6 class="alert-heading fw-bold mb-1">Are you sure you want to delete your account?</h6>
-                          <p class="mb-0">Once you delete your account, there is no going back. Please be certain.</p>
-                        </div> #}
-                      </div>
-                      <form id="formAccountDeactivation" onsubmit="return false">
-                        <div class="form-check mb-3 col-md-4">
-                        <label for="actualPassword"> Current Password</label>
-                          <input
-                            class="form-control mb-3"
-                            type="password"
-                            name="actualPassword"
-                            id="actualPassword"
-                          />
-                          <label for="newPassword"> New Password</label>
-                          <input
-                            class="form-control mb-3"
-                            type="password"
-                            name="newPassword"
-                            id="newPassword"
-                          />
-                          <label for="confirmPassword"> Confirm Password</label>
-                          <input
-                            class="form-control mb-3"
-                            type="password"
-                            name="ConfirmPassword"
-                            id="ConfirmPassword"
-                          />
-                          {# <label class="form-check-label" for="accountActivation"
-                            >I confirm my account deactivation</label
-                          > #}
-                        </div>
-                        <div class="">
-                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                        <button type="submit" class="btn btn-danger deactivate-account">Deactivate Account</button>
-                        </div>
-                        
-                      </form>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <!-- / Content -->
-
+  {# <div class="preloader">
+        <svg class="circular" viewBox="25 25 50 50">
+            <circle class="path" cx="50" cy="50" r="20" fill="none" stroke-width="2" stroke-miterlimit="10" />
+        </svg>
+    </div> #}
+    <!-- ============================================================== -->
+    <!-- Wrapper -->
+    <!-- ============================================================== -->
+    <div id="wrapper">
        
+        <div id="page-wrapper">
+            <div class="container-fluid">
+                <div class="row bg-title">
+                    <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12">
+                        <h4 class="page-title">Profile page</h4> </div>
+                    {# <div class="col-lg-9 col-sm-8 col-md-8 col-xs-12">
+                        <a href="https://wrappixel.com/templates/ampleadmin/" target="_blank" class="btn btn-danger pull-right m-l-20 hidden-xs hidden-sm waves-effect waves-light">Upgrade to Pro</a>
+                        <ol class="breadcrumb">
+                            <li><a href="#">Dashboard</a></li>
+                            <li class="active">Profile Page</li>
+                        </ol>
+                    </div>       #}
+                </div>
+                <!-- /.row -->
+                <!-- .row -->
+                <div class="row">
+                    <div class="col-md-4 col-xs-12">
+                        <div class="white-box">
+                            <div class="user-bg"> <img width="100%" alt="user" src="{{ asset('images/users/' ~ image) }}">
+                                <div class="overlay-box">
+                                    <div class="user-content">
+                                        <a href="javascript:void(0)"><img src="{{ asset('images/users/' ~ image) }}" class="thumb-lg img-circle" alt="img"></a>
+                                        <h4 class="text-white">{{app.user.nom|upper}} {{app.user.prenom}}</h4>
+                                        <h5 class="text-white">{{app.user.email}}</h5> </div>
+                                </div>
+                            </div>
+                            {# <div class="user-btm-box">
+                                <div class="col-md-4 col-sm-4 text-center">
+                                    <p class="text-purple"><i class="ti-facebook"></i></p>
+                                    <h1>258</h1> </div>
+                                <div class="col-md-4 col-sm-4 text-center">
+                                    <p class="text-blue"><i class="ti-twitter"></i></p>
+                                    <h1>125</h1> </div>
+                                <div class="col-md-4 col-sm-4 text-center">
+                                    <p class="text-danger"><i class="ti-dribbble"></i></p>
+                                    <h1>556</h1> </div>
+                            </div> #}
+                        </div>
+                    </div>
+                    <div class="col-md-8 col-xs-12">
+                        <div class="white-box">
+                            {# <form class="form-horizontal form-material" meth>
+                                <div class="form-group">
+                                    <label class="col-md-12">Full Name</label>
+                                    <div class="col-md-12">
+                                        <input type="text" placeholder="Johnathan Doe" class="form-control form-control-line"> </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="example-email" class="col-md-12">Email</label>
+                                    <div class="col-md-12">
+                                        <input type="email" placeholder="johnathan@admin.com" class="form-control form-control-line" name="example-email" id="example-email"> </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-md-12">Password</label>
+                                    <div class="col-md-12">
+                                        <input type="password" value="password" class="form-control form-control-line"> </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-md-12">Phone No</label>
+                                    <div class="col-md-12">
+                                        <input type="text" placeholder="123 456 7890" class="form-control form-control-line"> </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-md-12">Message</label>
+                                    <div class="col-md-12">
+                                        <textarea rows="5" class="form-control form-control-line"></textarea>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-sm-12">Select Country</label>
+                                    <div class="col-sm-12">
+                                        <select class="form-control form-control-line">
+                                            <option>London</option>
+                                            <option>India</option>
+                                            <option>Usa</option>
+                                            <option>Canada</option>
+                                            <option>Thailand</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <div class="col-sm-12">
+                                        <button class="btn btn-success">Update Profile</button>
+                                    </div>
+                                </div>
+                            </form> #}
+                            {% for flash_message in app.session.flashbag.get('error') %}
+                                <div class="alert alert-danger">{{ flash_message }}</div>
+                            {% endfor %}
 
-            <div class="content-backdrop fade"></div>
-          </div>
-          <!-- Content wrapper -->
+                            {% for flash_message in app.session.flashbag.get('success') %}
+                                <div class="alert alert-success">{{ flash_message }}</div>
+                            {% endfor %}
+                            {{ form_start(form) }}
+
+                                <div class="row">
+                                    <div class="form-group col-md-6">
+                                        {{ form_row(form.nom, {'attr': {'class': 'form-control form-control-line'}}) }}
+                                    </div>
+                                    <div class="form-group col-md-6">    
+                                        {{ form_row(form.prenom, {'attr': {'class': 'form-control form-control-line'}}) }}
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="form-group col-md-6">
+                                        {{ form_row(form.genre, {'attr': {'class': 'form-control form-control-line'}}) }}
+                                    </div>
+                                    <div class="form-group col-md-6">    
+                                        {{ form_row(form.age, {'attr': {'class': 'form-control form-control-line'}}) }}
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="form-group col-md-6">
+                                        {{ form_row(form.ville, {'attr': {'class': 'form-control form-control-line'}}) }}
+                                    </div>
+                                    <div class="form-group col-md-6">    
+                                        {{ form_row(form.adresse, {'attr': {'class': 'form-control form-control-line'}}) }}
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="form-group col-md-6">
+                                        {{ form_row(form.phone, {'attr': {'class': 'form-control ','readonly': 'readonly'}}) }}
+                                    </div>
+                                    <div class="form-group col-md-6">    
+                                        {{ form_row(form.email, {'attr': {'class': 'form-control ','readonly': 'readonly'}}) }}
+                                    </div>
+                                </div>
+
+                                
+
+                            {{ form_end(form) }}
+                            <hr>    
+                            <h3>Update Password</h3>
+
+                            <div class="mt-5">
+                            <br>
+                            <form id="formPasswordUpdate" method="POST" action="{{ path('update_password_client') }}">
+                        
+                                <label for="actualPassword"> Current Password</label>
+                                <input
+                                    class="form-control mb-3"
+                                    type="password"
+                                    name="actualPassword"
+                                    id="actualPassword"
+                                />
+                                <label for="newPassword"> New Password</label>
+                                <input
+                                    class="form-control mb-3"
+                                    type="password"
+                                    name="newPassword"
+                                    id="newPassword"
+                                />
+                                <label for="confirmPassword"> Confirm Password</label>
+                                <input
+                                    class="form-control mb-3"
+                                    type="password"
+                                    name="ConfirmPassword"
+                                    id="ConfirmPassword"
+                                />
+                                {# <label class="form-check-label" for="accountActivation"
+                                    >I confirm my account deactivation</label
+                                > #}
+                                
+                                <div class="">
+                                <br>
+                                    <button type="submit" class="btn btn-danger">Update Password</button>
+                                </div>
+                                
+                            </form>
+                            </div>
+                            
+
+
+                        </div>
+                    </div>
+                    {# <div class="col-md-4 col-xs-12">
+                        <div class="white-box">
+                           
+                            
+                            <form id="formPasswordUpdate" method="POST" action="{{ path('update_password_client') }}">
+                        
+                                <label for="actualPassword"> Current Password</label>
+                                <input
+                                    class="form-control mb-3"
+                                    type="password"
+                                    name="actualPassword"
+                                    id="actualPassword"
+                                />
+                                <label for="newPassword"> New Password</label>
+                                <input
+                                    class="form-control mb-3"
+                                    type="password"
+                                    name="newPassword"
+                                    id="newPassword"
+                                />
+                                <label for="confirmPassword"> Confirm Password</label>
+                                <input
+                                    class="form-control mb-3"
+                                    type="password"
+                                    name="ConfirmPassword"
+                                    id="ConfirmPassword"
+                                />
+                                
+                                
+                                <div class="">
+                                    <button type="submit" class="btn btn-danger">Update Password</button>
+                                </div>
+                                
+                            </form>
+
+                            
+
+
+                        </div>
+                    </div> #}
+                </div>
+                <!-- /.row -->
+            </div>
+            <!-- /.container-fluid -->
         </div>
-        <!-- / Layout page -->
-      </div>
-
-      <!-- Overlay -->
-      <div class="layout-overlay layout-menu-toggle"></div>
+        <!-- /#page-wrapper -->
     </div>
-    <!-- / Layout wrapper -->
+
 
 
 {% endblock %}

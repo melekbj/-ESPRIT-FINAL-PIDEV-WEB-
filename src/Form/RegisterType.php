@@ -93,16 +93,17 @@ class RegisterType extends AbstractType
                 
             // ])
             ->add('imageFile', VichFileType::class, [
-                'required' => false,
+                'required' => true,
                 'allow_delete' => true,
                 'download_uri' => true,
             ])
-            ->add('phone', TelType::class, [
-                'attr' => [
-                    'pattern' => '^\+?\d*$',
-                    'placeholder' => '(+XXX)XXXXXXXXX'
-                ]
-            ])                       
+            // ->add('phone', TelType::class, [
+            //     'attr' => [
+            //         'pattern' => '^\+?\d*$',
+            //         'placeholder' => '(+XXX)XXXXXXXXX'
+            //     ]
+            // ])  
+            ->add('phone')                                            
             ->add('email', EmailType::class)
             ->add('password', RepeatedType::class, [
                 'type' => PasswordType::class,
@@ -110,13 +111,13 @@ class RegisterType extends AbstractType
                 'required' => true,
                 'first_options'  => ['label' => 'Password'],
                 'second_options' => ['label' => 'Confirm Password'],
-                'constraints' => [
-                    new Length([
-                        'min' => 8,
-                        'minMessage' => 'The password must be at least {{ limit }} characters long.',
-                        // add other options for the constraint if needed
-                    ]),
-                ],
+                // 'constraints' => [
+                //     new Length([
+                //         'min' => 8,
+                //         'minMessage' => 'The password must be at least {{ limit }} characters long.',
+                //         // add other options for the constraint if needed
+                //     ]),
+                // ],
             ])
             ->add('save', SubmitType::class, [
                 'label' => 'Register',

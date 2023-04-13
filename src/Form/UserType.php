@@ -51,7 +51,16 @@ class UserType extends AbstractType
                 ],
             ])
             ->add('adresse')
-            ->add('genre')
+            ->add('genre', ChoiceType::class, [
+                'required' => true,
+                'multiple' => false,
+                'expanded' => false,
+                'choices'  => [
+                    'Homme' => 'Homme',
+                    'Femme' => 'Femme',
+                    'Autre' => 'Autre',
+                ],
+            ])
             ->add('phone')
             ->add('save', SubmitType::class, [
                 'label' => 'Confirm changes',

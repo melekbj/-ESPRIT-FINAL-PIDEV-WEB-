@@ -190,11 +190,10 @@ COLOR PALETTE
 .product_price
 {
 	display: inline-block;
-	font-size: 24px;
+	font-size: 20px;
 	color: #fe4c50;
 	font-weight: 500;
 	line-height: 30px;
-	margin-top: 2px;
 }
 .star_rating
 {

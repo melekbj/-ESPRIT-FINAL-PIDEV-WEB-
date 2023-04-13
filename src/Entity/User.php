@@ -11,6 +11,7 @@ use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\HttpFoundation\File\File;
+use Symfony\Component\Validator\Constraints as Assert;
 
 
 
@@ -27,6 +28,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?int $id = null;
 
     #[ORM\Column(length: 180, unique: true)]
+    #[Assert\NotBlank(message: 'Email should not be blank')]
     private ?string $email = null;
 
     #[ORM\Column]
@@ -36,31 +38,48 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      * @var string The hashed password
      */
     #[ORM\Column]
+    #[Assert\NotBlank(message: 'Passowrd should not be blank')]
+    #[Assert\Length(
+        min: 8,
+        minMessage: 'The password must be at least {{ limit }} characters long.'
+    )]
     private ?string $password = null;
 
     #[ORM\Column(length: 50)]
+    #[Assert\NotBlank(message: 'Name should not be blank')]
     private ?string $nom = null;
 
     #[ORM\Column(length: 50)]
+    #[Assert\NotBlank(message: 'Family name should not be blank')]
     private ?string $prenom = null;
 
     #[ORM\Column]
+    #[Assert\NotBlank(message: 'Age should not be blank')]
     private ?int $age = null;
 
     #[ORM\Column(length: 255)]
+    #[Assert\NotBlank(message: 'Adresse should not be blank')]
     private ?string $adresse = null;
     
     #[Vich\UploadableField(mapping: 'user_image', fileNameProperty: 'image')]
+    // #[Assert\NotBlank(message: 'You should select an image')]
     private ?File $imageFile = null;
 
     #[ORM\Column(length: 255, nullable:true)]
     private ?string $image = null;
 
     #[ORM\Column(length: 10)]
+    #[Assert\NotBlank(message: 'Family name should not be blank')]
     private ?string $genre = null;
 
     #[ORM\Column(length: 50, unique: true)]
+    #[Assert\NotBlank(message: 'Phone number should not be blank')]
+    #[Assert\Regex(
+        pattern: '/^\+?\d*$/',
+        message: 'Phone number should be in the format: +XXXXXXXXXXXX'
+    )]
     private ?string $phone = null;
+    
 
     #[ORM\Column(options: ['default' => 0])]
     private ?int $etat = 0;
@@ -231,15 +250,18 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     public function getImage(): ?string
     {
+        if ($this->image === null) {
+            return null;
+        }
         return $this->image;
     }
 
-    public function setImage(string $image): self
+
+    public function setImage(?string $image): void
     {
         $this->image = $image;
-
-        return $this;
     }
+
 
     public function getGenre(): ?string
     {

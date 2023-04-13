@@ -2,9 +2,12 @@
 
 namespace App\Controller;
 
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use App\Entity\User;
+use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 class HomeController extends AbstractController
 {
@@ -17,10 +20,14 @@ class HomeController extends AbstractController
     }
 
     #[Route('/products', name: 'app_products')]
-    public function produitIndex(): Response
+    public function produitIndex(EntityManagerInterface $entityManager): Response
     {
+        $userRepository = $entityManager->getRepository(User::class);
+        $users = $userRepository->findAll();
+        
         return $this->render('home/products.html.twig', [
             'controller_name' => 'HomeController',
+            'users' => $users,
         ]);
     }
 

@@ -121,7 +121,7 @@ class AdminController extends AbstractController
         //recuperer la classe a supprimer
         $users = $rep->find($id);
         $rep=$doctrine->getManager();
-        //supprimer la classe   
+        //supprimer la classe        
         $rep->remove($users);
         $rep->flush();
         //flash message
@@ -219,8 +219,8 @@ class AdminController extends AbstractController
             // Redirect to the user's profile page with a success message
             $this->addFlash('success', 'Profile updated successfully!');
             return $this->redirectToRoute('app_profile');
+            
         }
-
         // If the form was not submitted or is not valid, render the profile edit form
         return $this->render('admin/profile.html.twig', [
             'user' => $user,
@@ -327,7 +327,7 @@ class AdminController extends AbstractController
         );
 
         // $accountSid = 'ACa141e95e70a02a529768fb9df90ebcea';
-        // $authToken = '5b7aa8ad0221159b8c404931b54487ef';
+        // $authToken = '59bd9bf9c4252f11bb0877b88b8fe8fd';
         // $fromNumber = '+15076288954';
     
         // // Instantiate the Twilio client
@@ -378,7 +378,7 @@ class AdminController extends AbstractController
         );
 
         // $accountSid = 'ACa141e95e70a02a529768fb9df90ebcea';
-        // $authToken = '5b7aa8ad0221159b8c404931b54487ef';
+        // $authToken = '59bd9bf9c4252f11bb0877b88b8fe8fd';
         // $fromNumber = '+15076288954';
     
         // // Instantiate the Twilio client

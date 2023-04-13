@@ -3,9 +3,10 @@
     <head>
         <meta charset="utf-8">
 		<meta http-equiv="X-UA-Compatible" content="IE=edge">
-        {# we begin #}
+        <meta name="viewport" content="width=device-width, initial-scale=1">        {# we begin #}
         <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0"/>
-        <link rel="icon" type="image/png" href="{{asset('Assets/img/icon.png')}}"> 
+        <link rel="icon" type="image/png" href="{{asset('Assets/images/icon1.png')}}"> 
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" integrity="sha512-rNsYjgr40ZREXiVr5o0Pp7ymzFmTkX8ihxOxVCmBnsheflnwYzyZbkTf2WsDJFMlA17sU6ScEzUV9hrU6JiF6g==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 
 
         <title>{% block title %}Welcome!{% endblock %}</title>
@@ -13,63 +14,30 @@
         {# Run `composer require symfony/webpack-encore-bundle` to start using Symfony UX #}
         {% block stylesheets %}
 
-            {# dashboard admin we begin #}
+            {# dashboard client we begin #}
+            <!-- Bootstrap Core CSS -->
+            <link href="{{ asset('ClientDash/bootstrap/dist/css/bootstrap.min.css')}}" rel="stylesheet">
+            <!-- Menu CSS -->
+            <link href="{{ asset('ClientDash/plugins/bower_components/sidebar-nav/dist/sidebar-nav.min.css')}}" rel="stylesheet">
+            <!-- toast CSS -->
+            <link href="{{ asset('ClientDash/plugins/bower_components/toast-master/css/jquery.toast.css')}}" rel="stylesheet">
+            <!-- morris CSS -->
+            <link href="{{ asset('ClientDash/plugins/bower_components/morrisjs/morris.css')}}" rel="stylesheet">
+            <!-- chartist CSS -->
+            <link href="{{ asset('ClientDash/plugins/bower_components/chartist-js/dist/chartist.min.css')}}" rel="stylesheet">
+            <link href="{{ asset('ClientDash/plugins/bower_components/chartist-plugin-tooltip-master/dist/chartist-plugin-tooltip.css')}}" rel="stylesheet">
+            <!-- animation CSS -->
+            <link href="{{ asset('ClientDash/css/animate.css')}}" rel="stylesheet">
+            <!-- Custom CSS -->
+            <link href="{{ asset('ClientDash/css/style.css')}}" rel="stylesheet">
+            <!-- color CSS -->
+            <link href="{{ asset('ClientDash/css/colors/default.css')}}" id="theme" rel="stylesheet">
 
-            <!-- Icons. Uncomment required icon fonts -->
-            <link rel="stylesheet" href="{{ asset('DashAssets/vendor/fonts/boxicons.css')}}" />
-
-            <!-- Core CSS -->
-            <link rel="stylesheet" href="{{ asset('DashAssets/vendor/css/core.css')}}" class="template-customizer-core-css" />
-            <link rel="stylesheet" href="{{ asset('DashAssets/vendor/css/theme-default.css')}}" class="template-customizer-theme-css" />
-            <link rel="stylesheet" href="{{ asset('DashAssets/css/demo.css')}}" />
-
-            <!-- Vendors CSS -->
-            <link rel="stylesheet" href="{{ asset('DashAssets/vendor/libs/perfect-scrollbar/perfect-scrollbar.css')}}" />
-
-            <link rel="stylesheet" href="{{ asset('DashAssets/vendor/libs/apex-charts/apex-charts.css')}}" />
-
-            <!-- Page CSS -->
-
-            <!-- Helpers -->
-            <script src="{{ asset('DashAssets/vendor/js/helpers.js')}}"></script>
-
-            <!--! Template customizer & Theme config files MUST be included after core stylesheets and helpers.js in the <head> section -->
-            <!--? Config:  Mandatory theme config file contain global vars & default theme options, Set your preferred theme option in this file.  -->
-            <script src="{{ asset('DashAssets/js/config.js')}}"></script>
-
+           
         {% endblock %}
 
         {% block javascripts %}
-   
-        {# Dash we begin #}
-                <!-- Core JS -->
-            <!-- build:js assets/vendor/js/core.js -->
-            <script src="{{ asset('DashAssets/vendor/libs/jquery/jquery.js')}}"></script>
-            <script src="{{ asset('DashAssets/vendor/libs/popper/popper.js')}}"></script>
-            <script src="{{ asset('DashAssets/vendor/js/bootstrap.js')}}"></script>
-            <script src="{{ asset('DashAssets/vendor/libs/perfect-scrollbar/perfect-scrollbar.js')}}"></script>
-
-            <script src="{{ asset('DashAssets/vendor/js/menu.js')}}"></script>
-            <!-- endbuild -->
-
-            <!-- Vendors JS -->
-            <script src="{{ asset('DashAssets/vendor/libs/apex-charts/apexcharts.js')}}"></script>
-
-            <!-- Main JS -->
-            <script src="{{ asset('DashAssets/js/main.js')}}"></script>
-
-            <!-- Page JS -->
-            <script src="{{ asset('DashAssets/js/dashboards-analytics.js')}}"></script>
-
-            <!-- Place this tag in your head or just before your close body tag. -->
-            <script async defer src="https://buttons.github.io/buttons.js"></script>
-
-            <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
-            <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
-            <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
-            <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
-
-
+ 
             <script>
                 // set a timeout of 3 seconds before removing the alerts
                 setTimeout(function() {
@@ -80,6 +48,30 @@
                 }, 5000);
             </script>
 
+            {# dashboard client we begin #}
+            <script src="{{ asset('ClientDash/plugins/bower_components/jquery/dist/jquery.min.js')}}"></script>
+            <!-- Bootstrap Core JavaScript -->
+            <script src="{{ asset('ClientDash/bootstrap/dist/js/bootstrap.min.js')}}"></script>
+            <!-- Menu Plugin JavaScript -->
+            <script src="{{ asset('ClientDash/plugins/bower_components/sidebar-nav/dist/sidebar-nav.min.js')}}"></script>
+            <!--slimscroll JavaScript -->
+            <script src="{{ asset('ClientDash/js/jquery.slimscroll.js')}}"></script>
+            <!--Wave Effects -->
+            <script src="{{ asset('ClientDash/js/waves.js')}}"></script>
+            <!--Counter js -->
+            <script src="{{ asset('ClientDash/plugins/bower_components/waypoints/lib/jquery.waypoints.js')}}"></script>
+            <script src="{{ asset('ClientDash/plugins/bower_components/counterup/jquery.counterup.min.js')}}"></script>
+            <!-- chartist chart -->
+            <script src="{{ asset('ClientDash/plugins/bower_components/chartist-js/dist/chartist.min.js')}}"></script>
+            <script src="{{ asset('ClientDash/plugins/bower_components/chartist-plugin-tooltip-master/dist/chartist-plugin-tooltip.min.js')}}"></script>
+            <!-- Sparkline chart JavaScript -->
+            <script src="{{ asset('ClientDash/plugins/bower_components/jquery-sparkline/jquery.sparkline.min.js')}}"></script>
+            <!-- Custom Theme JavaScript -->
+            <script src="{{ asset('ClientDash/js/custom.min.js')}}"></script>
+            <script src="{{ asset('ClientDash/js/dashboard1.js')}}"></script>
+            {# <script src="{{ asset('ClientDash/plugins/bower_components/toast-master/js/jquery.toast.js')}}"></script> #}
+
+
 
         {% endblock %}
     </head>
@@ -87,168 +79,91 @@
 
     
     <body>
-    {% block header %}{% endblock %}
- <!-- Layout wrapper -->
-    <div class="layout-wrapper layout-content-navbar">
-      <div class="layout-container">
-        <!-- Menu -->
+    
 
-        <aside id="layout-menu" class="layout-menu menu-vertical menu bg-menu-themeclient">
-          <div class="app-brand demo">
-            <a href="{{ path('app_home') }}" class="app-brand-link">
-              <span class="app-brand-logo demo">
-               <img src="{{asset('Assets/img/logo3.png')}}" alt="">
-              </span>
-              {# <span class="app-brand-text demo menu-text fw-bolder ms-2">StoreShip</span> #}
-            </a>
-
-            <a href="javascript:void(0);" class="layout-menu-toggle menu-link text-large ms-auto d-block d-xl-none">
-              <i class="bx bx-chevron-left bx-sm align-middle"></i>
-            </a>
-          </div>
-
-          <div class="menu-inner-shadow"></div>
-
-          <ul class="menu-inner py-1">
-            <!-- Dashboard -->
-            <li class="menu-item active mt-3">
-              <a href="{{ path('app_client') }}" class="menu-link">
-                <i class="menu-icon tf-icons bx bx-home-circle"></i>
-                <div data-i18n="Analytics">Dashboard</div>
-              </a>
-            </li>
-
-            
-
-            <li class="menu-header small text-uppercase">
-              <span class="menu-header-text">Pages</span>
-            </li>
-{# href="{{ path('') }}"  #}
-            <li class="menu-item">
-              <a class="menu-link menu-toggle">
-                <i class="menu-icon tf-icons bx bx-dock-top"></i>
-                <div data-i18n="Account Settings">Liste des utilisateurs</div>
-              </a>
-            </li>
-
-            <li class="menu-item">
-              <a  class="menu-link menu-toggle">
-                <i class="menu-icon tf-icons bx bx-collection"></i>
-                <div data-i18n="Account Settings">Liste des demandes partenaires</div>
-              </a>
-            </li>
-
-            <li class="menu-item">
-              <a class="menu-link menu-toggle">
-                <i class="menu-icon tf-icons bx bx-box"></i>
-                <div data-i18n="Account Settings">Liste des commandes</div>
-              </a>
-            </li>
-
-            <li class="menu-item">
-              <a href="#" class="menu-link menu-toggle">
-                <i class="menu-icon tf-icons bx bx-copy"></i>
-                <div data-i18n="Account Settings">Liste des produits approvés</div>
-              </a>
-            </li>
-            
-          </ul>
-        </aside>
-        <!-- / Menu -->
-
-        <!-- Layout container -->
-        <div class="layout-page">
-          <!-- Navbar -->
-
-          <nav
-            class="layout-navbar container-xxl navbar navbar-expand-xl navbar-detached align-items-center bg-navbar-theme"
-            id="layout-navbar"
-          >
-            <div class="layout-menu-toggle navbar-nav align-items-xl-center me-3 me-xl-0 d-xl-none">
-              <a class="nav-item nav-link px-0 me-xl-4" href="javascript:void(0)">
-                <i class="bx bx-menu bx-sm"></i>
-              </a>
-            </div>
-
-            <div class="navbar-nav-right d-flex align-items-center" id="navbar-collapse">
-              <!-- Search -->
-              {# <div class="navbar-nav align-items-center">
-                <div class="nav-item d-flex align-items-center">
-                  <i class="bx bx-search fs-4 lh-0"></i>
-                  <input
-                    type="text"
-                    class="form-control border-0 shadow-none"
-                    placeholder="Search..."
-                    aria-label="Search..."
-                  />
-                </div>
-              </div> #}
-              <!-- /Search -->
-
-              <ul class="navbar-nav flex-row align-items-center ms-auto">
-                <!-- Place this tag where you want the button to render. -->
-                <!-- User -->
-                <li class="nav-item navbar-dropdown dropdown-user dropdown">
-                  <a class="nav-link dropdown-toggle hide-arrow" href="javascript:void(0);" data-bs-toggle="dropdown">
-                    <div class="avatar avatar-online">
-                      <img src="{{ asset('DashAssets/img/avatars/1.png')}}" alt class="w-px-40 h-auto rounded-circle" />
+    {% block MainNav %}
+            <nav class="navbar navbar-default navbar-static-top m-b-0">
+                <div class="navbar-header">
+                    <div class="top-left-part">
+                        <!-- Logo -->
+                        <a class="logo" href="{{ path('app_client_index') }}">
+                            <!-- Logo icon image, you can use font-icon also --><b>
+                            <!--This is dark logo icon--><img src="plugins/images/admin-logo.png" alt="home" class="dark-logo" /><!--This is light logo icon--><img src="plugins/images/admin-logo-dark.png" alt="home" class="light-logo" />
+                        </b>
+                            <!-- Logo text image you can use text also --><span class="hidden-xs">
+                            <!--This is dark logo text--><img src="plugins/images/admin-text.png" alt="home" class="dark-logo" /><!--This is light logo text--><img src="plugins/images/admin-text-dark.png" alt="home" class="light-logo" />
+                        </span> </a>
                     </div>
-                  </a>
-                  <ul class="dropdown-menu dropdown-menu-end">
-                    <li>
-                      <a class="dropdown-item" href="#">
-                        <div class="d-flex">
-                          <div class="flex-shrink-0 me-3">
-                            <div class="avatar avatar-online">
-                              <img src="{{ asset('DashAssets/img/avatars/1.png')}}" alt class="w-px-40 h-auto rounded-circle" />
-                            </div>
-                          </div>
-                          <div class="flex-grow-1">
-                            <span class="fw-semibold d-block">
-                            {{ app.user.getNom() }} {{ app.user.getPrenom() }}</span>
-                            <small class="text-muted">Client</small>
-                          </div>
-                        </div>
-                      </a>
-                    </li>
-                    <li>
-                      <div class="dropdown-divider"></div>
-                    </li>
-                    <li>
-                      <a class="dropdown-item" href="{{ path('app_profile_client') }}">
-                        <i class="bx bx-user me-2"></i>
-                        <span class="align-middle">My Profile</span>
-                      </a>
-                    </li>
-                    <li>
-                      <div class="dropdown-divider"></div>
-                    </li>
-                    <li>
-                      <a class="dropdown-item" href="{{ path('app_logout') }}">
-                        <i class="bx bx-power-off me-2"></i>
-                        <span class="align-middle">Log Out</span>
-                      </a>
-                    </li>
-                  </ul>
-                </li>
-                <!--/ User -->
-              </ul>
+                    <!-- /Logo -->
+                    <ul class="nav navbar-top-links navbar-right pull-right">
+                        <li>
+                            <form role="search" class="app-search hidden-sm hidden-xs m-r-10">
+                                <input type="text" placeholder="Search..." class="form-control"> <a href=""><i class="fa fa-search"></i></a> </form>
+                        </li>
+                        <li class="dropdown">
+                            <a class="profile-pic dropdown-toggle" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <img src="{{ asset('images/users/' ~ image) }}" alt="user-img" width="36" class="img-circle">
+                                <b class="hidden-xs">{{app.user.nom|upper}} {{app.user.prenom}}</b>
+                            </a>
+                            <ul class="dropdown-menu">
+                                {# <li role="separator" class="divider"></li> #}
+                                <li><a href="{{ path('app_logout') }}"><i class="fa fa-sign-out" aria-hidden="true"></i>Logout</a></li> 
+                            </ul>
+                        </li>
+
+                    </ul>
+                </div>
+                <!-- /.navbar-header -->
+                <!-- /.navbar-top-links -->
+                <!-- /.navbar-static-side -->
+            </nav>
+            <!-- End Top Navigation -->
+            <!-- ============================================================== -->
+            <!-- Left Sidebar - style you can find in sidebar.scss  -->
+            <!-- ============================================================== -->
+            <div class="navbar-default sidebar" role="navigation">
+                <div class="sidebar-nav slimscrollsidebar">
+                    <div class="sidebar-head row">
+                        
+                        {# <img src="{{asset('Assets/images/icon1.png')}}" style="width:80px;"> </img> #}
+                        <a href="{{ path('app_home') }}"><h3><span style="padding-left:30px;">StoreShip</span></h3></a>
+                    </div>
+                    <ul class="nav" id="side-menu">
+                        <li style="padding: 70px 0 0;">
+                            <a href="{{ path('app_client_index') }}" class="waves-effect"><i class="fa fa-clock-o fa-fw" aria-hidden="true"></i>Dashboard</a>
+                        </li>
+                        <li>
+                            <a href="{{ path('app_client_profile') }}" class="waves-effect"><i class="fa fa-user fa-fw" aria-hidden="true"></i>Profile</a>
+                        </li>
+                        <li>
+                            <a href="basic-table.html" class="waves-effect"><i class="fa fa-table fa-fw" aria-hidden="true"></i>Basic Table</a>
+                        </li>
+                        <li>
+                            <a href="fontawesome.html" class="waves-effect"><i class="fa fa-font fa-fw" aria-hidden="true"></i>Icons</a>
+                        </li>
+                        <li>
+                            <a href="map-google.html" class="waves-effect"><i class="fa fa-globe fa-fw" aria-hidden="true"></i>Google Map</a>
+                        </li>
+                        <li>
+                            <a href="blank.html" class="waves-effect"><i class="fa fa-columns fa-fw" aria-hidden="true"></i>Blank Page</a>
+                        </li>
+                        <li>
+                            <a href="404.html" class="waves-effect"><i class="fa fa-info-circle fa-fw" aria-hidden="true"></i>Error 404</a>
+                        </li>
+                    </ul>
+                    {# <div class="center p-20">
+                        <a href="https://wrappixel.com/templates/ampleadmin/" target="_blank" class="btn btn-danger btn-block waves-effect waves-light">Upgrade to Pro</a>
+                    </div> #}
+                </div>
             </div>
-          </nav>
 
-          <!-- / Navbar -->
 
-           <!-- Content wrapper -->
-          {% block body %}{% endblock %}
-          <!-- Content wrapper --> 
-        </div>
-        <!-- / Layout page -->
-      </div>
+    {% endblock %}
+          
 
-      <!-- Overlay -->
-      <div class="layout-overlay layout-menu-toggle"></div>
-    </div>
-    <!-- / Layout wrapper -->
+           
+    {% block body %}{% endblock %}
+          
 
     </body>
 </html>

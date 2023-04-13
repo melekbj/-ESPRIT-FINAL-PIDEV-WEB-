@@ -53,7 +53,7 @@ class UserAuthenticator extends AbstractLoginFormAuthenticator
             return new RedirectResponse($this->urlGenerator->generate('app_admin'));
 
         }elseif($user->getRoles() == 'ROLE_CLIENT'){
-            return new RedirectResponse($this->urlGenerator->generate('app_client'));
+            return new RedirectResponse($this->urlGenerator->generate('app_client_index'));
         }
         elseif($user->getRoles() == 'ROLE_PARTNER' and $user->getEtat() == 0 ){
             return new RedirectResponse($this->urlGenerator->generate('app_partner'));

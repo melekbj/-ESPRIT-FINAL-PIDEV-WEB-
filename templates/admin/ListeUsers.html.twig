@@ -39,6 +39,7 @@
                     {% endfor %}
                     <thead>
                       <tr>
+                        <th>User</th>
                         <th>Nom</th>
                         <th>Prenom</th>
                         <th>E-mail</th>
@@ -72,6 +73,8 @@
                             <tr class="table-info">
                         {% endif %}
                         {# les noms majuscules #}
+                        {% set imageUrl = vich_uploader_asset(user, 'imageFile') %}
+                        <td><img src="{{ asset(imageUrl) }}" alt="user-avatar" class="w-px-40 h-auto rounded-circle"></td>
                         <td>{{ user.nom|upper }}</td>
                         <td>{{ user.prenom }}</td>
                         <td>{{ user.email }}</td>

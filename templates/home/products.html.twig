@@ -1,4 +1,5 @@
 {% extends "base.html.twig" %}
+{% block title %}SS | Products{% endblock %}
 
 {% block body %}
 
@@ -190,22 +191,30 @@
 								
 								<div class="product-grid">
 
-									<!-- Product 1 -->
+									{# <!-- Product 1 -->
+									{% for user in users %}
+										<div class="product-item men">
+											<div class="product discount product_filter">
+												<div class="product_image">
+													{% if user.image %}
+														{% set imageUrl = vich_uploader_asset(user, 'imageFile') %}
+														<img src="{{ asset(imageUrl) }}" alt="img" />
+													{% endif %}
 
-									<div class="product-item men">
-										<div class="product discount product_filter">
-											<div class="product_image">
-												<img src="images/product_1.png" alt="">
+												</div>
+												<div class="favorite favorite_left"></div>
+												<div class="product_bubble product_bubble_right product_bubble_red d-flex flex-column align-items-center"><span>-$20</span></div>
+												<div class="product_info">
+													<h6 class="product_name1"><a href="{{ path('app_detail') }}">{{user.prenom}}</a></h6>
+													<div class="product_price">{{user.nom}}<span>{{user.age}}</span></div>
+												</div>
 											</div>
-											<div class="favorite favorite_left"></div>
-											<div class="product_bubble product_bubble_right product_bubble_red d-flex flex-column align-items-center"><span>-$20</span></div>
-											<div class="product_info">
-												<h6 class="product_name1"><a href="{{ path('app_detail') }}">Fujifilm X100T 16 MP Digital Camera (Silver)</a></h6>
-												<div class="product_price">$520.00<span>$590.00</span></div>
-											</div>
+											<div class="red_button add_to_cart_button"><a href="#">add to cart</a></div>
 										</div>
-										<div class="red_button add_to_cart_button"><a href="#">add to cart</a></div>
-									</div>
+									{% endfor %} #}
+
+
+									
 
 									<!-- Product 2 -->
 
