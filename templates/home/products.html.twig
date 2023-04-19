@@ -191,13 +191,13 @@
 								
 								<div class="product-grid">
 
-									{# <!-- Product 1 -->
-									{% for user in users %}
+									<!-- Product 1 -->
+									{% for produit in produits %}
 										<div class="product-item men">
 											<div class="product discount product_filter">
 												<div class="product_image">
-													{% if user.image %}
-														{% set imageUrl = vich_uploader_asset(user, 'imageFile') %}
+													{% if produit.photo %}
+														{% set imageUrl = vich_uploader_asset(produit, 'imageFile') %}
 														<img src="{{ asset(imageUrl) }}" alt="img" />
 													{% endif %}
 
@@ -205,19 +205,19 @@
 												<div class="favorite favorite_left"></div>
 												<div class="product_bubble product_bubble_right product_bubble_red d-flex flex-column align-items-center"><span>-$20</span></div>
 												<div class="product_info">
-													<h6 class="product_name1"><a href="{{ path('app_detail') }}">{{user.prenom}}</a></h6>
-													<div class="product_price">{{user.nom}}<span>{{user.age}}</span></div>
+													<h6 class="product_name1"><a href="{{ path('app_detail') }}">{{produit.nom}}</a></h6>
+													<div class="product_price">{{produit.prix}} DT<span>{{produit.quantite}} </span></div>
 												</div>
 											</div>
 											<div class="red_button add_to_cart_button"><a href="#">add to cart</a></div>
 										</div>
-									{% endfor %} #}
+									{% endfor %}
 
 
 									
 
 									<!-- Product 2 -->
-
+{# 
 									<div class="product-item women">
 										<div class="product product_filter">
 											<div class="product_image">
@@ -395,7 +395,7 @@
 											</div>
 										</div>
 										<div class="red_button add_to_cart_button"><a href="#">add to cart</a></div>
-									</div>
+									</div> #}
 								</div>
 
 								<!-- Product Sorting -->

@@ -6,6 +6,7 @@ kernel:
     resource: ../src/Kernel.php
     type: annotation
 
+
 # liste_users:
 #   path: /listeUsers/{userId}
 #   controller: App\Controller\AdminController::getUserAction

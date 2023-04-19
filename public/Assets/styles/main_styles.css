@@ -816,7 +816,7 @@ section
 }
 .logo_container a span
 {
-	color: #fe4c50;
+	color:   #03A6A6;
 }
 
 .gif{
@@ -876,6 +876,29 @@ margin-left: 20%;
 	-o-transition: all 0.3s ease;
 	transition: all 0.3s ease;
 }
+
+.blue_button
+{
+	display: -webkit-inline-box;
+	display: -moz-inline-box;
+	display: -ms-inline-flexbox;
+	display: -webkit-inline-flex;
+	display: inline-flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	width: auto;
+	height: 40px;
+	background:  #0E3D59;
+	border-radius: 3px;
+	-webkit-transition: all 0.3s ease;
+	-moz-transition: all 0.3s ease;
+	-ms-transition: all 0.3s ease;
+	-o-transition: all 0.3s ease;
+	transition: all 0.3s ease;
+	
+}
+
 .red_button:hover
 {
 	background: #FE7C7F !important;
@@ -891,7 +914,17 @@ margin-left: 20%;
 	line-height: 40px;
 	width: 200px;
 }
-
+.blue_button a
+{
+	display: block;
+	color: #FFFFFF;
+	text-transform: uppercase;
+	font-size: 14px;
+	font-weight: 500;
+	text-align: center;
+	line-height: 40px;
+	width: 200px;
+}
 
 .shop_now_button
 {

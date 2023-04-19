@@ -4,22 +4,31 @@ namespace App\Controller;
 
 use App\Entity\User;
 use App\Form\UserType;
+use App\Form\FormEvent;
 use Twilio\Rest\Client;
+use App\Entity\Evenement;
+use App\Entity\EventType;
 use App\Form\RegisterType;
+use App\Form\FormEventType;
 use App\Service\SendSmsService;
 use App\Service\SendMailService;
 use App\Repository\UserRepository;
+use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Security\Core\Security;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Doctrine\Persistence\ManagerRegistry as PersistenceManagerRegistry;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 
+
+#[Route('/admin')]
 class AdminController extends AbstractController
 {
-    #[Route('/admin', name: 'app_admin')]
+    #[Route('/', name: 'app_admin')]
     public function index(): Response
     {
         // Get the current user
@@ -33,39 +42,9 @@ class AdminController extends AbstractController
         ]);
     }
 
-    // #[Route('/profile', name: 'app_profile')]
-    // public function indexProfile(): Response
-    // {
-    //     // Get the current user
-    //     $user = $this->getUser();
-        
-    //     // Get the image associated with the user
-    //     $image = $user->getImage();
-        
-    //     return $this->render('admin/profile.html.twig', [
-    //         'controller_name' => 'AdminController',
-    //         'image' => $image,
-    //     ]);
-    // }
-
-    // #[Route('/profile', name: 'app_profile')]
-    public function Baseindex(): Response
-    {
-        // Get the current user
-        $user = $this->getUser();
-        
-        // Get the image associated with the user
-        $image = $user->getImage();
-        
-        return $this->render('baseAdmin.html.twig', [
-            'controller_name' => 'AdminController',
-            'image' => $image,
-
-        ]);
-    }
-
 
     #[Route('/liste_des_utilisateurs', name: 'app_users')]
+    #[Security("is_granted('ROLE_ADMIN')")]
     public function ListeU(): Response
     {
         // Get the current user
@@ -163,41 +142,6 @@ class AdminController extends AbstractController
         ]);
     }
 
-    
-
-
-    // #[Route('/updateProfil', name: 'update_profile')]
-    // public function updateProfile(Request $request)
-    // {
-
-    //     // retrieve form data
-    //     $nom = $request->request->get('nom');
-    //     $prenom = $request->request->get('prenom');
-    //     $age = $request->request->get('age');
-    //     $phone = $request->request->get('phone');
-    //     $adresse = $request->request->get('adresse');
-    //     $ville = $request->request->get('ville');
-    //     // update user's information in the database
-    //     $entityManager = $this->getDoctrine()->getManager();
-    //     $user = $this->getUser(); 
-    //     if($user){
-    //         $user->setNom($nom);
-    //         $user->setPrenom($prenom);
-    //         $user->setAge($age);
-    //         $user->setPhone($phone);
-    //         $user->setAdresse($adresse);
-    //         $user->setVille($ville);
-    //         $entityManager->persist($user);
-    //         $entityManager->flush();
-
-    //         $request->getSession()->getFlashBag()->add('success', 'Profile updated successfully!');
-    //         return $this->redirectToRoute('app_profile');
-    //     }
-        
-
-    //     $request->getSession()->getFlashBag()->add('error', 'profile failed to update');
-    //     return $this->redirectToRoute('app_profile');
-    // }
 
     #[Route('/profile', name: 'app_profile')]
     public function updateProfile(Request $request)
@@ -400,6 +344,79 @@ class AdminController extends AbstractController
         return $this->redirectToRoute('app_partners');
     }
     
+// Events 
+
+    // #[Route('/events/liste', name: 'app_events_liste')]
+    // public function produitIndex(EntityManagerInterface $entityManager): Response
+    // {
+    //     $user = $this->getUser();
+    //     // Get the image associated with the user
+    //     $image = $user->getImage();
+
+    //     $eventRepository = $entityManager->getRepository(Evenement::class);
+    //     $events = $eventRepository->findAll();
+
+    //     return $this->render('admin/Events/liste.html.twig', [
+    //         'events' => $events,
+    //         'image' => $image,
+            
+    //     ]);
+    // }
+
+    #[Route('/event/new', name: 'app_events_new')]
+    public function newEvent(Request $request, PersistenceManagerRegistry $doctrine): Response
+    {
+        $user = $this->getUser();
+        // Get the image associated with the user
+        $image = $user->getImage();
+
+        $events = new Evenement();
+        $form = $this->createForm(FormEvent::class, $events);
+        $form->handleRequest($request);
+
+        if($form->isSubmitted() && $form->isValid()){
+            $entityManager = $doctrine->getManager();
+            $entityManager->persist($events);
+            $entityManager->flush();
+            $this->addFlash('success', 'Event ajouté avec succès');
+            return $this->redirectToRoute('app_events_liste');
+        }
+        
+        return $this->render('admin/Events/addEvent.html.twig', [
+            'form' =>$form->createView(),
+            'image' => $image,
+        ]);
+    }
+
+    #[Route('/events/liste', name: 'app_events_liste')]
+    public function newType(Request $request, PersistenceManagerRegistry $doctrine, EntityManagerInterface $entityManager): Response
+    {
+        $user = $this->getUser();
+        // Get the image associated with the user
+        $image = $user->getImage();
+
+        $eventRepository = $entityManager->getRepository(Evenement::class);
+        $events = $eventRepository->findAll();;
+
+        $event = new EventType();
+        $form = $this->createForm(FormEventType::class, $event);
+        $form->handleRequest($request);
+
+        if($form->isSubmitted() && $form->isValid()){
+            $entityManager = $doctrine->getManager();
+            $entityManager->persist($event);
+            $entityManager->flush();
+            $this->addFlash('success', 'Event type ajouté avec succès');
+            return $this->redirectToRoute('app_events_liste');
+        }
+        
+        return $this->render('admin/Events/liste.html.twig', [
+            'typeForm' =>$form->createView(),
+            'image' => $image,
+            'events' => $events,
+        ]);
+    }
+
 
 
 

@@ -7,8 +7,13 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\HttpFoundation\File\File;
+use Vich\UploaderBundle\Mapping\Annotation as Vich;
+
+
 
 #[ORM\Entity(repositoryClass: EvenementRepository::class)]
+#[Vich\Uploadable]
 class Evenement
 {
     #[ORM\Id]
@@ -21,6 +26,9 @@ class Evenement
 
     #[ORM\Column(type: Types::DATE_MUTABLE)]
     private ?\DateTimeInterface $date_fin = null;
+
+    #[Vich\UploadableField(mapping: 'event_image', fileNameProperty: 'imageEv')]
+    public ?File $imageFile = null;
 
     #[ORM\Column(length: 255)]
     private ?string $imageEv = null;

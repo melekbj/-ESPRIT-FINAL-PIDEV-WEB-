@@ -6,8 +6,11 @@ use App\Repository\ProduitRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\HttpFoundation\File\File;
+use Vich\UploaderBundle\Mapping\Annotation as Vich;
 
 #[ORM\Entity(repositoryClass: ProduitRepository::class)]
+#[Vich\Uploadable]
 class Produit
 {
     #[ORM\Id]
@@ -18,6 +21,9 @@ class Produit
     #[ORM\Column(length: 50)]
     private ?string $nom = null;
 
+    #[Vich\UploadableField(mapping: 'product_image', fileNameProperty: 'photo')]
+    private ?File $imageFile = null;
+
     #[ORM\Column(length: 255)]
     private ?string $photo = null;
 
@@ -27,11 +33,12 @@ class Produit
     #[ORM\Column]
     private ?int $quantite = null;
 
-    #[ORM\Column]
-    private ?int $etat = null;
+    #[ORM\Column(options: ['default' => 0])]
+    private ?int $etat = 0;
 
     #[ORM\ManyToOne(inversedBy: 'produits')]
     private ?Categorie $categorie = null;
+    
 
     #[ORM\ManyToMany(targetEntity: Store::class, mappedBy: 'produit')]
     private Collection $stores;
@@ -118,12 +125,12 @@ class Produit
         return $this;
     }
 
-    public function getUser(): ?user
+    public function getUser(): ?User
     {
         return $this->user;
     }
 
-    public function setUser(?user $user): self
+    public function setUser(?User $user): self
     {
         $this->user = $user;
 
@@ -257,5 +264,21 @@ class Produit
         }
 
         return $this;
+    }
+
+    public function setImageFile(File $photo = null)
+    {
+        $this->imageFile = $photo;
+
+        if ($photo) {
+            // It is required that at least one field changes if you are using doctrine
+            // otherwise the event listeners won't be called and the file is lost
+            $this->updatedAt = new \DateTimeImmutable();
+        }
+    }
+
+    public function getImageFile()
+    {
+        return $this->imageFile;
     }
 }

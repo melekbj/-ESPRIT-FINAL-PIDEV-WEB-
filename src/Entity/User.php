@@ -5,13 +5,15 @@ namespace App\Entity;
 use Doctrine\ORM\Mapping as ORM;
 use App\Repository\UserRepository;
 use Doctrine\Common\Collections\Collection;
+use Symfony\Component\HttpFoundation\File\File;
+// use Symfony\Component\Serializer\Annotation\Ignore;
 use Doctrine\Common\Collections\ArrayCollection;
 use Vich\UploaderBundle\Mapping\Annotation as Vich;
+use Symfony\Component\Serializer\Annotation\Ignore ;
+use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
-use Symfony\Component\HttpFoundation\File\File;
-use Symfony\Component\Validator\Constraints as Assert;
 
 
 
@@ -20,7 +22,8 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[UniqueEntity(fields: ['phone'], message: 'There is already an account with this phone number')]
 #[Vich\Uploadable]
 
-class User implements UserInterface, PasswordAuthenticatedUserInterface
+
+class User implements UserInterface, PasswordAuthenticatedUserInterface, \Serializable
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -61,9 +64,14 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[Assert\NotBlank(message: 'Adresse should not be blank')]
     private ?string $adresse = null;
     
+    // /**
+    //  * @ORM\Column(type="datetime", nullable=true)
+    //  * @var \DateTimeInterface|null
+    //  */
+    // private $imageUpdatedAt;
+
     #[Vich\UploadableField(mapping: 'user_image', fileNameProperty: 'image')]
-    // #[Assert\NotBlank(message: 'You should select an image')]
-    private ?File $imageFile = null;
+    public ?File $imageFile = null;
 
     #[ORM\Column(length: 255, nullable:true)]
     private ?string $image = null;
@@ -535,20 +543,38 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    public function setImageFile(File $image = null)
+    public function getImageFile(): ?File
     {
-        $this->imageFile = $image;
+        return $this->imageFile;
+    }
 
-        if ($image) {
-            // It is required that at least one field changes if you are using doctrine
-            // otherwise the event listeners won't be called and the file is lost
+    public function setImageFile(?File $imageFile): void
+    {
+        $this->imageFile = $imageFile;
+
+        // This is important to trigger the file upload
+        if ($imageFile) {
             $this->updatedAt = new \DateTimeImmutable();
         }
     }
-
-    public function getImageFile()
+    public function serialize()
     {
-        return $this->imageFile;
+        return serialize(array(
+            $this->id,
+            $this->email,
+            $this->password,
+            
+            
+        ));
+    }
+
+    public function unserialize($serialized)
+    {
+        list(
+            $this->id,
+            $this->email,
+            $this->password,
+        ) = unserialize($serialized);
     }
 
     

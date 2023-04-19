@@ -47,6 +47,9 @@
             "ref": "e5a4aa21f2e98d7440ae9aab6b56e307f99dd084"
         }
     },
+    "gregwar/captcha-bundle": {
+        "version": "v2.2.0"
+    },
     "meteo-concept/hcaptcha-bundle": {
         "version": "3.3",
         "recipe": {

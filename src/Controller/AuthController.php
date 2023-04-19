@@ -4,7 +4,6 @@ namespace App\Controller;
 
 use App\Entity\User;
 use App\Form\RegisterType;
-use App\Form\LoginFormType;
 use App\Service\SendMailService;
 use App\Repository\UserRepository;
 use App\Form\ResetPasswordFormType;
@@ -72,9 +71,8 @@ class AuthController extends AbstractController
             'error' => $error,
         ]);
     }
-
     
-
+   
     #[Route(path: '/logout', name: 'app_logout')]
     public function logout(): void
     {
