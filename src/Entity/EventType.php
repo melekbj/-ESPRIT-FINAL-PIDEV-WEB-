@@ -2,12 +2,15 @@
 
 namespace App\Entity;
 
-use App\Repository\EventTypeRepository;
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use App\Repository\EventTypeRepository;
+use Doctrine\Common\Collections\Collection;
+use Doctrine\Common\Collections\ArrayCollection;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 #[ORM\Entity(repositoryClass: EventTypeRepository::class)]
+#[UniqueEntity(fields: ['libelle'], message: 'There is already a libelle with this name')]
+
 class EventType
 {
     #[ORM\Id]

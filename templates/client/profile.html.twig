@@ -1,0 +1,243 @@
+{% extends "baseClient.html.twig" %}
+
+{% block title %}SS | Mon Profil{% endblock %}
+
+
+{% block body %}
+
+  {# <div class="preloader">
+        <svg class="circular" viewBox="25 25 50 50">
+            <circle class="path" cx="50" cy="50" r="20" fill="none" stroke-width="2" stroke-miterlimit="10" />
+        </svg>
+    </div> #}
+    <!-- ============================================================== -->
+    <!-- Wrapper -->
+    <!-- ============================================================== -->
+    <div id="wrapper">
+       
+        <div id="page-wrapper">
+            <div class="container-fluid">
+                <div class="row bg-title">
+                    <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12">
+                        <h4 class="page-title">Profile page</h4> </div>
+                    {# <div class="col-lg-9 col-sm-8 col-md-8 col-xs-12">
+                        <a href="https://wrappixel.com/templates/ampleadmin/" target="_blank" class="btn btn-danger pull-right m-l-20 hidden-xs hidden-sm waves-effect waves-light">Upgrade to Pro</a>
+                        <ol class="breadcrumb">
+                            <li><a href="#">Dashboard</a></li>
+                            <li class="active">Profile Page</li>
+                        </ol>
+                    </div>       #}
+                </div>
+                <!-- /.row -->
+                <!-- .row -->
+                <div class="row">
+                    <div class="col-md-4 col-xs-12">
+                        <div class="white-box">
+                            <div class="user-bg"> <img width="100%" alt="user" src="{{ asset('images/users/' ~ image) }}">
+                                <div class="overlay-box">
+                                    <div class="user-content">
+                                        <a href="javascript:void(0)"><img src="{{ asset('images/users/' ~ image) }}" class="thumb-lg img-circle" alt="img"></a>
+                                        <h4 class="text-white">{{app.user.nom|upper}} {{app.user.prenom}}</h4>
+                                        <h5 class="text-white">{{app.user.email}}</h5> </div>
+                                </div>
+                            </div>
+                            {# <div class="user-btm-box">
+                                <div class="col-md-4 col-sm-4 text-center">
+                                    <p class="text-purple"><i class="ti-facebook"></i></p>
+                                    <h1>258</h1> </div>
+                                <div class="col-md-4 col-sm-4 text-center">
+                                    <p class="text-blue"><i class="ti-twitter"></i></p>
+                                    <h1>125</h1> </div>
+                                <div class="col-md-4 col-sm-4 text-center">
+                                    <p class="text-danger"><i class="ti-dribbble"></i></p>
+                                    <h1>556</h1> </div>
+                            </div> #}
+                        </div>
+                    </div>
+                    <div class="col-md-8 col-xs-12">
+                        <div class="white-box">
+                            {# <form class="form-horizontal form-material" meth>
+                                <div class="form-group">
+                                    <label class="col-md-12">Full Name</label>
+                                    <div class="col-md-12">
+                                        <input type="text" placeholder="Johnathan Doe" class="form-control form-control-line"> </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="example-email" class="col-md-12">Email</label>
+                                    <div class="col-md-12">
+                                        <input type="email" placeholder="johnathan@admin.com" class="form-control form-control-line" name="example-email" id="example-email"> </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-md-12">Password</label>
+                                    <div class="col-md-12">
+                                        <input type="password" value="password" class="form-control form-control-line"> </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-md-12">Phone No</label>
+                                    <div class="col-md-12">
+                                        <input type="text" placeholder="123 456 7890" class="form-control form-control-line"> </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-md-12">Message</label>
+                                    <div class="col-md-12">
+                                        <textarea rows="5" class="form-control form-control-line"></textarea>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-sm-12">Select Country</label>
+                                    <div class="col-sm-12">
+                                        <select class="form-control form-control-line">
+                                            <option>London</option>
+                                            <option>India</option>
+                                            <option>Usa</option>
+                                            <option>Canada</option>
+                                            <option>Thailand</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <div class="col-sm-12">
+                                        <button class="btn btn-success">Update Profile</button>
+                                    </div>
+                                </div>
+                            </form> #}
+                            {% for flash_message in app.session.flashbag.get('error') %}
+                                <div class="alert alert-danger">{{ flash_message }}</div>
+                            {% endfor %}
+
+                            {% for flash_message in app.session.flashbag.get('success') %}
+                                <div class="alert alert-success">{{ flash_message }}</div>
+                            {% endfor %}
+                            {{ form_start(form) }}
+
+                                <div class="row">
+                                    <div class="form-group col-md-6">
+                                        {{ form_row(form.nom, {'attr': {'class': 'form-control form-control-line'}}) }}
+                                    </div>
+                                    <div class="form-group col-md-6">    
+                                        {{ form_row(form.prenom, {'attr': {'class': 'form-control form-control-line'}}) }}
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="form-group col-md-6">
+                                        {{ form_row(form.genre, {'attr': {'class': 'form-control form-control-line'}}) }}
+                                    </div>
+                                    <div class="form-group col-md-6">    
+                                        {{ form_row(form.age, {'attr': {'class': 'form-control form-control-line'}}) }}
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="form-group col-md-6">
+                                        {{ form_row(form.ville, {'attr': {'class': 'form-control form-control-line'}}) }}
+                                    </div>
+                                    <div class="form-group col-md-6">    
+                                        {{ form_row(form.adresse, {'attr': {'class': 'form-control form-control-line'}}) }}
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="form-group col-md-6">
+                                        {{ form_row(form.phone, {'attr': {'class': 'form-control ','readonly': 'readonly'}}) }}
+                                    </div>
+                                    <div class="form-group col-md-6">    
+                                        {{ form_row(form.email, {'attr': {'class': 'form-control ','readonly': 'readonly'}}) }}
+                                    </div>
+                                </div>
+
+                                
+
+                            {{ form_end(form) }}
+                            <hr>    
+                            <h3>Update Password</h3>
+
+                            <div class="mt-5">
+                            <br>
+                            <form id="formPasswordUpdate" method="POST" action="{{ path('update_password_client') }}">
+                        
+                                <label for="actualPassword"> Current Password</label>
+                                <input
+                                    class="form-control mb-3"
+                                    type="password"
+                                    name="actualPassword"
+                                    id="actualPassword"
+                                />
+                                <label for="newPassword"> New Password</label>
+                                <input
+                                    class="form-control mb-3"
+                                    type="password"
+                                    name="newPassword"
+                                    id="newPassword"
+                                />
+                                <label for="confirmPassword"> Confirm Password</label>
+                                <input
+                                    class="form-control mb-3"
+                                    type="password"
+                                    name="ConfirmPassword"
+                                    id="ConfirmPassword"
+                                />
+                                {# <label class="form-check-label" for="accountActivation"
+                                    >I confirm my account deactivation</label
+                                > #}
+                                
+                                <div class="">
+                                <br>
+                                    <button type="submit" class="btn btn-danger">Update Password</button>
+                                </div>
+                                
+                            </form>
+                            </div>
+                            
+
+
+                        </div>
+                    </div>
+                    {# <div class="col-md-4 col-xs-12">
+                        <div class="white-box">
+                           
+                            
+                            <form id="formPasswordUpdate" method="POST" action="{{ path('update_password_client') }}">
+                        
+                                <label for="actualPassword"> Current Password</label>
+                                <input
+                                    class="form-control mb-3"
+                                    type="password"
+                                    name="actualPassword"
+                                    id="actualPassword"
+                                />
+                                <label for="newPassword"> New Password</label>
+                                <input
+                                    class="form-control mb-3"
+                                    type="password"
+                                    name="newPassword"
+                                    id="newPassword"
+                                />
+                                <label for="confirmPassword"> Confirm Password</label>
+                                <input
+                                    class="form-control mb-3"
+                                    type="password"
+                                    name="ConfirmPassword"
+                                    id="ConfirmPassword"
+                                />
+                                
+                                
+                                <div class="">
+                                    <button type="submit" class="btn btn-danger">Update Password</button>
+                                </div>
+                                
+                            </form>
+
+                            
+
+
+                        </div>
+                    </div> #}
+                </div>
+                <!-- /.row -->
+            </div>
+            <!-- /.container-fluid -->
+        </div>
+        <!-- /#page-wrapper -->
+    </div>
+
+
+
+{% endblock %}

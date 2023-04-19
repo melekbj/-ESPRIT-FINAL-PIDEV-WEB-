@@ -1,3 +1,13 @@
-#index:
-#    path: /
-#    controller: App\Controller\DefaultController::index
+controllers:
+    resource: ../src/Controller/
+    type: annotation
+
+kernel:
+    resource: ../src/Kernel.php
+    type: annotation
+
+
+# liste_users:
+#   path: /listeUsers/{userId}
+#   controller: App\Controller\AdminController::getUserAction
+#   methods: GET

@@ -29,7 +29,7 @@ class Commande
     private ?\DateTimeInterface $date = null;
 
     #[ORM\ManyToOne(inversedBy: 'commandes')]
-    private ?user $user = null;
+    private ?User $user = null;
 
     #[ORM\OneToMany(mappedBy: 'commande', targetEntity: DetailCommande::class)]
     private Collection $detailCommandes;
