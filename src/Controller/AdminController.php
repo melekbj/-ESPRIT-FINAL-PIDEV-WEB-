@@ -13,6 +13,7 @@ use App\Form\FormEventType;
 use App\Service\SendSmsService;
 use App\Service\SendMailService;
 use App\Repository\UserRepository;
+use App\Repository\EvenementRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Component\HttpFoundation\Request;
@@ -31,14 +32,26 @@ class AdminController extends AbstractController
     #[Route('/', name: 'app_admin')]
     public function index(): Response
     {
-        // Get the current user
         $user = $this->getUser();
-        
-        // Get the image associated with the user
         $image = $user->getImage();
+        $em = $this->getDoctrine()->getManager();
+        $userRepository = $em->getRepository(User::class);
+        // Get the count of users with etat = 0
+        $user0 = $userRepository->count(['etat' => 0]);
+        // Get the count of users with etat = 1
+        $user1 = $userRepository->count(['etat' => 1]);
+        // Get the count of users with etat = -1
+        $user2 = $userRepository->count(['etat' => -1]);
+        // Get the count of users with etat = -2
+        $user3 = $userRepository->count(['etat' => -2]);
+
         return $this->render('admin/index.html.twig', [
             'controller_name' => 'AdminController',
             'image' => $image,
+            'well' => $user0,
+            'pending' => $user1,
+            'blocked' => $user2,
+            'disapproved' => $user3,
         ]);
     }
 
@@ -346,23 +359,6 @@ class AdminController extends AbstractController
     
 // Events 
 
-    // #[Route('/events/liste', name: 'app_events_liste')]
-    // public function produitIndex(EntityManagerInterface $entityManager): Response
-    // {
-    //     $user = $this->getUser();
-    //     // Get the image associated with the user
-    //     $image = $user->getImage();
-
-    //     $eventRepository = $entityManager->getRepository(Evenement::class);
-    //     $events = $eventRepository->findAll();
-
-    //     return $this->render('admin/Events/liste.html.twig', [
-    //         'events' => $events,
-    //         'image' => $image,
-            
-    //     ]);
-    // }
-
     #[Route('/event/new', name: 'app_events_new')]
     public function newEvent(Request $request, PersistenceManagerRegistry $doctrine): Response
     {
@@ -410,10 +406,56 @@ class AdminController extends AbstractController
             return $this->redirectToRoute('app_events_liste');
         }
         
-        return $this->render('admin/Events/liste.html.twig', [
+        return $this->render('admin/Events/listeEvents.html.twig', [
             'typeForm' =>$form->createView(),
             'image' => $image,
             'events' => $events,
+        ]);
+    }
+
+    #[Route('/deleteEvent/{id}', name: 'app_deleteEvent')]
+    public function deleteEvent($id, EvenementRepository $rep, ManagerRegistry $doctrine ): Response
+    {
+        //recuperer la classe a supprimer
+        $events = $rep->find($id);
+        $rep=$doctrine->getManager();
+        //supprimer la classe        
+        $rep->remove($events);
+        $rep->flush();
+        //flash message
+        $this->addFlash('success', 'Event deleted successfully!');
+        return $this->redirectToRoute('app_events_liste'); 
+        
+    }
+
+    #[Route('/updateEvent/{id}', name: 'app_updateEvent')]
+    public function updateEvent($id, Request $request, EvenementRepository $rep, ManagerRegistry $doctrine): Response
+    {
+        // Get the current user
+        $user = $this->getUser();
+        // Get the image associated with the user
+        $image = $user->getImage();
+        // récupérer la classe à modifier
+        $events = $rep->find($id);
+        // créer un formulaire
+        $form = $this->createForm(FormEvent::class, $events);
+        // récupérer les données saisies
+        $form->handleRequest($request);
+        // vérifier si le formulaire est soumis et valide
+        if ($form->isSubmitted() && $form->isValid()) {
+            // récupérer les données saisies
+            $events = $form->getData();
+            // persister les données
+            $rep = $doctrine->getManager();
+            $rep->persist($events);
+            $rep->flush();
+            //flash message
+            $this->addFlash('success', 'Event updated successfully!');
+            return $this->redirectToRoute('app_events_liste');
+        }
+        return $this->render('admin/Events/EditEvents.html.twig', [
+            'form' => $form->createView(),
+            'image' => $image,
         ]);
     }
 
