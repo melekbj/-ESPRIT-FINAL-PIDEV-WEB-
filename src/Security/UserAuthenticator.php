@@ -62,8 +62,12 @@ class UserAuthenticator extends AbstractLoginFormAuthenticator
             $request->getSession()->getFlashBag()->add('info', 'Account pending approval. Please check your email for further instructions.');
             return new RedirectResponse($this->urlGenerator->generate('app_login'));
 
-        }elseif($user->getEtat() == -1 ){
-            $request->getSession()->getFlashBag()->add('error', 'Account restricted.');
+        }elseif($user->getRoles() == 'ROLE_PARTNER' and $user->getEtat() == -2 ){
+            $request->getSession()->getFlashBag()->add('error', 'Your account was disapproved . Please check your email for further instructions.');
+            return new RedirectResponse($this->urlGenerator->generate('app_login'));
+        }
+        elseif($user->getEtat() == -1 ){
+            $request->getSession()->getFlashBag()->add('error', 'Your account was restricted . Please check your email for further instructions.');
             return new RedirectResponse($this->urlGenerator->generate('app_login'));
         }
 

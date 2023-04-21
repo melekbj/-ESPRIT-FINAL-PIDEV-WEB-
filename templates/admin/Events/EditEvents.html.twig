@@ -9,7 +9,7 @@
             <div class="col-xxl">
                             <div class="card mb-4">
                                 <div class="card-header d-flex align-items-center justify-content-between">
-                                <h5 class="mb-0">Add event</h5>
+                                <h5 class="mb-0">Update event</h5>
                                 </div>
                                 <div class="card-body">
                                 {{ form_start(form, {'attr': {'class': 'your-form-class'}}) }}
@@ -60,7 +60,7 @@
 
                                     <div class="row mb-1">
                                     <div class="col-sm-8">
-                                        {{ form_row(form.save, {'label': 'Create new'}) }}
+                                        {{ form_row(form.save, {'label': 'Confirm changes'}) }}
                                     </div>
                                     </div>
                                 {{ form_end(form) }}
@@ -71,5 +71,6 @@
             </div>
         </div>
     </div>
-    
+
 {% endblock %}
+

@@ -90,7 +90,7 @@ class Evenement
         return $this->imageEv;
     }
 
-    public function setImageEv(string $imageEv): self
+    public function setImageEv(?string $imageEv): self
     {
         $this->imageEv = $imageEv;
 
