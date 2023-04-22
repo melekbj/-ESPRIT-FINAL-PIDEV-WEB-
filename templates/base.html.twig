@@ -44,7 +44,7 @@
 
         {% block javascripts %}
             
-            <script>
+            {# <script>
                 // set a timeout of 3 seconds before removing the alerts
                 setTimeout(function() {
                     var alerts = document.querySelectorAll('.alert');
@@ -52,7 +52,7 @@
                         alerts[i].style.display = 'none';
                     }
                 }, 5000);
-            </script>
+            </script> #}
 
             {# we began #}
             <script src="{{ asset('Assets/js/jquery-3.2.1.min.js')}}"></script>

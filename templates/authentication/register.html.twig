@@ -5,7 +5,7 @@
 {% block body %}
 <br><br><br><br><br>
 
-<div class="limiter">
+<div class="">
 		<div class="container-login101">
 			<div class="wrap-login100">
            
@@ -51,7 +51,7 @@
             {{ form_row(registerForm.email) }}
             {{ form_row(registerForm.password.first) }}
             {{ form_row(registerForm.password.second) }}
-            
+            {{ form_row(registerForm.captcha) }}
 
             {{ form_row(registerForm._token) }}
             <hr>

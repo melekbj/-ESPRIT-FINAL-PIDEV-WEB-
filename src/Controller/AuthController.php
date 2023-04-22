@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\User;
+use App\Form\LoginType;
 use App\Form\RegisterType;
 use App\Service\SendMailService;
 use App\Repository\UserRepository;
@@ -63,16 +64,12 @@ class AuthController extends AbstractController
             $error = 'Invalid email or password. Please try again.';
         }
 
-        // last username entered by the user
-        $lastUsername = $authenticationUtils->getLastUsername();
-
         return $this->render('authentication/login.html.twig', [
-            'last_username' => $lastUsername,
             'error' => $error,
         ]);
     }
-    
-   
+
+ 
     #[Route(path: '/logout', name: 'app_logout')]
     public function logout(): void
     {

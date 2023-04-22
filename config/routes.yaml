@@ -5,7 +5,10 @@ controllers:
 kernel:
     resource: ../src/Kernel.php
     type: annotation
-
+    
+captcha_route:
+    path: /login
+    controller: Gregwar\CaptchaBundle\Controller\CaptchaController::generateAction
 
 # liste_users:
 #   path: /listeUsers/{userId}
