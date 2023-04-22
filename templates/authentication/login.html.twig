@@ -47,7 +47,7 @@
                     
 
                     <div class="wrap-input100 validate-input " data-validate = "Valid email is required: ex@abc.xyz">
-                        <input class="input100" type="email" value="{{ last_username }}" name="email" id="inputEmail" placeholder="E-mail" class="form-control" autocomplete="email" required autofocus>
+                        <input class="input100" type="email"  name="email" id="inputEmail" placeholder="E-mail" class="form-control" autocomplete="email" required autofocus>
                         <span class="focus-input100"></span>
                             <span class="symbol-input100">
                                 <i class="fa fa-envelope" aria-hidden="true"></i>
@@ -67,6 +67,14 @@
                     <input type="hidden" name="_csrf_token"
                         value="{{ csrf_token('authenticate') }}"
                     >
+                    
+					<div class="container-login100-form-btn">
+						<button class="login100-form-btn " type="submit">
+							Se connecter
+						</button>
+					</div>
+
+                    
                     <script>
                         const togglePassword = document.querySelector('.toggle-password');
                         const password = document.querySelector('#inputPassword');
@@ -79,16 +87,6 @@
                             this.classList.toggle('fa-eye-slash');
                         });
                     </script>
-
-                    
-
-					<div class="container-login100-form-btn">
-						<button class="login100-form-btn " type="submit">
-							Se connecter
-						</button>
-					</div>
-
-                      
 
 					<div class="text-center">
 						<span class="txt1">
@@ -108,6 +106,8 @@
 
                     
 				</form>
+
+              
  
 			</div>
 		</div>

@@ -20,6 +20,8 @@ security:
             form_login:
                 login_path: /login
                 check_path: /protected/login_check
+                enable_csrf: true
+
         dev:
             pattern: ^/(_(profiler|wdt)|css|images|js)/
             security: false
