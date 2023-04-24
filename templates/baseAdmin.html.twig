@@ -6,6 +6,9 @@
         {# we begin #}
         <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0"/>
         <link rel="icon" type="image/png" href="{{asset('Assets/images/icon1.png')}}"> 
+        <script src="https://cdn.jsdelivr.net/npm/chart.js@3.7.0/dist/chart.min.js"></script>
+
+        
 
 
         <title>{% block title %}Welcome!{% endblock %}</title>
@@ -159,6 +162,12 @@
                 <div data-i18n="Account Settings">Liste des produits approvés</div>
               </a>
             </li>
+
+            {# <li class="menu-item">
+              <a href="#" class="menu-link menu-toggle">
+                <img style="" src="{{ qrcode }}" alt="QR Code">
+              </a>
+            </li> #}
             
           </ul>
         </aside>

@@ -10,12 +10,15 @@ use App\Entity\Evenement;
 use App\Entity\EventType;
 use App\Form\RegisterType;
 use App\Form\FormEventType;
+use App\Service\QrcodeService;
 use App\Service\SendSmsService;
 use App\Service\SendMailService;
 use App\Repository\UserRepository;
 use App\Repository\EvenementRepository;
+use App\Repository\EventTypeRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Persistence\ManagerRegistry;
+use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Core\Security;
 use Symfony\Component\HttpFoundation\Response;
@@ -30,7 +33,7 @@ use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 class AdminController extends AbstractController
 {
     #[Route('/', name: 'app_admin')]
-    public function index(): Response
+    public function index(QrcodeService $qrcodeService): Response
     {
         $user = $this->getUser();
         $image = $user->getImage();
@@ -44,6 +47,10 @@ class AdminController extends AbstractController
         $user2 = $userRepository->count(['etat' => -1]);
         // Get the count of users with etat = -2
         $user3 = $userRepository->count(['etat' => -2]);
+ 
+        $qrcodeDataUri = $qrcodeService->qrcode($user0,$user1,$user2,$user3);
+
+        
 
         return $this->render('admin/index.html.twig', [
             'controller_name' => 'AdminController',
@@ -52,34 +59,39 @@ class AdminController extends AbstractController
             'pending' => $user1,
             'blocked' => $user2,
             'disapproved' => $user3,
+            'qrcode' => $qrcodeDataUri,
         ]);
     }
 
 
     #[Route('/liste_des_utilisateurs', name: 'app_users')]
     #[Security("is_granted('ROLE_ADMIN')")]
-    public function ListeU(): Response
+    public function ListeU(PaginatorInterface $paginator, UserRepository $userRepository, Request $request): Response
     {
         // Get the current user
         $user = $this->getUser();
-        
+
         // Get the image associated with the user
         $image = $user->getImage();
-        //recuperer le repository
-        $repository = $this->getDoctrine()->getRepository(User::class);
-        //utiliser findAll() pour recuperer toutes les classes
-        $users = $repository->createQueryBuilder('u')
-        ->where('u.roles LIKE :roles1 OR u.roles LIKE :roles2')
-        ->andWhere('u.etat <> :etat')
-        ->orderBy('u.nom', 'ASC') 
-        ->setParameters([
-            'roles1' => '%ROLE_CLIENT%',
-            'roles2' => '%ROLE_PARTNER%',
-            'etat' => 1
-        ])
-        ->getQuery()
-        ->getResult();
 
+        // Get all users except admins and blocked users, ordered by name
+        $usersQuery = $userRepository->createQueryBuilder('u')
+            ->where('u.roles LIKE :roles1 OR u.roles LIKE :roles2')
+            ->andWhere('u.etat <> :etat')
+            ->orderBy('u.nom', 'ASC')
+            ->setParameters([
+                'roles1' => '%ROLE_CLIENT%',
+                'roles2' => '%ROLE_PARTNER%',
+                'etat' => 1,
+            ])
+            ->getQuery();
+
+        // Paginate users
+        $users = $paginator->paginate(
+            $usersQuery,
+            $request->query->getInt('page', 1), // current page number
+            5 // number of results per page
+        );
 
         return $this->render('admin/ListeUsers.html.twig', [
             'users' => $users,
@@ -87,8 +99,9 @@ class AdminController extends AbstractController
         ]);
     }
 
+
     #[Route('/liste_des_partenaires', name: 'app_partners')]
-    public function ListeP(): Response
+    public function ListeP(Request $request,PaginatorInterface $paginator): Response
     {
         // Get the current user
         $user = $this->getUser();
@@ -99,6 +112,14 @@ class AdminController extends AbstractController
         $repository = $this->getDoctrine()->getRepository(User::class);
         //utiliser findAll() pour recuperer toutes les classes
         $users = $repository->findBy(['etat' => [1, -2]]);
+        
+        // Paginate the results
+        $users = $paginator->paginate(
+            $users,
+            $request->query->getInt('page', 1),
+            3 // items per page
+        );
+        
 
         return $this->render('admin/ListePartners.html.twig', [
             'users' => $users,
@@ -459,6 +480,49 @@ class AdminController extends AbstractController
         ]);
     }
 
+    #[Route('/type_events/liste', name: 'app_types_events_liste')]
+    public function EventsTypes(Request $request, PersistenceManagerRegistry $doctrine, EntityManagerInterface $entityManager): Response
+    {
+        $user = $this->getUser();
+        // Get the image associated with the user
+        $image = $user->getImage();
+
+        $eventRepository = $entityManager->getRepository(EventType::class);
+        $events = $eventRepository->findAll();;
+
+        // $event = new EventType();
+        // $form = $this->createForm(FormEventType::class, $event);
+        // $form->handleRequest($request);
+
+        // if($form->isSubmitted() && $form->isValid()){
+        //     $entityManager = $doctrine->getManager();
+        //     $entityManager->persist($event);
+        //     $entityManager->flush();
+        //     $this->addFlash('success', 'Event type ajouté avec succès');
+        //     return $this->redirectToRoute('app_events_liste');
+        // }
+        
+        return $this->render('admin/Events/listeTypesEvents.html.twig', [
+            // 'typeForm' =>$form->createView(),
+            'image' => $image,
+            'events' => $events,
+        ]);
+    }
+
+    #[Route('/delete_Event_type/{id}', name: 'app_deleteEventType')]
+    public function deleteEventType($id, EventTypeRepository $rep, ManagerRegistry $doctrine ): Response
+    {
+        //recuperer la classe a supprimer
+        $events = $rep->find($id);
+        $rep=$doctrine->getManager();
+        //supprimer la classe        
+        $rep->remove($events);
+        $rep->flush();
+        //flash message
+        $this->addFlash('success', 'Event types deleted successfully!');
+        return $this->redirectToRoute('app_types_events_liste'); 
+        
+    }
 
 
 
