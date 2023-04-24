@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\User;
 use App\Entity\Produit;
 use App\Entity\Evenement;
+use App\Service\QrcodeService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -61,10 +62,13 @@ class HomeController extends AbstractController
     }
 
     #[Route('/about', name: 'app_about')]
-    public function aboutIndex(): Response
+    public function aboutIndex(QrcodeService $qrcodeService): Response
     {
+        $qrcodeDataUri = $qrcodeService->qrcode();
         return $this->render('home/about.html.twig', [
             'controller_name' => 'HomeController',
+            'qrcode_data_uri' => $qrcodeDataUri,
+            
         ]);
     }
 
