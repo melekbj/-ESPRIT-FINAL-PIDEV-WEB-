@@ -1,0 +1,109 @@
+{% extends 'baseAdmin.html.twig' %}
+
+{% block title %}Store index{% endblock %}
+
+{% block body %}
+    <head>
+<!-- Flashy depends on jQuery -->
+    <script src="//code.jquery.com/jquery.js"></script>
+
+    {# <link rel="stylesheet" href="{{ asset('bundles/mercuryseriesflashy/css/flashy.css') }}"> #}
+    <!-- Load Flashy default JavaScript -->
+    {# <script src="{{ asset('bundles/mercuryseriesflashy/js/flashy.js') }}"></script>
+        {{ include('@MercurySeriesFlashy/flashy.html.twig') }} #}
+</head>
+    <h1>Store index</h1>
+
+
+<form action="{{ path('app_store_index') }}" method="get">
+    <input type="text" name="nom">
+    <select  name="localtion">
+ <option value="">None</option>
+ <option value="Ariana">Ariana</option>
+  <option value="Beja">Beja</option>
+  <option value="Ben Arous">Ben Arous</option>
+  <option value="Bizerte">Bizerte</option>   
+  <option value="Gabes">Gabes</option>    
+  <option value="Gafsa">Gafsa</option>    
+  <option value="Jendouba">Jendouba</option>    
+  <option value="Kairouan">Kairouan</option>    
+  <option value="Kasserine">Kasserine</option>    
+  <option value="Kebili">Kebili</option>  
+  <option value="Kef">Kef</option>    
+  <option value="Mahdia">Mahdia</option>      
+    <option value="Manouba">Manouba</option>   
+  <option value="Medenine">Medenine</option>    
+  <option value="Monastir">Monastir</option>    
+  <option value="Nabeul">Nabeul</option>    
+  <option value="Sfax">Sfax</option>    
+  <option value="Sidi Bouzid">Sidi Bouzid</option>    
+  <option value="Siliana">Siliana</option>  
+  <option value="Sousse">Sousse</option>    
+  <option value="Tataouine">Tataouine</option>     
+    <option value="Tozeur">Tozeur</option>   
+  <option value="Tunis">Tunis</option>    
+  <option value="Zaghouan">Zaghouan</option>    
+  
+
+
+  </select>
+    <button type="submit">Filter</button>
+    </form>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Nom</th>
+                <th>Location</th>
+                <th>Photo</th>
+                <th>Categorie</th>
+                <th>Rating</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for store in stores %}
+            <tr>
+                <td>{{ store.id }}</td>
+                <td>{{ store.nom }}</td>
+                <td>{{ store.location }}</td>
+                <td>
+                    {% if store.photo is not empty %}
+                        <img width="100px" src="{{ asset('/Assets/images/' ~ store.photo) }}" alt="{{ store.nom }} photo">
+                    {% endif %}
+                </td>
+                <td>{{ store.categorie.libelle }}</td>
+                <td>
+                    {% set rating = averageRatings[store.id] %}
+                    {% if rating %}
+                        <div class="star-rating">
+                            {% set ratingValue = rating|round(1) %}
+                            {% set fullStars = ratingValue|round(0, 'ceil') %}
+                            {% set emptyStars = 5 - fullStars %}
+                            {% for i in 1..fullStars %}
+                                <i class="fas fa-star"></i>
+                            {% endfor %}
+                            {% if ratingValue > fullStars %}
+                                <i class="fas fa-star-half-alt"></i>
+                                {% set emptyStars = emptyStars - 1 %}
+                            {% endif %}
+                            {% for i in 1..emptyStars %}
+                                <i class="far fa-star"></i>
+                            {% endfor %}
+                            <span class="rating-value">{{ ratingValue }}/5</span>
+                        </div>
+                    {% endif %}
+                </td>
+                <td>
+                    <a href="{{ path('app_store_show', {'id': store.id}) }}">show</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="5">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+{% endblock %}

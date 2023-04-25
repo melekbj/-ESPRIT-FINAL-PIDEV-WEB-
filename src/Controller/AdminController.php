@@ -3,6 +3,8 @@
 namespace App\Controller;
 
 use App\Entity\User;
+use App\Entity\Store;
+use App\Entity\Rating;
 use App\Form\UserType;
 use App\Form\FormEvent;
 use Twilio\Rest\Client;
@@ -10,15 +12,18 @@ use App\Entity\Evenement;
 use App\Entity\EventType;
 use App\Form\RegisterType;
 use App\Form\FormEventType;
+use App\Entity\CategorieStore;
 use App\Service\QrcodeService;
 use App\Service\SendSmsService;
 use App\Service\SendMailService;
 use App\Repository\UserRepository;
+use App\Repository\StoreRepository;
 use App\Repository\EvenementRepository;
 use App\Repository\EventTypeRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Persistence\ManagerRegistry;
 use Knp\Component\Pager\PaginatorInterface;
+use App\Repository\CategorieStoreRepository;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Core\Security;
 use Symfony\Component\HttpFoundation\Response;
@@ -37,6 +42,7 @@ class AdminController extends AbstractController
     {
         $user = $this->getUser();
         $image = $user->getImage();
+
         $em = $this->getDoctrine()->getManager();
         $userRepository = $em->getRepository(User::class);
         // Get the count of users with etat = 0
@@ -243,7 +249,7 @@ class AdminController extends AbstractController
 
 
     #[Route('/blockU/{id}', name: 'app_blockU')]
-    public function blockU($id, UserRepository $rep, ManagerRegistry $doctrine,SendMailService $mail): Response
+    public function blockU($id, UserRepository $rep, ManagerRegistry $doctrine, SendMailService $mail): Response
     {
         // Get the user to deactivate
         $user = $rep->find($id);
@@ -255,17 +261,39 @@ class AdminController extends AbstractController
         // Set the user's etat to -1
         $user->setEtat(-1);
 
+
+
         $em = $doctrine->getManager();
         $em->persist($user);
         $em->flush();
-
+        
         // Envoi du mail
         $mail->sendMail(
             'melekbejaoui29@gmail.com', 'Storeship',
             $user->getEmail(),
             'Account Restriction',
             'block',
+            [
+                'user' => $user,
+            ]
         );
+
+        // $accountSid = 'ACa141e95e70a02a529768fb9df90ebcea';
+        // $authToken = 'f742163ccee2b8b28cfe63cc8b40d341';
+        // $fromNumber = '+15076288954';
+    
+        // // Instantiate the Twilio client
+        // $twilio = new Client($accountSid, $authToken);
+    
+        // // Instantiate the SendSmsService and set the required parameters
+        // $sms = new SendSmsService();
+        // $sms->setAccountSid($accountSid);
+        // $sms->setAuthToken($authToken);
+        // $sms->setFromNumber($fromNumber);
+        // $sms->setClient($twilio);
+    
+        // // Send an SMS to the user
+        // $sms->send($user->getPhone(), 'Your account has been approved.');
 
         //flash message
         $this->addFlash('success', 'User blocked successfully!');
@@ -304,22 +332,22 @@ class AdminController extends AbstractController
             ]
         );
 
-        $accountSid = 'ACa141e95e70a02a529768fb9df90ebcea';
-        $authToken = '55d176b56ee67e33afb9fdfa4b670479';
-        $fromNumber = '+15076288954';
+        // $accountSid = 'ACa141e95e70a02a529768fb9df90ebcea';
+        // $authToken = 'f742163ccee2b8b28cfe63cc8b40d341';
+        // $fromNumber = '+15076288954';
     
-        // Instantiate the Twilio client
-        $twilio = new Client($accountSid, $authToken);
+        // // Instantiate the Twilio client
+        // $twilio = new Client($accountSid, $authToken);
     
-        // Instantiate the SendSmsService and set the required parameters
-        $sms = new SendSmsService();
-        $sms->setAccountSid($accountSid);
-        $sms->setAuthToken($authToken);
-        $sms->setFromNumber($fromNumber);
-        $sms->setClient($twilio);
+        // // Instantiate the SendSmsService and set the required parameters
+        // $sms = new SendSmsService();
+        // $sms->setAccountSid($accountSid);
+        // $sms->setAuthToken($authToken);
+        // $sms->setFromNumber($fromNumber);
+        // $sms->setClient($twilio);
     
-        // Send an SMS to the user
-        $sms->send($user->getPhone(), 'Your account has been approved.');
+        // // Send an SMS to the user
+        // $sms->send($user->getPhone(), 'Your account has been approved.');
 
         //flash message
         $this->addFlash('success', 'User approved successfully!');
@@ -329,7 +357,7 @@ class AdminController extends AbstractController
 
     #[Route('/disapproveU/{id}', name: 'app_disapproveU')]
     public function disapproveU($id, UserRepository $rep, ManagerRegistry $doctrine, SendMailService $mail): Response
-    {
+    {   
         // Get the user to deactivate
         $user = $rep->find($id);
     
@@ -355,22 +383,22 @@ class AdminController extends AbstractController
             ]
         );
 
-        $accountSid = 'ACa141e95e70a02a529768fb9df90ebcea';
-        $authToken = '55d176b56ee67e33afb9fdfa4b670479';
-        $fromNumber = '+15076288954';
+        // $accountSid = 'ACa141e95e70a02a529768fb9df90ebcea';
+        // $authToken = '55d176b56ee67e33afb9fdfa4b670479';
+        // $fromNumber = '+15076288954';
     
-        // Instantiate the Twilio client
-        $twilio = new Client($accountSid, $authToken);
+        // // Instantiate the Twilio client
+        // $twilio = new Client($accountSid, $authToken);
     
-        // Instantiate the SendSmsService and set the required parameters
-        $sms = new SendSmsService();
-        $sms->setAccountSid($accountSid);
-        $sms->setAuthToken($authToken);
-        $sms->setFromNumber($fromNumber);
-        $sms->setClient($twilio);
+        // // Instantiate the SendSmsService and set the required parameters
+        // $sms = new SendSmsService();
+        // $sms->setAccountSid($accountSid);
+        // $sms->setAuthToken($authToken);
+        // $sms->setFromNumber($fromNumber);
+        // $sms->setClient($twilio);
     
-        // Send an SMS to the user
-        $sms->send($user->getPhone(), 'Your account has been disapproved.');
+        // // Send an SMS to the user
+        // $sms->send($user->getPhone(), 'Your account has been disapproved.');
     
         //flash message
         $this->addFlash('error', 'User Disapproved !');
@@ -378,7 +406,7 @@ class AdminController extends AbstractController
         return $this->redirectToRoute('app_partners');
     }
     
-// Events 
+// ................................................ Gesion Events..................................................................................................... 
 
     #[Route('/event/new', name: 'app_events_new')]
     public function newEvent(Request $request, PersistenceManagerRegistry $doctrine): Response
@@ -413,7 +441,7 @@ class AdminController extends AbstractController
         $image = $user->getImage();
 
         $eventRepository = $entityManager->getRepository(Evenement::class);
-        $events = $eventRepository->findAll();;
+        $events = $eventRepository->findAll();
 
         $event = new EventType();
         $form = $this->createForm(FormEventType::class, $event);
@@ -524,6 +552,79 @@ class AdminController extends AbstractController
         
     }
 
+// .........................................Gestion Store..........................................................
 
+
+    #[Route('/list_stores', name: 'app_store_index', methods: ['GET'])]
+        // public function ListStore(CategorieStoreRepository $categorieStoreRepository,PersistenceManagerRegistry $doctrine, EntityManagerInterface $entityManager): Response
+        // {
+        //     $user = $this->getUser();
+        //     // Get the image associated with the user
+        //     $image = $user->getImage();
+        //     $store = $entityManager->getRepository(Store::class);
+        //     $stores = $store->findAll();
+
+        //     return $this->render('admin/store/index.html.twig', [
+        //         'stores' => $stores,
+        //         'image' => $image,
+        //     ]);
+        // }
+        public function liststore(StoreRepository $storeRepository, EntityManagerInterface $entityManager,Request $request): Response
+        {
+            $user = $this->getUser();
+        // Get the image associated with the user
+        $image = $user->getImage();
+            $location=$request->get('localtion');
+            $nom=$request->get('nom');
+    
+    
+            $stores = $storeRepository->findLocalisationOrNom($location,$nom);
+            $averageRatings = [];
+                
+            foreach ($stores as $store) {
+                $ratings = $entityManager->getRepository(Rating::class)->findBy(['store' => $store]);
+                $ratingValue = 0;
+                $count = count($ratings);
+                if ($count > 0) {
+                    foreach ($ratings as $rating) {
+                        $ratingValue += $rating->getRate();
+                    }
+                    $averageRating = $ratingValue / $count;
+                } else {
+                    $averageRating = 0;
+                }
+                $averageRatings[$store->getId()] = $averageRating;
+            }
+    
+            return $this->render('admin/store/index.html.twig', [
+                'stores' => $stores,
+                'averageRatings' => $averageRatings,
+                'image' => $image,
+            ]);
+        }
+
+        #[Route('/store/{id}', name: 'app_store_show', methods: ['GET'])]
+    public function show(Store $store, Security $security, StoreRepository $storeRepository): Response
+    {
+
+        return $this->render('admin/store/show.html.twig', [
+            'store' => $store,
+        ]);
+    }
+
+    #[Route('/categorie_store', name: 'app_categorie_store_index', methods: ['GET'])]
+    public function ListCategorie(CategorieStoreRepository $categorieStoreRepository,PersistenceManagerRegistry $doctrine, EntityManagerInterface $entityManager): Response
+    {
+        $user = $this->getUser();
+        // Get the image associated with the user
+        $image = $user->getImage();
+        $cat = $entityManager->getRepository(CategorieStore::class);
+        $categoriestores = $cat->findAll();
+
+        return $this->render('admin/categorie_store/index.html.twig', [
+            'categorie_store' => $categoriestores,
+            'image' => $image,
+        ]);
+    }
 
 }

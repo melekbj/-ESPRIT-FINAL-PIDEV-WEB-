@@ -8,10 +8,6 @@
 
 <div class="super_container">
 
-
-
-	
-
 	<div class="fs_menu_overlay"></div>
 	<div class="hamburger_menu">
 		<div class="hamburger_close"><i class="fa fa-times" aria-hidden="true"></i></div>
@@ -362,8 +358,11 @@
 
 							<!-- Slide 1 -->
 {% for e in events %}
+
 							<div class="owl-item product_slider_item">
+							<a href="{{path('app_events_detail', {'id': e.id})}}">
 								<div class="product-item">
+								
 									<div class="product discount">
 										<div class="product_image">
 											{# <img src="{{ asset('Assets/images/product_1.png')}}" alt=""> #}
@@ -383,10 +382,12 @@
 										<div class="product_info mb-2">
 											<div class="product_name">{{e.lieuEv}}</div>
 										</div>
-										<div class="blue_button add_to_cart_button mt-3"><a href="{{path('app_event_detail', {'id': e.id})}}">Reserver</a></div>
+										<br>
+										<div class="blue_button add_to_cart_button mt-3"><a href="{{path('app_events_detail', {'id': e.id})}}">Reserver</a></div>
 									</div>
 								</div>
 							</div>
+							</a>
 {% endfor %}
 							
 						</div>

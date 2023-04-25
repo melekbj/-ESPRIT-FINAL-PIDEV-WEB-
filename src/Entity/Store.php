@@ -6,8 +6,11 @@ use App\Repository\StoreRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\HttpFoundation\File\File;
+use Vich\UploaderBundle\Mapping\Annotation as Vich;
 
 #[ORM\Entity(repositoryClass: StoreRepository::class)]
+#[Vich\Uploadable]
 class Store
 {
     #[ORM\Id]
@@ -21,7 +24,7 @@ class Store
     #[ORM\Column(length: 100)]
     private ?string $location = null;
 
-    #[ORM\OneToOne(cascade: ['persist', 'remove'])]
+    #[ORM\OneToOne]
     private ?User $user = null;
 
     #[ORM\ManyToMany(targetEntity: Produit::class, inversedBy: 'stores')]
@@ -29,6 +32,9 @@ class Store
 
     #[ORM\OneToMany(mappedBy: 'store', targetEntity: DetailCommande::class)]
     private Collection $detailCommandes;
+
+    #[Vich\UploadableField(mapping: 'store_image', fileNameProperty: 'photo')]
+    public ?File $imageFile = null;
 
     #[ORM\Column(length: 255)]
     private ?string $photo = null;
@@ -151,7 +157,7 @@ class Store
         return $this->photo;
     }
 
-    public function setPhoto(string $photo): self
+    public function setPhoto(?string $photo): self
     {
         $this->photo = $photo;
 

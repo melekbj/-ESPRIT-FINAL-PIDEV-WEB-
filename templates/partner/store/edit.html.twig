@@ -1,0 +1,82 @@
+{# {% extends 'base.html.twig' %}
+
+{% block title %}Edit Store{% endblock %}
+
+{% block body %}
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+
+    <h1>Edit Store</h1>
+
+    {{ include('partner/store/_form.html.twig', {'button_label': 'Update'}) }}
+
+    <a href="{{ path('app_partner') }}">back to Store</a>
+{% endblock %} #}
+
+{% extends 'basePartner.html.twig' %}
+
+{% block title %}Hello PartnerController!{% endblock %}
+
+{% block body %}
+{# <br><br><br><br><br><br><br><br>
+  {% if app.user %}
+        <div class="mb-3">
+            You are logged in as {{ app.user.userIdentifier }}, <a href="{{ path('app_logout') }}">Logout</a>
+        </div>
+    {% endif %} #}
+    
+
+
+    <div class="wrapper">
+   
+    <div class="main-panel">
+    
+      <div class="content">
+        
+        <div class="row">
+          <div class="col-md-12">
+            <div class="card ">
+              <div class="card-header ">
+                <h5 class="card-title">Store Information</h5>
+                {# <p class="card-category">24 Hours performance</p> #}
+              </div>
+              <div class="card-body ">
+                {{ include('partner/store/_form.html.twig', {'button_label': 'Update'}) }}
+                
+                
+              </div>
+              
+            </div>
+          </div>
+        </div>
+        
+      </div>
+      
+    </div>
+  </div>
+
+
+    
+
+
+
+
+
+
+
+
+
+
+
+
+{% endblock %}
+

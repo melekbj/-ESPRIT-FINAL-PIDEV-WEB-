@@ -1,18 +1,18 @@
-{% extends "baseClient.html.twig" %}
+{% extends "basePartner.html.twig" %}
 
 
 {% block body %}
 
-  {% for flash_message in app.session.flashbag.get('error') %}
+  {# {% for flash_message in app.session.flashbag.get('error') %}
     <div class="alert alert-danger">{{ flash_message }}</div>
   {% endfor %}
 
   {% for flash_message in app.session.flashbag.get('success') %}
     <div class="alert alert-success">{{ flash_message }}</div>
-  {% endfor %}
+  {% endfor %} #}
 
   {# {{form(form)}} #}
-                      {{ form_start(form, {'attr': {'class': 'your-form-class'}}) }}
+                      {# {{ form_start(form, {'attr': {'class': 'your-form-class'}}) }} #}
                         
                         <div class="container" style="margin-left:20%">
                                 <div class="col-md-4">
@@ -21,12 +21,12 @@
                                     {{ form_row(form.prix, {'label': 'Prix', 'attr': {'class': 'form-control'}}) }}
                                     {{ form_row(form.quantite, {'label': 'Quantite', 'attr': {'class': 'form-control'}}) }}
                                     {{ form_row(form.etat, {'label': 'Etat', 'attr': {'class': 'form-control'}}) }} #}
-                                    {{form(form)}}
+                                    {# {{form(form)}} #}
                                 </div>
                                 
                        </div>         
                         
 
-                      {{ form_end(form) }}
+                      {# {{ form_end(form) }} #}
 
 {% endblock %}

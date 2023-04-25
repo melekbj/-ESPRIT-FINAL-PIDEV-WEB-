@@ -1,0 +1,33 @@
+{{ form_start(form) }}
+    {{ form_row(form.nom) }}
+    {{ form_row(form.location) }}
+    <div>
+        {# <img id="preview" src="{{ asset('path/to/default/image.jpg') }}" alt="Preview" width="200"> #}
+        {{ form_row(form.imageFile) }}
+    </div>
+    {{ form_row(form.categorie) }}
+    {{ form_row(form.ville) }}
+    {{ form_row(form.adresse) }}
+    <button class="btn">{{ button_label|default('Save') }}</button>
+{{ form_end(form) }}
+
+{% block javascripts %}
+    <script>
+        // get the input element and the image element
+        var input = document.getElementById('{{ form.imageFile.vars.id }}');
+        var preview = document.getElementById('preview');
+
+        // when the user selects a file, update the preview image
+        input.addEventListener('change', function(event) {
+            var file = event.target.files[0];
+            if (file) {
+                var reader = new FileReader();
+                reader.onload = function() {
+                    preview.src = reader.result;
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+    </script>
+{% endblock %}
+

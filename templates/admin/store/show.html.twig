@@ -1,0 +1,40 @@
+{% extends 'baseAdmin.html.twig' %}
+
+{% block title %}Store{% endblock %}
+
+{% block body %}
+    <h1>Store</h1>
+
+    <table class="table">
+        <tbody>
+            <tr>
+                <th>Id</th>
+                <td>{{ store.id }}</td>
+            </tr>
+            <tr>
+                <th>Nom</th>
+                <td>{{ store.nom }}</td>
+            </tr>
+            <tr>
+                <th>Location</th>
+                <td>{{ store.location }}</td>
+            </tr>
+             <tr>
+                <th>Photo</th>
+                <td>
+                    {% if store.photo is not empty %}
+                        <img width="100px" src="{{ asset('/Assets/images/' ~ store.photo) }}" alt="{{ store.nom }} photo">
+                    {% endif %}
+                </td>
+            </tr>
+            <tr>
+                <th>Categorie</th>
+                <td>{{ store.Categorie.libelle }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_store_index') }}">back to list</a>
+
+    {{ include('admin/store/_delete_form.html.twig') }}
+{% endblock %}

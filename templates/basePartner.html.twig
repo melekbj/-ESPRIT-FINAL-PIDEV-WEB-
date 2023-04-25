@@ -90,7 +90,7 @@
       <div class="sidebar-wrapper">
         <ul class="nav">
           <li class="active ">
-            <a href="./dashboard.html">
+            <a href="{{path('app_partner')}}">
               <i class="nc-icon nc-bank"></i>
               <p>Dashboard</p>
             </a>
@@ -119,12 +119,12 @@
               <p>User Profile</p>
             </a>
           </li>
-          {# <li>
-            <a href="./tables.html">
+          <li>
+            <a href="#">
               <i class="nc-icon nc-tile-56"></i>
-              <p>Table List</p>
+              <p>Liste des produits</p>
             </a>
-          </li> #}
+          </li>
           {# <li>
             <a href="./typography.html">
               <i class="nc-icon nc-caps-small"></i>
@@ -212,7 +212,20 @@
           
 
            
-    {% block body %}{% endblock %}
+    {% block body %}
+    
+    {% for message in app.flashes('success') %}
+          <div class="alert alert-success">
+              {{ message }}
+          </div>
+      {% endfor %}
+      {% for message in app.flashes('error') %}
+          <div class="alert alert-danger">
+              {{ message }}
+          </div>
+      {% endfor %}
+    
+    {% endblock %}
           
 
     </body>

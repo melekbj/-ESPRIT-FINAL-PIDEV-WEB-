@@ -1,0 +1,16 @@
+{% for label, messages in app.flashes %}
+    {% for message in messages %}
+        <div class="alert alert-{{ label }}{% if label == 'error' %} alert-danger{% endif %}">
+            {{ message }}
+        </div>
+    {% endfor %}
+{% endfor %}
+
+{{ form_start(form) }}
+    {{ form_label(form.libelle) }}
+    {{ form_widget(form.libelle) }}
+    {% if form_errors(form.libelle) %}
+        <div class="alert alert-danger">{{ form_errors(form.libelle) }}</div>
+    {% endif %}
+    <button class="btn">{{ button_label|default('Save') }}</button>
+{{ form_end(form) }}

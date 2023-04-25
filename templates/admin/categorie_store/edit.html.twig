@@ -1,0 +1,13 @@
+{% extends 'baseAdmin.html.twig' %}
+
+{% block title %}Edit CategorieStore{% endblock %}
+
+{% block body %}
+    <h1>Edit CategorieStore</h1>
+
+    {{ include('admin/categorie_store/_form.html.twig', {'button_label': 'Update'}) }}
+
+    <a href="{{ path('app_categorie_store_index') }}">back to list</a>
+
+    {{ include('admin/categorie_store/_delete_form.html.twig') }}
+{% endblock %}

@@ -39,6 +39,44 @@ class StoreRepository extends ServiceEntityRepository
         }
     }
 
+    public function findStoreByUserId(int $userId): ?Store
+    {
+        return $this->createQueryBuilder('s')
+            ->andWhere('s.user = :userId')
+            ->setParameter('userId', $userId)
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
+
+
+    public function findLocalisationOrNom($location,$nom): array
+    {
+            $qb = $this->createQueryBuilder('s');
+
+        if (!empty($location)) {
+            $ville = explode(',', $location)[0];
+            $qb->andWhere('s.location LIKE :ville')
+                ->setParameter('ville', $ville . '%');
+        }
+
+        if (!empty($nom)) {
+            $qb->andWhere('s.nom LIKE :nom')
+               ->setParameter('nom', '%' . $nom . '%');
+        }
+     
+        return $qb->getQuery()
+        ->getResult();
+    }
+    /**
+     * @return Store[] Returns an array of Store objects
+     */
+    public function findAll(): array
+    {
+        return $this->createQueryBuilder('s')
+            ->getQuery()
+            ->getResult();
+    }
+
 //    /**
 //     * @return Store[] Returns an array of Store objects
 //     */

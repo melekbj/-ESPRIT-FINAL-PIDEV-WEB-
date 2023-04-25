@@ -132,19 +132,19 @@ class ClientController extends AbstractController
         $evenement = $rep->find($id);
         // dd($evenement);
 
-        $event = new Reservation();
-        $event->setUser($user); // set the authenticated user in the $event object
-        $event->setEvent($evenement); // set the event based on the $id parameter
-        $form = $this->createForm(ReservationType::class, $event);
-        $form->handleRequest($request);
+        // $event = new Reservation();
+        // $event->setUser($user); // set the authenticated user in the $event object
+        // $event->setEvent($evenement); // set the event based on the $id parameter
+        // $form = $this->createForm(ReservationType::class, $event);
+        // $form->handleRequest($request);
 
-        if($form->isSubmitted() && $form->isValid()){
-            $entityManager = $doctrine->getManager();
-            $entityManager->persist($event);
-            $entityManager->flush();
-            $this->addFlash('success', 'Event type ajouté avec succès');
-            return $this->redirectToRoute('app_client_index');
-        }
+        // if($form->isSubmitted() && $form->isValid()){
+        //     $entityManager = $doctrine->getManager();
+        //     $entityManager->persist($event);
+        //     $entityManager->flush();
+        //     $this->addFlash('success', 'Event type ajouté avec succès');
+        //     return $this->redirectToRoute('app_client_index');
+        // }
 
         return $this->render('client/ReservationEvent/detail.html.twig', [
             'evenement' => $evenement,

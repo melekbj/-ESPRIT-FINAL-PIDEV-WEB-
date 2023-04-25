@@ -165,6 +165,14 @@ class Produit
         return $this->stores;
     }
 
+    /**
+     * @param Collection<int, Store> $stores
+     */
+    public function setStores(Collection $stores): void
+    {
+        $this->stores = $stores;
+    }
+
     public function addStore(Store $store): self
     {
         if (!$this->stores->contains($store)) {
