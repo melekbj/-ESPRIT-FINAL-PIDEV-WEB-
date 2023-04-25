@@ -20,6 +20,7 @@ class HomeController extends AbstractController
         $eventrepo = $entityManager->getRepository(Evenement::class);
         $events = $eventrepo->findAll();
 
+        
         return $this->render('home/index.html.twig', [
             'controller_name' => 'HomeController',
             'events' => $events,

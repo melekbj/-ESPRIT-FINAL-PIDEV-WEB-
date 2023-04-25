@@ -39,7 +39,7 @@ class RegisterType extends AbstractType
                 'choices'  => [
                     'Client' => 'ROLE_CLIENT',
                     'Partner' => 'ROLE_PARTNER',
-                    'Admin' => 'ROLE_ADMIN',
+                    // 'Admin' => 'ROLE_ADMIN',
                 ],
             ])
             ->add('nom')
