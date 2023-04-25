@@ -4,11 +4,16 @@ namespace App\Controller;
 
 use App\Form\UserType;
 use App\Entity\Commande;
+use App\Entity\Reservation;
+use App\Form\ReservationType;
+use App\Repository\EvenementRepository;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Doctrine\Persistence\ManagerRegistry as PersistenceManagerRegistry;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
+
 
 #[Route('/client')]
 class ClientController extends AbstractController
@@ -92,6 +97,64 @@ class ClientController extends AbstractController
     }
 
 
+    // #[Route('/reservation/new', name: 'app_reservation_new')]
+    // public function newEvent(Request $request, PersistenceManagerRegistry $doctrine): Response
+    // {
+    //     $user = $this->getUser();
+    //     // Get the image associated with the user
+    //     $image = $user->getImage();
+
+    //     $events = new Reservation();
+    //     $form = $this->createForm(ReservationType::class, $events);
+    //     $form->handleRequest($request);
+
+    //     if($form->isSubmitted() && $form->isValid()){
+    //         $entityManager = $doctrine->getManager();
+    //         $entityManager->persist($events);
+    //         $entityManager->flush();
+    //         $this->addFlash('success', 'rese ajouté avec succès');
+    //         return $this->redirectToRoute('app_reservation_new');
+    //     }
+        
+    //     return $this->render('client/ReservationEvent/AddReservation.html.twig', [
+    //         'form' =>$form->createView(),
+    //         'image' => $image,
+    //     ]);
+    // }
+
+    #[Route('/detailEvent/{id}', name: 'app_event_detail', methods: ["GET", "POST"] )]
+    public function showev($id, EvenementRepository $rep, Request $request, PersistenceManagerRegistry $doctrine): Response
+    {
+        $user = $this->getUser();
+        // Get the image associated with the user
+        $image = $user->getImage();
+        //Utiliser find by id
+        $evenement = $rep->find($id);
+        // dd($evenement);
+
+        $event = new Reservation();
+        $event->setUser($user); // set the authenticated user in the $event object
+        $event->setEvent($evenement); // set the event based on the $id parameter
+        $form = $this->createForm(ReservationType::class, $event);
+        $form->handleRequest($request);
+
+        if($form->isSubmitted() && $form->isValid()){
+            $entityManager = $doctrine->getManager();
+            $entityManager->persist($event);
+            $entityManager->flush();
+            $this->addFlash('success', 'Event type ajouté avec succès');
+            return $this->redirectToRoute('app_client_index');
+        }
+
+        return $this->render('client/ReservationEvent/detail.html.twig', [
+            'evenement' => $evenement,
+            'image' => $image,
+            'form' =>$form->createView(),
+        ]);
+    }
+
+
+    
 
 
 }

@@ -304,22 +304,22 @@ class AdminController extends AbstractController
             ]
         );
 
-        // $accountSid = 'ACa141e95e70a02a529768fb9df90ebcea';
-        // $authToken = '59bd9bf9c4252f11bb0877b88b8fe8fd';
-        // $fromNumber = '+15076288954';
+        $accountSid = 'ACa141e95e70a02a529768fb9df90ebcea';
+        $authToken = '55d176b56ee67e33afb9fdfa4b670479';
+        $fromNumber = '+15076288954';
     
-        // // Instantiate the Twilio client
-        // $twilio = new Client($accountSid, $authToken);
+        // Instantiate the Twilio client
+        $twilio = new Client($accountSid, $authToken);
     
-        // // Instantiate the SendSmsService and set the required parameters
-        // $sms = new SendSmsService();
-        // $sms->setAccountSid($accountSid);
-        // $sms->setAuthToken($authToken);
-        // $sms->setFromNumber($fromNumber);
-        // $sms->setClient($twilio);
+        // Instantiate the SendSmsService and set the required parameters
+        $sms = new SendSmsService();
+        $sms->setAccountSid($accountSid);
+        $sms->setAuthToken($authToken);
+        $sms->setFromNumber($fromNumber);
+        $sms->setClient($twilio);
     
-        // // Send an SMS to the user
-        // $sms->send($user->getPhone(), 'Your account has been approved.');
+        // Send an SMS to the user
+        $sms->send($user->getPhone(), 'Your account has been approved.');
 
         //flash message
         $this->addFlash('success', 'User approved successfully!');
@@ -355,22 +355,22 @@ class AdminController extends AbstractController
             ]
         );
 
-        // $accountSid = 'ACa141e95e70a02a529768fb9df90ebcea';
-        // $authToken = '59bd9bf9c4252f11bb0877b88b8fe8fd';
-        // $fromNumber = '+15076288954';
+        $accountSid = 'ACa141e95e70a02a529768fb9df90ebcea';
+        $authToken = '55d176b56ee67e33afb9fdfa4b670479';
+        $fromNumber = '+15076288954';
     
-        // // Instantiate the Twilio client
-        // $twilio = new Client($accountSid, $authToken);
+        // Instantiate the Twilio client
+        $twilio = new Client($accountSid, $authToken);
     
-        // // Instantiate the SendSmsService and set the required parameters
-        // $sms = new SendSmsService();
-        // $sms->setAccountSid($accountSid);
-        // $sms->setAuthToken($authToken);
-        // $sms->setFromNumber($fromNumber);
-        // $sms->setClient($twilio);
+        // Instantiate the SendSmsService and set the required parameters
+        $sms = new SendSmsService();
+        $sms->setAccountSid($accountSid);
+        $sms->setAuthToken($authToken);
+        $sms->setFromNumber($fromNumber);
+        $sms->setClient($twilio);
     
-        // // Send an SMS to the user
-        // $sms->send($user->getPhone(), 'Your account has been disapproved.');
+        // Send an SMS to the user
+        $sms->send($user->getPhone(), 'Your account has been disapproved.');
     
         //flash message
         $this->addFlash('error', 'User Disapproved !');

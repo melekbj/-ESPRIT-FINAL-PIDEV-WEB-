@@ -52,12 +52,20 @@ class Produit
     #[ORM\OneToMany(mappedBy: 'produit', targetEntity: RatingProduit::class)]
     private Collection $ratingProduits;
 
+    #[ORM\OneToMany(mappedBy: 'produit', targetEntity: Likedislike::class)]
+    private Collection $likedislikes;
+
+    #[ORM\OneToMany(mappedBy: 'produit', targetEntity: Commentaire::class)]
+    private Collection $commentaires;
+
     public function __construct()
     {
         $this->stores = new ArrayCollection();
         $this->detailCommandes = new ArrayCollection();
         $this->reclamations = new ArrayCollection();
         $this->ratingProduits = new ArrayCollection();
+        $this->likedislikes = new ArrayCollection();
+        $this->commentaires = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -280,5 +288,65 @@ class Produit
     public function getImageFile()
     {
         return $this->imageFile;
+    }
+
+    /**
+     * @return Collection<int, Likedislike>
+     */
+    public function getLikedislikes(): Collection
+    {
+        return $this->likedislikes;
+    }
+
+    public function addLikedislike(Likedislike $likedislike): self
+    {
+        if (!$this->likedislikes->contains($likedislike)) {
+            $this->likedislikes->add($likedislike);
+            $likedislike->setProduit($this);
+        }
+
+        return $this;
+    }
+
+    public function removeLikedislike(Likedislike $likedislike): self
+    {
+        if ($this->likedislikes->removeElement($likedislike)) {
+            // set the owning side to null (unless already changed)
+            if ($likedislike->getProduit() === $this) {
+                $likedislike->setProduit(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Commentaire>
+     */
+    public function getCommentaires(): Collection
+    {
+        return $this->commentaires;
+    }
+
+    public function addCommentaire(Commentaire $commentaire): self
+    {
+        if (!$this->commentaires->contains($commentaire)) {
+            $this->commentaires->add($commentaire);
+            $commentaire->setProduit($this);
+        }
+
+        return $this;
+    }
+
+    public function removeCommentaire(Commentaire $commentaire): self
+    {
+        if ($this->commentaires->removeElement($commentaire)) {
+            // set the owning side to null (unless already changed)
+            if ($commentaire->getProduit() === $this) {
+                $commentaire->setProduit(null);
+            }
+        }
+
+        return $this;
     }
 }
