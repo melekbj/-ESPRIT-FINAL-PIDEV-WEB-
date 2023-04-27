@@ -202,13 +202,13 @@
                     </div>
                   </div>
                 </form> #}
-                {% for flash_message in app.session.flashbag.get('error') %}
+                {# {% for flash_message in app.session.flashbag.get('error') %}
                   <div class="alert alert-danger">{{ flash_message }}</div>
-                {% endfor %}
+                {% endfor %} #}
 
-                {% for flash_message in app.session.flashbag.get('success') %}
+                {# {% for flash_message in app.session.flashbag.get('success') %}
                   <div class="alert alert-success">{{ flash_message }}</div>
-                {% endfor %}
+                {% endfor %} #}
                 {{ form_start(form, {'attr': {'class': 'your-form-class'}}) }}
                         
                         <div class="row">

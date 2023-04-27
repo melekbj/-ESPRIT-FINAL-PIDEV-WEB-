@@ -26,9 +26,9 @@ class ProductType extends AbstractType
             // ->add('categorie')
             // ->add('stores')
             ->add('save', SubmitType::class, [
-                'label' => 'Register',
+                'label' => 'Create new +',
                 'attr' => [
-                    'class' => 'btn btn-primary ml-5'
+                    'class' => 'btn btn-info'
                 ]
             ])
         ;

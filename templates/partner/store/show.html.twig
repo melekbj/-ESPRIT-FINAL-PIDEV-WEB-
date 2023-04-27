@@ -1,0 +1,305 @@
+{% extends 'basePartner.html.twig' %}
+
+{% block title %}Hello PartnerController!{% endblock %}
+
+{% block body %}
+{# <br><br><br><br><br><br><br><br>
+  {% if app.user %}
+        <div class="mb-3">
+            You are logged in as {{ app.user.userIdentifier }}, <a href="{{ path('app_logout') }}">Logout</a>
+        </div>
+    {% endif %} #}
+    <div class="col-md-6">
+      
+    </div>
+    
+
+    <div class="wrapper">
+   
+    <div class="main-panel">
+    
+      <div class="content">
+        {# <div class="row">
+          <div class="col-lg-3 col-md-6 col-sm-6">
+            <div class="card card-stats">
+              <div class="card-body ">
+                <div class="row">
+                  <div class="col-5 col-md-4">
+                    <div class="icon-big text-center icon-warning">
+                      <i class="nc-icon nc-globe text-warning"></i>
+                    </div>
+                  </div>
+                  <div class="col-7 col-md-8">
+                    <div class="numbers">
+                      <p class="card-category">Capacity</p>
+                      <p class="card-title">150GB<p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="card-footer ">
+                <hr>
+                <div class="stats">
+                  <i class="fa fa-refresh"></i>
+                  Update Now
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-lg-3 col-md-6 col-sm-6">
+            <div class="card card-stats">
+              <div class="card-body ">
+                <div class="row">
+                  <div class="col-5 col-md-4">
+                    <div class="icon-big text-center icon-warning">
+                      <i class="nc-icon nc-money-coins text-success"></i>
+                    </div>
+                  </div>
+                  <div class="col-7 col-md-8">
+                    <div class="numbers">
+                      <p class="card-category">Revenue</p>
+                      <p class="card-title">$ 1,345<p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="card-footer ">
+                <hr>
+                <div class="stats">
+                  <i class="fa fa-calendar-o"></i>
+                  Last day
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-lg-3 col-md-6 col-sm-6">
+            <div class="card card-stats">
+              <div class="card-body ">
+                <div class="row">
+                  <div class="col-5 col-md-4">
+                    <div class="icon-big text-center icon-warning">
+                      <i class="nc-icon nc-vector text-danger"></i>
+                    </div>
+                  </div>
+                  <div class="col-7 col-md-8">
+                    <div class="numbers">
+                      <p class="card-category">Errors</p>
+                      <p class="card-title">23<p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="card-footer ">
+                <hr>
+                <div class="stats">
+                  <i class="fa fa-clock-o"></i>
+                  In the last hour
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-lg-3 col-md-6 col-sm-6">
+            <div class="card card-stats">
+              <div class="card-body ">
+                <div class="row">
+                  <div class="col-5 col-md-4">
+                    <div class="icon-big text-center icon-warning">
+                      <i class="nc-icon nc-favourite-28 text-primary"></i>
+                    </div>
+                  </div>
+                  <div class="col-7 col-md-8">
+                    <div class="numbers">
+                      <p class="card-category">Followers</p>
+                      <p class="card-title">+45K<p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="card-footer ">
+                <hr>
+                <div class="stats">
+                  <i class="fa fa-refresh"></i>
+                  Update now
+                </div>
+              </div>
+            </div>
+          </div>
+        </div> #}
+        <div class="float-right">
+          <a href="{{path('app_product_new',{'id':store.id})}}" class="btn btn-success">Add product +</a>
+        </div>
+        <br><br><br><br>
+        <div class="row">
+          <div class="col-md-12">
+            <div class="card ">
+              <div class="card-header ">
+              {% for message in app.flashes('success') %}
+                  <div class="alert alert-success">
+                      {{ message }}
+                  </div>
+              {% endfor %}
+              {% for message in app.flashes('error') %}
+                  <div class="alert alert-danger">
+                      {{ message }}
+                  </div>
+              {% endfor %}
+                <h5 class="card-title">Store Information</h5>
+                {# <p class="card-category">24 Hours performance</p> #}
+              </div>
+              <div class="card-body ">
+                <table class="table">
+                    <tbody>
+                        {# <tr>
+                            <th>Id</th>
+                            <td>{{ store.id }}</td>
+                        </tr> #}
+                        <tr>
+                            <th>Nom</th>
+                            <td>{{ store.nom }}</td>
+                        </tr>
+                        <tr>
+                            <th>Location</th>
+                            <td>{{ store.location }}</td>
+                        </tr>
+                        {% if store.photo is not empty %}
+                        <tr>
+                            <th>Photo</th>
+                            <td>{% if store.photo %}
+                                  {% set imageUrl = vich_uploader_asset(store, 'imageFile') %}
+                                  <img style="width:75px;" src="{{ asset(imageUrl) }}" alt="img" />
+                                {% endif %}</td>
+                        </tr>
+                        {% endif %}
+                        <tr>
+                            <th>Categorie</th>
+                            <td>{{ store.Categorie.libelle }}</td>
+                        </tr>
+                        <tr>
+                            <th>Rating</th>
+                            <td>
+                                {% if app.user.getRoles() == 'ROLE_CLIENT' %}
+                                    <h2>Rate this store:</h2>
+                                {{ form_start(form) }}
+                                    {{ form_widget(form.rate, { 'attr': {'class': 'star-rating'} }) }}
+                                    <div class="star-rating">
+                                            {% set ratingValue = rating|round(1) %}
+                                            {% set fullStars = ratingValue|round(0, 'ceil') %}
+                                            {% set emptyStars = 5 - fullStars %}
+                                            {% for i in 1..fullStars %}
+                                                <i class="fas fa-star"></i>
+                                            {% endfor %}
+                                            {% if ratingValue > fullStars %}
+                                                <i class="fas fa-star-half-alt"></i>
+                                                {% set emptyStars = emptyStars - 1 %}
+                                            {% endif %}
+                                            {% for i in 1..emptyStars %}
+                                                <i class="far fa-star"></i>
+                                            {% endfor %}
+                                            <span class="rating-value">{{ ratingValue }}</span>
+                                        </div>
+                                    <button type="submit" class="btn btn-primary">Submit</button>
+                                    {{ form_end(form) }}
+                                {% else %}
+                                    {% if rating %}
+                                        <div class="star-rating">
+                                            {% set ratingValue = rating|round(1) %}
+                                            {% set fullStars = ratingValue|round(0, 'ceil') %}
+                                            {% set emptyStars = 5 - fullStars %}
+                                            {% for i in 1..fullStars %}
+                                                <i class="fas fa-star"></i>
+                                            {% endfor %}
+                                            {% if ratingValue > fullStars %}
+                                                <i class="fas fa-star-half-alt"></i>
+                                                {% set emptyStars = emptyStars - 1 %}
+                                            {% endif %}
+                                            {% for i in 1..emptyStars %}
+                                                <i class="far fa-star"></i>
+                                            {% endfor %}
+                                            <span class="rating-value">{{ ratingValue }}</span>
+                                        </div>
+                                    {% endif %}
+                                {% endif %}
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+                {% if app.user.getRoles() == 'ROLE_PARTNER' %}
+                    <a href="{{ path('app_store_edit_partner', {'id': store.id}) }}">Edit</a>
+                {% endif %}
+                
+              </div>
+              {# <div class="card-footer ">
+                <hr>
+                <div class="stats">
+                  <i class="fa fa-history"></i> Updated 3 minutes ago
+                </div>
+              </div> #}
+            </div>
+          </div>
+        </div>
+        {# <div class="row">
+          <div class="col-md-4">
+            <div class="card ">
+              <div class="card-header ">
+                <h5 class="card-title">Email Statistics</h5>
+                <p class="card-category">Last Campaign Performance</p>
+              </div>
+              <div class="card-body ">
+                <canvas id="chartEmail"></canvas>
+              </div>
+              <div class="card-footer ">
+                <div class="legend">
+                  <i class="fa fa-circle text-primary"></i> Opened
+                  <i class="fa fa-circle text-warning"></i> Read
+                  <i class="fa fa-circle text-danger"></i> Deleted
+                  <i class="fa fa-circle text-gray"></i> Unopened
+                </div>
+                <hr>
+                <div class="stats">
+                  <i class="fa fa-calendar"></i> Number of emails sent
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-8">
+            <div class="card card-chart">
+              <div class="card-header">
+                <h5 class="card-title">NASDAQ: AAPL</h5>
+                <p class="card-category">Line Chart with Points</p>
+              </div>
+              <div class="card-body">
+                <canvas id="speedChart" width="400" height="100"></canvas>
+              </div>
+              <div class="card-footer">
+                <div class="chart-legend">
+                  <i class="fa fa-circle text-info"></i> Tesla Model S
+                  <i class="fa fa-circle text-warning"></i> BMW 5 Series
+                </div>
+                <hr />
+                <div class="card-stats">
+                  <i class="fa fa-check"></i> Data information certified
+                </div>
+              </div>
+            </div>
+          </div>
+        </div> #}
+      </div>
+      
+    </div>
+  </div>
+
+
+    
+
+
+
+
+
+
+
+
+
+
+
+
+{% endblock %}

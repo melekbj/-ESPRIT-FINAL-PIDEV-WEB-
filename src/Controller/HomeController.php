@@ -5,12 +5,17 @@ namespace App\Controller;
 use App\Entity\User;
 use App\Entity\Produit;
 use App\Entity\Evenement;
+use App\Entity\Reservation;
+use App\Form\ReservationType;
 use App\Service\QrcodeService;
+use App\Repository\EvenementRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Doctrine\Persistence\ManagerRegistry as PersistenceManagerRegistry;
+
 
 class HomeController extends AbstractController
 {
@@ -81,6 +86,41 @@ class HomeController extends AbstractController
         ]);
     }
 
+
+    #[Route('/detailEvent/{id}', name: 'app_events_detail', methods: ["GET", "POST"] )]
+    public function showev($id, EvenementRepository $rep, Request $request, PersistenceManagerRegistry $doctrine): Response
+    {
+        $user = $this->getUser();
+        // Get the image associated with the user
+        // $image = $user->getImage();
+        //Utiliser find by id
+        $evenement = $rep->find($id);
+        // dd($evenement);
+
+        $event = new Reservation();
+        $event->setUser($user); // set the authenticated user in the $event object
+        $event->setEvent($evenement); // set the event based on the $id parameter
+        $form = $this->createForm(ReservationType::class, $event);
+        $form->handleRequest($request);
+
+        if($form->isSubmitted() && $form->isValid()){
+            $entityManager = $doctrine->getManager();
+            $entityManager->persist($event);
+            $entityManager->flush();
+            $this->addFlash('success', 'Reservation ajouté avec succès');
+            if ($this->getUser()->getRoles() == 'ROLE_PARTNER') {
+                return $this->redirectToRoute('app_partner');
+            } else {
+                return $this->redirectToRoute('app_client_index');
+            }
+        }
+
+        return $this->render('home/detailEvent.html.twig', [
+            'evenement' => $evenement,
+            // 'image' => $image,
+            'form' =>$form->createView(),
+        ]);
+    }
 
 
 

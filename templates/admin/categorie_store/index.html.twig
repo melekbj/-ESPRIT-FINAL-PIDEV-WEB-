@@ -1,0 +1,35 @@
+{% extends 'baseAdmin.html.twig' %}
+
+{% block title %}CategorieStore index{% endblock %}
+
+{% block body %}
+    <h1>CategorieStore index</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Libelle</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for categorie_store in categorie_stores %}
+            <tr>
+                <td>{{ categorie_store.id }}</td>
+                <td>{{ categorie_store.libelle }}</td>
+                <td>
+                    <a href="{{ path('app_categorie_store_show', {'id': categorie_store.id}) }}">show</a>
+                    <a href="{{ path('app_categorie_store_edit', {'id': categorie_store.id}) }}">edit</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="3">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_categorie_store_new') }}">Create new</a>
+{% endblock %}

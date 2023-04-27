@@ -1,0 +1,61 @@
+{% extends 'baseAdmin.html.twig' %}
+
+{% block title %}Liste des stores
+{% endblock %}
+
+{% block body %}
+	<head>
+		<!-- Flashy depends on jQuery -->
+		<script src="//code.jquery.com/jquery.js"></script>
+	</head>
+
+	<!-- Layout wrapper -->
+
+	<!-- Content -->
+
+
+	<div class="col-md-12">
+		<div class="card-body">
+			<!-- Contextual Classes -->
+
+			<div class="card">
+				<h5 class="card-header">Store {{ store.id }}</h5>
+				<div class="table-responsive text-nowrap">
+
+
+					<table class="table">
+						<tbody>
+							<tr>
+								<th>Store owner</th>
+								<td>{{ store.user.nom }} {{ store.user.prenom }}</td>
+							</tr>
+							<tr>
+								<th>Nom</th>
+								<td>{{ store.nom }}</td>
+							</tr>
+							<tr>
+								<th>Location</th>
+								<td>{{ store.location }}</td>
+							</tr>
+							<tr>
+								<th>Photo</th>
+								{% set imageUrl = vich_uploader_asset(store, 'imageFile') %}
+								<td><img src="{{ asset(imageUrl) }}" alt="user-avatar" style="width:50px"></td>
+							</tr>
+							<tr>
+								<th>Categorie</th>
+								<td>{{ store.Categorie.libelle }}</td>
+							</tr>
+						</tbody>
+					</table>
+
+				</div>
+			</div>
+		</div>
+	</div>
+
+	{# <a href="{{ path('app_store_index') }}">back to list</a> #}
+
+	{# {{ include('admin/store/_delete_form.html.twig') }} #}
+{% endblock %}
+

@@ -1,0 +1,62 @@
+
+
+
+{% extends 'baseClient.html.twig' %}
+
+{% block title %}SS | Home{% endblock %}
+
+{% block body %}
+
+<!-- partial -->
+      <div class="main-panel">        
+        <div class="content-wrapper">
+          <div class="row">
+            
+            <div class="col-12 grid-margin stretch-card">
+              <div class="card">
+                <div class="card-body">
+                {% for message in app.flashes('success') %}
+																<div class="alert alert-success">
+																	{{ message }}
+																</div>
+															{% endfor %}
+															{% for message in app.flashes('error') %}
+																<div class="alert alert-danger">
+																	{{ message }}
+																</div>
+															{% endfor %}
+                  <h4 class="card-title">Ajouter reclamation</h4>
+                  
+                  
+                  {{ form_start(form, { 'attr': { 'enctype': 'multipart/form-data', 'class': 'forms-sample' }, 'novalidate': 'novalidate' }) }}
+                    <div class="form-group">
+                        {{ form_label(form.description, 'Description') }}
+                        {{ form_widget(form.description, { 'attr': { 'class': 'form-control', 'placeholder': 'Enter a description' } }) }}
+                        <div class="invalid-feedback">
+                            Please enter a description with at least 3 words.
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        {{ form_label(form.type, 'Type') }}
+                        {{ form_widget(form.type, { 'attr': { 'class': 'form-control', 'placeholder': 'Enter a description' } }) }}
+                    </div>
+                    <div class="form-group">
+                        {{ form_label(form.imageFile, 'Image (JPEG, PNG, or GIF file)') }}
+                        {{ form_widget(form.imageFile, { 'attr': { 'class': 'form-control-file' } }) }}
+                    </div>
+                    <button type="submit" class="btn btn-primary">Reclamer</button>
+                {{ form_end(form) }}
+                </div>
+              </div>
+            </div>
+            
+          </div>
+        </div>
+        <!-- content-wrapper ends -->
+
+      </div>
+<!-- main-panel ends -->
+
+
+
+{% endblock %}

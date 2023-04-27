@@ -39,7 +39,6 @@ class Produit
     #[ORM\ManyToOne(inversedBy: 'produits')]
     private ?Categorie $categorie = null;
     
-
     #[ORM\ManyToMany(targetEntity: Store::class, mappedBy: 'produit')]
     private Collection $stores;
 
@@ -90,7 +89,7 @@ class Produit
         return $this->photo;
     }
 
-    public function setPhoto(string $photo): self
+    public function setPhoto(?string $photo): self
     {
         $this->photo = $photo;
 

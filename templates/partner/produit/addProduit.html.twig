@@ -1,0 +1,75 @@
+{% extends 'basePartner.html.twig' %}
+
+{% block title %}Hello PartnerController!{% endblock %}
+
+{% block body %}
+{# <br><br><br><br><br><br><br><br>
+  {% if app.user %}
+        <div class="mb-3">
+            You are logged in as {{ app.user.userIdentifier }}, <a href="{{ path('app_logout') }}">Logout</a>
+        </div>
+    {% endif %} #}
+    <div class="col-md-6">
+      
+    </div>
+    
+
+    <div class="wrapper">
+   
+    <div class="main-panel">
+    
+      <div class="content">
+        
+        
+        <div class="row">
+          <div class="col-md-12">
+            <div class="card ">
+              <div class="card-header ">
+              {% for message in app.flashes('success') %}
+                  <div class="alert alert-success">
+                      {{ message }}
+                  </div>
+              {% endfor %}
+              {% for message in app.flashes('error') %}
+                  <div class="alert alert-danger">
+                      {{ message }}
+                  </div>
+              {% endfor %}
+                <h5 class="card-title">Add product</h5>
+                {# <p class="card-category">24 Hours performance</p> #}
+              </div>
+              <div class="card-body ">
+               
+               {{form(form)}}
+                
+              </div>
+              {# <div class="card-footer ">
+                <hr>
+                <div class="stats">
+                  <i class="fa fa-history"></i> Updated 3 minutes ago
+                </div>
+              </div> #}
+            </div>
+          </div>
+        </div>
+      
+      </div>
+      
+    </div>
+  </div>
+
+
+    
+
+
+
+
+
+
+
+
+
+
+
+
+{% endblock %}

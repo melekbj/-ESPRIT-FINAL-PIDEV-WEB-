@@ -98,7 +98,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, \Serial
     #[ORM\OneToMany(mappedBy: 'user', targetEntity: Commande::class)]
     private Collection $commandes;
 
-    #[ORM\OneToMany(mappedBy: 'client', targetEntity: Reclamation::class)]
+    #[ORM\OneToMany(mappedBy: 'user', targetEntity: Reclamation::class)]
     private Collection $reclamations;
 
     #[ORM\OneToMany(mappedBy: 'user', targetEntity: Reservation::class)]
@@ -119,6 +119,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, \Serial
         $this->ratingProduits = new ArrayCollection();
         $this->likedislikes = new ArrayCollection();
         $this->commentaires = new ArrayCollection();
+        // $this->reclam = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -369,35 +370,35 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, \Serial
         return $this;
     }
 
-    /**
-     * @return Collection<int, Reclamation>
-     */
-    public function getReclamations(): Collection
-    {
-        return $this->reclamations;
-    }
+    // /**
+    //  * @return Collection<int, Reclamation>
+    //  */
+    // public function getReclamations(): Collection
+    // {
+    //     return $this->reclamations;
+    // }
 
-    public function addReclamation(Reclamation $reclamation): self
-    {
-        if (!$this->reclamations->contains($reclamation)) {
-            $this->reclamations->add($reclamation);
-            $reclamation->setClient($this);
-        }
+    // public function addReclamation(Reclamation $reclamation): self
+    // {
+    //     if (!$this->reclamations->contains($reclamation)) {
+    //         $this->reclamations->add($reclamation);
+    //         $reclamation->setClient($this);
+    //     }
 
-        return $this;
-    }
+    //     return $this;
+    // }
 
-    public function removeReclamation(Reclamation $reclamation): self
-    {
-        if ($this->reclamations->removeElement($reclamation)) {
-            // set the owning side to null (unless already changed)
-            if ($reclamation->getClient() === $this) {
-                $reclamation->setClient(null);
-            }
-        }
+    // public function removeReclamation(Reclamation $reclamation): self
+    // {
+    //     if ($this->reclamations->removeElement($reclamation)) {
+    //         // set the owning side to null (unless already changed)
+    //         if ($reclamation->getClient() === $this) {
+    //             $reclamation->setClient(null);
+    //         }
+    //     }
 
-        return $this;
-    }
+    //     return $this;
+    // }
 
     /**
      * @return Collection<int, Reservation>
@@ -474,6 +475,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, \Serial
 
     #[ORM\OneToMany(mappedBy: 'user', targetEntity: Commentaire::class)]
     private Collection $commentaires;
+
+    // #[ORM\OneToMany(mappedBy: 'user', targetEntity: Reclamation::class)]
+    // private Collection $reclam;
 
     public function getResetToken(): ?string
     {
@@ -639,6 +643,38 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, \Serial
             // set the owning side to null (unless already changed)
             if ($commentaire->getUser() === $this) {
                 $commentaire->setUser(null);
+            }
+        }
+
+        return $this;
+    }
+
+    
+
+    /**
+     * @return Collection<int, Reclamation>
+     */
+    public function getReclamation(): Collection
+    {
+        return $this->reclamations;
+    }
+
+    public function addReclamation(Reclamation $reclamations): self
+    {
+        if (!$this->reclamations->contains($reclamations)) {
+            $this->reclamations->add($reclamations);
+            $reclamations->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeReclamation(Reclamation $reclamations): self
+    {
+        if ($this->reclamations->removeElement($reclamations)) {
+            // set the owning side to null (unless already changed)
+            if ($reclamations->getUser() === $this) {
+                $reclamations->setUser(null);
             }
         }
 
