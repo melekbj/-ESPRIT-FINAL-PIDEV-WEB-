@@ -1,32 +1,75 @@
-{% extends "basePartner.html.twig" %}
+{% extends 'basePartner.html.twig' %}
 
+{% block title %}Hello PartnerController!{% endblock %}
 
 {% block body %}
+{# <br><br><br><br><br><br><br><br>
+  {% if app.user %}
+        <div class="mb-3">
+            You are logged in as {{ app.user.userIdentifier }}, <a href="{{ path('app_logout') }}">Logout</a>
+        </div>
+    {% endif %} #}
+    <div class="col-md-6">
+      
+    </div>
+    
 
-  {# {% for flash_message in app.session.flashbag.get('error') %}
-    <div class="alert alert-danger">{{ flash_message }}</div>
-  {% endfor %}
+    <div class="wrapper">
+   
+    <div class="main-panel">
+    
+      <div class="content">
+        
+        
+        <div class="row">
+          <div class="col-md-12">
+            <div class="card ">
+              <div class="card-header ">
+              {% for message in app.flashes('success') %}
+                  <div class="alert alert-success">
+                      {{ message }}
+                  </div>
+              {% endfor %}
+              {% for message in app.flashes('error') %}
+                  <div class="alert alert-danger">
+                      {{ message }}
+                  </div>
+              {% endfor %}
+                <h5 class="card-title">Add product</h5>
+                {# <p class="card-category">24 Hours performance</p> #}
+              </div>
+              <div class="card-body ">
+               
+               {{form(form)}}
+                
+              </div>
+              {# <div class="card-footer ">
+                <hr>
+                <div class="stats">
+                  <i class="fa fa-history"></i> Updated 3 minutes ago
+                </div>
+              </div> #}
+            </div>
+          </div>
+        </div>
+      
+      </div>
+      
+    </div>
+  </div>
 
-  {% for flash_message in app.session.flashbag.get('success') %}
-    <div class="alert alert-success">{{ flash_message }}</div>
-  {% endfor %} #}
 
-  {# {{form(form)}} #}
-                      {# {{ form_start(form, {'attr': {'class': 'your-form-class'}}) }} #}
-                        
-                        <div class="container" style="margin-left:20%">
-                                <div class="col-md-4">
-                                    {# {{ form_row(form.nom, {'label': 'Nom', 'attr': {'class': 'form-control'}}) }}
-                                    {{ form_row(form.imageFile, {'label': 'Image', 'attr': {'class': 'form-control'}}) }}
-                                    {{ form_row(form.prix, {'label': 'Prix', 'attr': {'class': 'form-control'}}) }}
-                                    {{ form_row(form.quantite, {'label': 'Quantite', 'attr': {'class': 'form-control'}}) }}
-                                    {{ form_row(form.etat, {'label': 'Etat', 'attr': {'class': 'form-control'}}) }} #}
-                                    {# {{form(form)}} #}
-                                </div>
-                                
-                       </div>         
-                        
+    
 
-                      {# {{ form_end(form) }} #}
+
+
+
+
+
+
+
+
+
+
 
 {% endblock %}

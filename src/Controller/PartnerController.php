@@ -10,7 +10,9 @@ use App\Form\ProductType;
 use App\Entity\CategorieStore;
 use App\Repository\StoreRepository;
 use App\Repository\RatingRepository;
+use App\Repository\ProduitRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\Persistence\ManagerRegistry;
 use App\Repository\CategorieStoreRepository;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Core\Security;
@@ -26,12 +28,12 @@ use Doctrine\Persistence\ManagerRegistry as PersistenceManagerRegistry;
 #[Route('/partner')]
 class PartnerController extends AbstractController
 {
-    private UploadHandler $uploadHandler;
+    // private UploadHandler $uploadHandler;
 
-    public function __construct(UploadHandler $uploadHandler)
-    {
-        $this->uploadHandler = $uploadHandler;
-    }
+    // public function __construct(UploadHandler $uploadHandler)
+    // {
+    //     $this->uploadHandler = $uploadHandler;
+    // }
 
     
     // #[Route('/', name: 'app_partner')]
@@ -53,6 +55,7 @@ class PartnerController extends AbstractController
     public function updateProfile(Request $request)
     {
         $entityManager = $this->getDoctrine()->getManager();
+
         $user = $this->getUser();
         // Get the image associated with the user
         $image = $user->getImage();
@@ -177,9 +180,9 @@ class PartnerController extends AbstractController
    
 // .........................................Gestion Store..........................................................
    
-        #[Route('/', name: 'app_partner')]
-        public function index(StoreRepository $storeRepository, Security $security): Response
-        {
+    #[Route('/', name: 'app_partner')]
+    public function index(StoreRepository $storeRepository, Security $security): Response
+    {
             
             $user = $security->getUser();
             $store = $storeRepository->findStoreByUserId($user->getId());
@@ -195,7 +198,7 @@ class PartnerController extends AbstractController
                 // For example, you could redirect them to the new store page
                 return $this->redirectToRoute('app_store_new_partner');
             }
-        }
+    }
  
 
     #[Route('/new/store', name: 'app_store_new_partner', methods: ['GET', 'POST'])]
@@ -278,17 +281,121 @@ class PartnerController extends AbstractController
 // .........................................Gestion Product Store..........................................................
 
     
-    #[Route('/new/produit', name: 'app_product_new')]
-    public function newProductinStore(Request $request, PersistenceManagerRegistry $doctrine, Security $security): Response
+    #[Route('/new/produit/{id}', name: 'app_product_new')]
+    public function newProductinStore(Request $request, PersistenceManagerRegistry $doctrine, Security $security,$id): Response
     {
+        $entityManager = $doctrine->getManager();
+        $store = $entityManager->getRepository(Store::class)->find($id);
+
+        if (!$store) {
+            throw $this->createNotFoundException('Store with ID '.$id.' not found');
+        }
+
+        $product = new Produit();
+        $form = $this->createForm(ProductType::class, $product);
+
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+            $store->addProduit($product);
+            $entityManager->persist($product);
+            $entityManager->flush();
+
+            // return $this->redirectToRoute('app_store_show_partner', ['id' => $id]);
+            return $this->redirectToRoute('app_products_store_liste');
+        }
+
         $user = $this->getUser();
         $image = $user->getImage(); 
 
         return $this->render('partner/produit/addProduit.html.twig', [
-           'image' => $image ,
-           'user' => $user
+        'form' => $form->createView(),
+        'image' => $image ,
+        'user' => $user
         ]);
     }
+
+
+    #[Route('/products_store/liste', name: 'app_products_store_liste')]
+    public function productsinStore(Request $request, PersistenceManagerRegistry $doctrine, EntityManagerInterface $entityManager): Response
+    {
+        $user = $this->getUser();
+        $image = $user->getImage();
+
+        $store = $doctrine->getManager()->getRepository(Store::class)->findOneBy(['user' => $user]);
+
+        if (!$store) {
+            throw $this->createNotFoundException('Store not found for user '.$user->getId());
+        }
+
+        $produits = $store->getProduit();
+
+        return $this->render('partner/ListProductInStore.html.twig', [
+            'produits' => $produits,
+            'image' => $image,
+            'store' => $store,
+            'user' =>$user
+        ]);
+    }
+
+
+    #[Route('/updateProduct/{id}', name: 'app_updateProduct')]
+    public function updateProduct($id, Request $request, ProduitRepository $rep, ManagerRegistry $doctrine): Response
+    {
+        // Get the current user
+        $user = $this->getUser();
+        // Get the image associated with the user
+        $image = $user->getImage();
+        // récupérer la classe à modifier
+        $produits = $rep->find($id);
+        // créer un formulaire
+        $form = $this->createForm(ProductType::class, $produits);
+        // récupérer les données saisies
+        $form->handleRequest($request);
+        // vérifier si le formulaire est soumis et valide
+        if ($form->isSubmitted() && $form->isValid()) {
+            // récupérer les données saisies
+            $produits = $form->getData();
+            // persister les données
+            $rep = $doctrine->getManager();
+            $rep->persist($produits);
+            $rep->flush();
+            //flash message
+            $this->addFlash('success', 'Product updated successfully!');
+            return $this->redirectToRoute('app_products_store_liste');
+        }
+        return $this->render('partner/produit/editProduct.html.twig', [
+            'form' => $form->createView(),
+            'image' => $image,
+            'user' => $user
+        ]);
+    }
+
+
+    #[Route('/deleteProduct/{id}', name: 'app_deleteProduct')]
+    public function deleteProduct($id, ProduitRepository $rep, ManagerRegistry $doctrine ): Response
+    {
+        //recuperer la classe a supprimer
+        $produits = $rep->find($id);
+        $rep=$doctrine->getManager();
+        //supprimer la classe        
+        $rep->remove($produits);
+        $rep->flush();
+        //flash message
+        $this->addFlash('success', 'Product deleted successfully!');
+        return $this->redirectToRoute('app_products_store_liste'); 
+        
+    }
+
+
+
+
+
+
+
+
+
+
+
 
 
 

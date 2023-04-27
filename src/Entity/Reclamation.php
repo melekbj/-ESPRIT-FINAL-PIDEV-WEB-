@@ -5,8 +5,13 @@ namespace App\Entity;
 use App\Repository\ReclamationRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\HttpFoundation\File\File;
+use Vich\UploaderBundle\Mapping\Annotation as Vich;
+use Symfony\Component\Validator\Constraints as Assert;
+
 
 #[ORM\Entity(repositoryClass: ReclamationRepository::class)]
+#[Vich\Uploadable]
 class Reclamation
 {
     #[ORM\Id]
@@ -20,7 +25,12 @@ class Reclamation
     #[ORM\Column(type: Types::DATE_MUTABLE)]
     private ?\DateTimeInterface $date = null;
 
+    
     #[ORM\Column(length: 255)]
+    #[Assert\Regex(
+        pattern: '/\b\w+\b\s+\b\w+\b\s+\b\w+\b/',
+        message: 'Description must contain at least 3 words.'
+    )]
     private ?string $description = null;
 
     #[ORM\ManyToOne(inversedBy: 'reclamations')]
@@ -29,14 +39,18 @@ class Reclamation
     #[ORM\ManyToOne(inversedBy: 'reclamations')]
     private ?produit $produit = null;
 
-    #[ORM\ManyToOne(inversedBy: 'reclamations')]
-    private ?user $client = null;
-
-    #[ORM\ManyToOne(inversedBy: 'reclamations')]
-    private ?user $admin = null;
 
     #[ORM\ManyToOne(inversedBy: 'reclamations')]
     private ?TypeReclamation $type = null;
+
+    #[Vich\UploadableField(mapping: 'reclamation_image', fileNameProperty: 'image')]
+    public ?File $imageFile = null;
+
+    #[ORM\Column(length: 255)]
+    private ?string $image = null;
+
+    #[ORM\ManyToOne(inversedBy: 'reclam')]
+    private ?User $user = null;
 
     public function getId(): ?int
     {
@@ -103,30 +117,6 @@ class Reclamation
         return $this;
     }
 
-    public function getClient(): ?user
-    {
-        return $this->client;
-    }
-
-    public function setClient(?user $client): self
-    {
-        $this->client = $client;
-
-        return $this;
-    }
-
-    public function getAdmin(): ?user
-    {
-        return $this->admin;
-    }
-
-    public function setAdmin(?user $admin): self
-    {
-        $this->admin = $admin;
-
-        return $this;
-    }
-
     public function getType(): ?TypeReclamation
     {
         return $this->type;
@@ -135,6 +125,30 @@ class Reclamation
     public function setType(?TypeReclamation $type): self
     {
         $this->type = $type;
+
+        return $this;
+    }
+
+    public function getImage(): ?string
+    {
+        return $this->image;
+    }
+
+    public function setImage(string $image): self
+    {
+        $this->image = $image;
+
+        return $this;
+    }
+
+    public function getUser(): ?User
+    {
+        return $this->user;
+    }
+
+    public function setUser(?User $user): self
+    {
+        $this->user = $user;
 
         return $this;
     }

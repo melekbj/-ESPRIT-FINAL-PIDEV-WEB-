@@ -1,0 +1,169 @@
+{% extends 'baseAdmin.html.twig' %}
+
+{% block title %}Liste des reclamations
+{% endblock %}
+
+{% block body %}
+	{# <div class="d-flex justify-content-between align-items-center mb-2">
+	    <button type="submit" class="btn btn-success" data-toggle="modal" data-target="#exampleModal">Create new event type</button>
+	    <a href="{{path('app_events_new')}}">
+	      <button type="submit" class="btn btn-info">Create new event</button>
+	    </a>
+	    <a class="text-primary" href="{{path('app_types_events_liste')}}"><i class="fs-5">Consulter la liste des types d'events</i></a>  
+	  </div>
+	
+	</div> #}
+	<div class="col-md-12">
+		<div class="card-body d-flex justify-content-between ">
+			<button type="submit" class="btn btn-success" data-toggle="modal" data-target="#exampleModal">Create new reclamation type</button>
+			<a class="text-primary" href="{{path('app_types_reclamation_liste')}}">
+				<i class="fs-6">Consulter la liste des types des reclamations</i>
+			</a>
+		</div>
+	</div>
+	<!-- Modal -->
+	<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+		<div class="modal-dialog" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title" id="exampleModalLabel">New Event Type</h5>
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+				</div>
+				<div class="modal-body">
+					{{form_start(typeForm)}}
+					{{form_errors(typeForm)}}
+
+					{{form_end(typeForm)}}
+				</div>
+				<div class="modal-footer">{# <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button> #}
+					{# <button type="submit" class="btn btn-primary">Save changes</button> #}
+				</div>
+			</div>
+		</div>
+	</div>
+
+
+	<div class="col-md-12">
+		<div
+			class="card-body">
+
+
+			<!-- Contextual Classes -->
+
+			<div class="card">
+				<h5 class="card-header">Liste des reclamations</h5>
+				<div class="table-responsive text-nowrap">
+					<table
+						class="table">
+						{# //display flash messages from controller #}
+						{% for message in app.flashes('success') %}
+							<div class="alert alert-success">
+								{{ message }}
+							</div>
+						{% endfor %}
+						<thead>
+							<tr>
+								<th>Description</th>
+								<th>Date</th>
+								<th>Produit image</th>
+								<th>User name</th>
+								<th>Type reclamation</th>
+								<th>Etat</th>
+								<th>Actions</th>
+								{# <th>Age</th>
+																									<th>Genre</th>
+																									<th>Etat</th>
+																									 #}
+							</tr>
+						</thead>
+						<tbody class="table-border-bottom-0">
+
+							{% for rec in reclamations %}
+
+
+								<tr
+									class="table-dark">
+
+									{# les noms majuscules #}
+
+									<td>{{ rec.description }}</td>
+									<td>{{ rec.date| date('Y-M-D') }}</td>
+									{% set imageUrl = vich_uploader_asset(rec, 'imageFile') %}
+									<td><img src="{{ asset(imageUrl) }}" alt="user-avatar" style="width:50px"></td>
+									<td>{{ rec.user.nom }}
+										{{ rec.user.prenom }}</td>
+									<td>{{ rec.type.nom }}</td>
+									{% if rec.etat == 'pending' %}
+										<td class="text-info">Pending</td>
+									{% elseif rec.etat == 'accepted' %}
+										<td class="text-success">Accepted</td>
+									{% elseif rec.etat == 'refused' %}
+										<td class="text-danger">Refused</td>
+									{% endif %}
+
+									{# <td>{{ rec.genre }}</td> #}
+
+									{# {% if user.etat == 1 %}
+																											<td>
+																												<span class="badge bg-label-info me-1">Pending</span>
+																											</td>
+																										{% elseif user.etat == -1 %}
+																											<td>
+																												<span class="badge bg-label-danger me-1">Blocked</span>
+																											</td>
+																										{% else %}
+																											<td>
+																												<span class="badge bg-label-success me-1">Well</span>
+																											</td>
+																										{% endif %} #}
+
+									<td>
+										<div class="dropdown">
+											<button type="button" class="btn p-0 dropdown-toggle hide-arrow" data-bs-toggle="dropdown">
+												<i class="bx bx-dots-vertical-rounded"></i>
+											</button>
+											<div class="dropdown-menu">
+
+												<form action="{{path('app_acceptR',{'id':rec.id})}}">
+													<button onclick="return confirm('Are you sure you want to accept this reclamation?')" type="submit" class="dropdown-item">
+														<i class='bx bx-like'></i>
+														Accepter
+													</button>
+												</form>
+
+												<form action="{{path('app_refusR',{'id':rec.id})}}">
+													<button onclick="return confirm('Are you sure you want to refuse this reclamation?')" class="dropdown-item">
+														<i class='bx bx-dislike'></i>
+														Refuser
+													</button>
+												</form>
+											</div>
+										</div>
+									</td>
+								</tr>
+
+
+							{% endfor %}
+
+
+							<!-- Modal -->
+
+
+						</tbody>
+					</table>
+				</div>
+			</div>
+			<!--/ Contextual Classes -->
+			<br>
+			{# <div class="pagination">
+																								{{ knp_pagination_render(users, 'pagination.html.twig') }}
+																							</div> #}
+
+
+		</div>
+	</div>
+
+</div></div></tbody></div></div></div><!-- / Content --></div><!-- Content wrapper --></div><!-- / Layout page --></div><!-- Overlay --></div><!-- / Layout wrapper --> {% endblock %}
+

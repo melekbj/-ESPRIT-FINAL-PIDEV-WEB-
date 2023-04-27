@@ -21,3 +21,7 @@ vich_uploader:
             uri_prefix:         /images/stores
             upload_destination: '%kernel.project_dir%/public/images/stores'
             namer:  Vich\UploaderBundle\Naming\OrignameNamer
+        reclamation_image:
+            uri_prefix:         /images/reclamations
+            upload_destination: '%kernel.project_dir%/public/images/reclamations'
+            namer:  Vich\UploaderBundle\Naming\OrignameNamer

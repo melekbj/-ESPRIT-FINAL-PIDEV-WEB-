@@ -11,19 +11,24 @@ use Twilio\Rest\Client;
 use App\Entity\Evenement;
 use App\Entity\EventType;
 use App\Form\RegisterType;
+use App\Entity\Reclamation;
 use App\Form\FormEventType;
 use App\Entity\CategorieStore;
 use App\Service\QrcodeService;
+use App\Entity\TypeReclamation;
 use App\Service\SendSmsService;
 use App\Service\SendMailService;
+use App\Form\ReclamationTypeType;
 use App\Repository\UserRepository;
 use App\Repository\StoreRepository;
 use App\Repository\EvenementRepository;
 use App\Repository\EventTypeRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use App\Repository\ReclamationRepository;
 use Doctrine\Persistence\ManagerRegistry;
 use Knp\Component\Pager\PaginatorInterface;
 use App\Repository\CategorieStoreRepository;
+use App\Repository\TypeReclamationRepository;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Core\Security;
 use Symfony\Component\HttpFoundation\Response;
@@ -508,6 +513,8 @@ class AdminController extends AbstractController
         ]);
     }
 
+// ................................................ Gesion Types Events..................................................................................................... 
+
     #[Route('/type_events/liste', name: 'app_types_events_liste')]
     public function EventsTypes(Request $request, PersistenceManagerRegistry $doctrine, EntityManagerInterface $entityManager): Response
     {
@@ -516,20 +523,8 @@ class AdminController extends AbstractController
         $image = $user->getImage();
 
         $eventRepository = $entityManager->getRepository(EventType::class);
-        $events = $eventRepository->findAll();;
+        $events = $eventRepository->findAll();
 
-        // $event = new EventType();
-        // $form = $this->createForm(FormEventType::class, $event);
-        // $form->handleRequest($request);
-
-        // if($form->isSubmitted() && $form->isValid()){
-        //     $entityManager = $doctrine->getManager();
-        //     $entityManager->persist($event);
-        //     $entityManager->flush();
-        //     $this->addFlash('success', 'Event type ajouté avec succès');
-        //     return $this->redirectToRoute('app_events_liste');
-        // }
-        
         return $this->render('admin/Events/listeTypesEvents.html.twig', [
             // 'typeForm' =>$form->createView(),
             'image' => $image,
@@ -556,24 +551,11 @@ class AdminController extends AbstractController
 
 
     #[Route('/list_stores', name: 'app_store_index', methods: ['GET'])]
-        // public function ListStore(CategorieStoreRepository $categorieStoreRepository,PersistenceManagerRegistry $doctrine, EntityManagerInterface $entityManager): Response
-        // {
-        //     $user = $this->getUser();
-        //     // Get the image associated with the user
-        //     $image = $user->getImage();
-        //     $store = $entityManager->getRepository(Store::class);
-        //     $stores = $store->findAll();
-
-        //     return $this->render('admin/store/index.html.twig', [
-        //         'stores' => $stores,
-        //         'image' => $image,
-        //     ]);
-        // }
-        public function liststore(StoreRepository $storeRepository, EntityManagerInterface $entityManager,Request $request): Response
-        {
+    public function liststore(StoreRepository $storeRepository, EntityManagerInterface $entityManager,Request $request): Response
+    {
             $user = $this->getUser();
-        // Get the image associated with the user
-        $image = $user->getImage();
+            // Get the image associated with the user
+            $image = $user->getImage();
             $location=$request->get('localtion');
             $nom=$request->get('nom');
     
@@ -601,30 +583,182 @@ class AdminController extends AbstractController
                 'averageRatings' => $averageRatings,
                 'image' => $image,
             ]);
-        }
+    }
 
-        #[Route('/store/{id}', name: 'app_store_show', methods: ['GET'])]
+    #[Route('/store/{id}', name: 'app_store_show', methods: ['GET'])]
     public function show(Store $store, Security $security, StoreRepository $storeRepository): Response
     {
-
+        $user = $this->getUser();
+        // Get the image associated with the user
+        $image = $user->getImage();
         return $this->render('admin/store/show.html.twig', [
             'store' => $store,
+            'image' => $image,
         ]);
     }
 
     #[Route('/categorie_store', name: 'app_categorie_store_index', methods: ['GET'])]
     public function ListCategorie(CategorieStoreRepository $categorieStoreRepository,PersistenceManagerRegistry $doctrine, EntityManagerInterface $entityManager): Response
     {
+            $user = $this->getUser();
+            // Get the image associated with the user
+            $image = $user->getImage();
+            $cat = $entityManager->getRepository(CategorieStore::class);
+            $categoriestores = $cat->findAll();
+
+            return $this->render('admin/categorie_store/index.html.twig', [
+                'categorie_store' => $categoriestores,
+                'image' => $image,
+            ]);
+    }
+
+// .........................................Gestion Reclamation..........................................................
+
+    #[Route('/liste_des_reclamation', name: 'app_reclamations_list')]
+    public function ListeReclamations(Request $request,PaginatorInterface $paginator,EntityManagerInterface $entityManager): Response
+    {
+            // Get the current user
+            $user = $this->getUser();
+            // Get the image associated with the user
+            $image = $user->getImage();
+
+            $recRepo = $entityManager->getRepository(Reclamation::class);
+            $reclamations = $recRepo->findAll();
+
+            $reclamationType = new TypeReclamation();
+            $form = $this->createForm(ReclamationTypeType::class, $reclamationType);
+            $form->handleRequest($request);
+
+            if ($form->isSubmitted() && $form->isValid()) {
+                $entityManager = $this->getDoctrine()->getManager();
+                $entityManager->persist($reclamationType);
+                $entityManager->flush();
+
+                $this->addFlash('success', 'Reclamation type added successfully.');
+
+                return $this->redirectToRoute('app_reclamations_list');
+            }
+            
+
+            return $this->render('admin/reclamation/listeReclamation.html.twig', [
+                'image' => $image,
+                'reclamations' => $reclamations,
+                'typeForm' => $form->createView(),
+            ]);
+    }
+
+    #[Route('/acceptR/{id}', name: 'app_acceptR')]
+    public function acceptR($id, ReclamationRepository $rep, ManagerRegistry $doctrine): Response
+    {
+            // Get the reclamation to deactivate
+            $reclamation = $rep->find($id);
+    
+            if (!$reclamation) {
+                throw $this->createNotFoundException('User not found');
+            }
+    
+            // Set the reclamation's etat to -1
+            $reclamation->setEtat('accepted');
+    
+    
+            $em = $doctrine->getManager();
+            $em->persist($reclamation);
+            $em->flush();
+            
+          
+            //flash message
+            $this->addFlash('success', 'reclamation accepeted successfully!');
+    
+            return $this->redirectToRoute('app_reclamations_list');
+    }
+    #[Route('/refuseR/{id}', name: 'app_refusR')]
+    public function refusR($id, ReclamationRepository $rep, ManagerRegistry $doctrine): Response
+    {
+            // Get the reclamation to deactivate
+            $reclamation = $rep->find($id);
+    
+            if (!$reclamation) {
+                throw $this->createNotFoundException('User not found');
+            }
+    
+            // Set the reclamation's etat to -1
+            $reclamation->setEtat('refused');
+    
+    
+            $em = $doctrine->getManager();
+            $em->persist($reclamation);
+            $em->flush();
+            
+          
+            //flash message
+            $this->addFlash('success', 'reclamation refused successfully!');
+    
+            return $this->redirectToRoute('app_reclamations_list');
+    }
+
+// .........................................Gestion Reclamation Type..........................................................
+    
+    #[Route('/type_reclamation/liste', name: 'app_types_reclamation_liste')]
+    public function ReclamationTypes(Request $request, PersistenceManagerRegistry $doctrine, EntityManagerInterface $entityManager): Response
+    {
         $user = $this->getUser();
         // Get the image associated with the user
         $image = $user->getImage();
-        $cat = $entityManager->getRepository(CategorieStore::class);
-        $categoriestores = $cat->findAll();
+        $recRepo = $entityManager->getRepository(TypeReclamation::class);
+        $reclamations = $recRepo->findAll();
+        return $this->render('admin/reclamation/listeTypeReclamation.html.twig', [
+            // 'typeForm' =>$form->createView(),
+            'image' => $image,
+            'reclamations' => $reclamations,
+        ]);
+    }
 
-        return $this->render('admin/categorie_store/index.html.twig', [
-            'categorie_store' => $categoriestores,
+
+    #[Route('/delete_Reclamation_type/{id}', name: 'app_deletetypeReclamation')]
+    public function deleteReclamationType($id, TypeReclamationRepository $rep, ManagerRegistry $doctrine ): Response
+    {
+        //recuperer la classe a supprimer
+        $reclamations = $rep->find($id);
+        $rep=$doctrine->getManager();
+        //supprimer la classe        
+        $rep->remove($reclamations);
+        $rep->flush();
+        //flash message
+        $this->addFlash('success', 'Reclamation types deleted successfully!');
+        return $this->redirectToRoute('app_types_reclamation_liste'); 
+        
+    }
+
+    #[Route('/delete_Reclamation_type/{id}', name: 'app_updatetypeReclamation')]
+    public function updateReclamationType($id, Request $request, TypeReclamationRepository $rep, ManagerRegistry $doctrine): Response
+    {
+        // Get the current user
+        $user = $this->getUser();
+        // Get the image associated with the user
+        $image = $user->getImage();
+        // récupérer la classe à modifier
+        $reclamations = $rep->find($id);
+        // créer un formulaire
+        $form = $this->createForm(ReclamationTypeType::class, $reclamations);
+        // récupérer les données saisies
+        $form->handleRequest($request);
+        // vérifier si le formulaire est soumis et valide
+        if ($form->isSubmitted() && $form->isValid()) {
+            // récupérer les données saisies
+            $reclamations = $form->getData();
+            // persister les données
+            $rep = $doctrine->getManager();
+            $rep->persist($reclamations);
+            $rep->flush();
+            //flash message
+            $this->addFlash('success', 'Event updated successfully!');
+            return $this->redirectToRoute('app_types_reclamation_liste');
+        }
+        return $this->render('admin/reclamation/editTypeReclamation.html.twig', [
+            'form' => $form->createView(),
             'image' => $image,
         ]);
     }
+
 
 }
