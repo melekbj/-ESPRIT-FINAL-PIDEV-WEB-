@@ -1,90 +1,3 @@
-{# {% extends 'base.html.twig' %}
-{% block title %}Evenement{% endblock %}
-
-{% block body %}
-<br></br>
-<br></br>
-<br></br>
-
-<br></br>
-<br></br>
-
-    <h1>Evenement</h1>
-
-    <table class="table">
-        <tbody>
-            <tr>
-                <th>Id</th>
-                <td>{{ evenement.id }}</td>
-            </tr>
-            <tr>
-                <th>Date_debut</th>
-                <td>{{ evenement.dateDebut ? evenement.dateDebut|date('Y-m-d') : '' }}</td>
-            </tr>
-            <tr>
-                <th>Date_fin</th>
-                <td>{{ evenement.dateFin ? evenement.dateFin|date('Y-m-d') : '' }}</td>
-            </tr>
-            <tr>
-                <th>ImageEv</th>
-                <td>{% if evenement.imageEv %}
-												{% set imageUrl = vich_uploader_asset(evenement, 'imageFile') %}
-												<img style="width:75px;" src="{{ asset(imageUrl) }}" alt="img" />
-											{% endif %}</td>
-            </tr>
-            <tr>
-                <th>LieuEv</th>
-                <td>{{ evenement.lieuEv }}</td>
-            </tr>
-            <tr>
-                <th>TitreEv</th>
-                <td>{{ evenement.titreEv }}</td>
-            </tr>
-            <tr>
-                <th>DescEv</th>
-                <td>{{ evenement.DescEv }}</td>
-            </tr>
-            <tr>
-                <th>NbMax</th>
-                <td>{{ evenement.nbMax }}</td>
-            </tr>
-        </tbody>
-    </table>
-    <div>
-      {% if not app.user %}
-              <div class="ro">
-                <h5>You need to connect first to reserve</h5> 
-                <a class="" href="{{path('app_login')}}">Connect</a> 
-              </div>
-      {% endif %}
-    </div>
-    
-    {% if app.user %}
-    
-            <button class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
-                Reserver
-            </button>
-        
-    {% endif %}
-
-    <button class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
-        Reserver
-    </button>
-
-
-  
-
-  
-
-    
-{% endblock %} #}
-
-
-
-
-
-
-
 {% extends "base.html.twig" %}
 {% block title %}SS | Products{% endblock %}
 {% block body %}
@@ -201,6 +114,8 @@
           <h5>From</h5> {{ evenement.dateDebut ? evenement.dateDebut|date('Y-m-d') : '' }}
 
           <h5>To</h5> {{ evenement.dateFin ? evenement.dateFin|date('Y-m-d') : '' }}
+
+		   <h5> Nombre de places Disponibles : {{ evenement.nbMax}}</h5>
           
           
           </div>

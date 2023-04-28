@@ -489,24 +489,28 @@
 						<div class="owl-carousel owl-theme product_slider">
 
 							<!-- Slide 1 -->
-
+							{% for produit in produits %}
 							<div class="owl-item product_slider_item">
 								<div class="product-item">
 									<div class="product discount">
 										<div class="product_image">
-											<img src="{{ asset('Assets/images/product_1.png')}}" alt="">
+											{% if produit.photo %}
+												{% set imageUrl = vich_uploader_asset(produit, 'imageFile') %}
+												<img src="{{ asset(imageUrl) }}" alt="img" />
+											{% endif %}
 										</div>
 										<div class="favorite favorite_left"></div>
 										<div class="product_bubble product_bubble_right product_bubble_red d-flex flex-column align-items-center"><span>-$20</span></div>
 										<div class="product_info">
-											<h6 class="product_name"><a href="single.html">Fujifilm X100T 16 MP Digital Camera (Silver)</a></h6>
-											<div class="product_price">$520.00<span>$590.00</span></div>
+											<h6 class="product_name mt-3"><a href="single.html">{{produit.nom}}</a></h6>
+											<h6 class="product_name mt-3"><a href="single.html">{{produit.quantite}} piéces en stock</a></h6>
+											<div class="product_price">{{produit.prix}} DT</div>
 										</div>
 									</div>
 								</div>
 							</div>
-
-							<!-- Slide 2 -->
+							{% endfor %}
+							{# <!-- Slide 2 -->
 
 							<div class="owl-item product_slider_item">
 								<div class="product-item women">
@@ -661,7 +665,7 @@
 										</div>
 									</div>
 								</div>
-							</div>
+							</div> #}
 						</div>
 
 						<!-- Slider Navigation -->

@@ -426,6 +426,8 @@ class AdminController extends AbstractController
         $image = $user->getImage();
 
         $events = new Evenement();
+        $events->setDateDebut(new \DateTime());
+        $events->setDateFin(new \DateTime());
         $form = $this->createForm(FormEvent::class, $events);
         $form->handleRequest($request);
 

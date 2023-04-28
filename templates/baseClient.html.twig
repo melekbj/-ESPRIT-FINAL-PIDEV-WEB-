@@ -212,11 +212,10 @@
                 <span class="nav-profile-name">{{app.user.nom}} {{app.user.prenom}}</span>
               </a>
               <div class="dropdown-menu dropdown-menu-right navbar-dropdown" aria-labelledby="profileDropdown">
-                <a href="{{path('app_client_profile')}}" class="dropdown-item">
-                {# <i class="typcn typcn-cog text-primary"></i> #}
+                {# <a href="{{path('app_client_profile')}}" class="dropdown-item">
                 <i class="typcn typcn-user-outline text-primary" ></i>
                 Profile
-                </a>
+                </a> #}
                 <a href="{{path('app_logout')}}" class="dropdown-item">
                 <i class="typcn typcn-power text-primary"></i>
                 Logout
@@ -288,16 +287,16 @@
             </div>
             <p class="sidebar-menu-title">Dash menu</p>
           </li>
-          <li class="nav-item">
+          {# <li class="nav-item">
             <a class="nav-link" href="index.html">
               <i class="typcn typcn-device-desktop menu-icon"></i>
               <span class="menu-title">Dashboard <span class="badge badge-primary ml-3">New</span></span>
             </a>
-          </li>
+          </li> #}
           <li class="nav-item">
-            <a class="nav-link" data-toggle="collapse" href="#ui-basic" aria-expanded="false" aria-controls="ui-basic">
+            <a class="nav-link" href="{{path('app_reclamation_list')}}" aria-expanded="false" aria-controls="ui-basic">
               <i class="typcn typcn-briefcase menu-icon"></i>
-              <span class="menu-title ">Historique des reservations</span>
+              <span class="menu-title ">Historique des reclamations</span>
               {# <i class="typcn typcn-chevron-right menu-arrow"></i> #}
             </a>
             <div class="collapse" id="ui-basic">
@@ -309,7 +308,7 @@
             </div>
           </li>
           <li class="nav-item">
-            <a class="nav-link" data-toggle="collapse" href="#form-elements" aria-expanded="false" aria-controls="form-elements">
+            <a class="nav-link"  href="#form-elements" aria-expanded="false" aria-controls="form-elements">
               <i class="typcn typcn-film menu-icon"></i>
               <span class="menu-title">Historique des commandes</span>
               {# <i class="menu-arrow"></i> #}
@@ -321,9 +320,9 @@
             </div>
           </li>
           <li class="nav-item">
-            <a class="nav-link" data-toggle="collapse" href="#charts" aria-expanded="false" aria-controls="charts">
+            <a class="nav-link"  href="{{path('app_reservation_list')}}" aria-expanded="false" aria-controls="charts">
               <i class="typcn typcn-chart-pie-outline menu-icon"></i>
-              <span class="menu-title">Historique des reclamations</span>
+              <span class="menu-title">Historique des reservations</span>
               {# <i class="menu-arrow"></i> #}
             </a>
             <div class="collapse" id="charts">
@@ -333,7 +332,7 @@
             </div>
           </li>
           {# <li class="nav-item">
-            <a class="nav-link" data-toggle="collapse" href="#tables" aria-expanded="false" aria-controls="tables">
+            <a class="nav-link"  href="#tables" aria-expanded="false" aria-controls="tables">
               <i class="typcn typcn-th-small-outline menu-icon"></i>
               <span class="menu-title">Tables</span>
               <i class="menu-arrow"></i>
@@ -345,7 +344,7 @@
             </div>
           </li>
           <li class="nav-item">
-            <a class="nav-link" data-toggle="collapse" href="#icons" aria-expanded="false" aria-controls="icons">
+            <a class="nav-link"  href="#icons" aria-expanded="false" aria-controls="icons">
               <i class="typcn typcn-compass menu-icon"></i>
               <span class="menu-title">Icons</span>
               <i class="menu-arrow"></i>
@@ -357,7 +356,7 @@
             </div>
           </li>
           <li class="nav-item">
-            <a class="nav-link" data-toggle="collapse" href="#auth" aria-expanded="false" aria-controls="auth">
+            <a class="nav-link"  href="#auth" aria-expanded="false" aria-controls="auth">
               <i class="typcn typcn-user-add-outline menu-icon"></i>
               <span class="menu-title">User Pages</span>
               <i class="menu-arrow"></i>

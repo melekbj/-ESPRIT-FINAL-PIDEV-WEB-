@@ -30,11 +30,15 @@ class HomeController extends AbstractController
         $storeRepo = $entityManager->getRepository(Store::class);
         $stores = $storeRepo->findAll();
 
+        $produitRepository = $entityManager->getRepository(Produit::class);
+        $produits = $produitRepository->findBy(['etat' => [1]]);
+
         
         return $this->render('home/index.html.twig', [
             'controller_name' => 'HomeController',
             'events' => $events,
             'stores' => $stores,
+            'produits' => $produits,
         ]);
     }
 
@@ -42,7 +46,7 @@ class HomeController extends AbstractController
     public function produitIndex(EntityManagerInterface $entityManager): Response
     {
         $produitRepository = $entityManager->getRepository(Produit::class);
-        $produits = $produitRepository->findAll();
+        $produits = $produitRepository->findBy(['etat' => [1]]);
 
         
         

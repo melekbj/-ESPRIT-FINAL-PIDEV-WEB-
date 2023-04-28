@@ -38,7 +38,7 @@ class ClientController extends AbstractController
     }
     
 
-    #[Route('/mon_profil', name: 'app_client_profile')]
+    #[Route('/', name: 'app_client_index')]
     public function updateProfile(Request $request)
     {
         $entityManager = $this->getDoctrine()->getManager();
@@ -102,61 +102,36 @@ class ClientController extends AbstractController
     }
 
 
-    // #[Route('/reservation/new', name: 'app_reservation_new')]
-    // public function newEvent(Request $request, PersistenceManagerRegistry $doctrine): Response
+    // #[Route('/detailEvent/{id}', name: 'app_event_detail', methods: ["GET", "POST"] )]
+    // public function showev($id, EvenementRepository $rep, Request $request, PersistenceManagerRegistry $doctrine): Response
     // {
     //     $user = $this->getUser();
     //     // Get the image associated with the user
     //     $image = $user->getImage();
+    //     //Utiliser find by id
+    //     $evenement = $rep->find($id);
+    //     // dd($evenement);
 
-    //     $events = new Reservation();
-    //     $form = $this->createForm(ReservationType::class, $events);
-    //     $form->handleRequest($request);
+    //     // $event = new Reservation();
+    //     // $event->setUser($user); // set the authenticated user in the $event object
+    //     // $event->setEvent($evenement); // set the event based on the $id parameter
+    //     // $form = $this->createForm(ReservationType::class, $event);
+    //     // $form->handleRequest($request);
 
-    //     if($form->isSubmitted() && $form->isValid()){
-    //         $entityManager = $doctrine->getManager();
-    //         $entityManager->persist($events);
-    //         $entityManager->flush();
-    //         $this->addFlash('success', 'rese ajouté avec succès');
-    //         return $this->redirectToRoute('app_reservation_new');
-    //     }
-        
-    //     return $this->render('client/ReservationEvent/AddReservation.html.twig', [
-    //         'form' =>$form->createView(),
+    //     // if($form->isSubmitted() && $form->isValid()){
+    //     //     $entityManager = $doctrine->getManager();
+    //     //     $entityManager->persist($event);
+    //     //     $entityManager->flush();
+    //     //     $this->addFlash('success', 'Event type ajouté avec succès');
+    //     //     return $this->redirectToRoute('app_client_index');
+    //     // }
+
+    //     return $this->render('client/ReservationEvent/detail.html.twig', [
+    //         'evenement' => $evenement,
     //         'image' => $image,
+    //         'form' =>$form->createView(),
     //     ]);
     // }
-
-    #[Route('/detailEvent/{id}', name: 'app_event_detail', methods: ["GET", "POST"] )]
-    public function showev($id, EvenementRepository $rep, Request $request, PersistenceManagerRegistry $doctrine): Response
-    {
-        $user = $this->getUser();
-        // Get the image associated with the user
-        $image = $user->getImage();
-        //Utiliser find by id
-        $evenement = $rep->find($id);
-        // dd($evenement);
-
-        // $event = new Reservation();
-        // $event->setUser($user); // set the authenticated user in the $event object
-        // $event->setEvent($evenement); // set the event based on the $id parameter
-        // $form = $this->createForm(ReservationType::class, $event);
-        // $form->handleRequest($request);
-
-        // if($form->isSubmitted() && $form->isValid()){
-        //     $entityManager = $doctrine->getManager();
-        //     $entityManager->persist($event);
-        //     $entityManager->flush();
-        //     $this->addFlash('success', 'Event type ajouté avec succès');
-        //     return $this->redirectToRoute('app_client_index');
-        // }
-
-        return $this->render('client/ReservationEvent/detail.html.twig', [
-            'evenement' => $evenement,
-            'image' => $image,
-            'form' =>$form->createView(),
-        ]);
-    }
 
 
 // .........................................Gestion Reclamation..........................................................
@@ -223,5 +198,41 @@ class ClientController extends AbstractController
             'image' => $image,
         ]);
     }
+
+
+    #[Route('/liste_reclamation', name: 'app_reclamation_list')]
+    public function ListReclamations(Request $request, EntityManagerInterface $entityManager, SluggerInterface $slugger): Response
+    {
+        $user = $this->getUser();
+        $userId = $user->getId();
+        // Get the image associated with the user
+        $image = $user->getImage();
+
+        $reclamationRepository = $entityManager->getRepository(Reclamation::class);
+        $reclamations = $reclamationRepository->findBy(['user' => $userId]);
+
+        return $this->render('client/historiqueReclamation.html.twig', [
+            'reclamations' => $reclamations,
+            'image' => $image,
+        ]);
+    }
+
+    #[Route('/liste_reservation', name: 'app_reservation_list')]
+    public function ListReservations(Request $request, EntityManagerInterface $entityManager, SluggerInterface $slugger): Response
+    {
+        $user = $this->getUser();
+        $userId = $user->getId();
+        // Get the image associated with the user
+        $image = $user->getImage();
+
+        $reserRepo = $entityManager->getRepository(Reservation::class);
+        $reservations = $reserRepo->findBy(['user' => $userId]);
+
+        return $this->render('client/historiqueReservation.html.twig', [
+            'reservations' => $reservations,
+            'image' => $image,
+        ]);
+    }
+
 
 }
