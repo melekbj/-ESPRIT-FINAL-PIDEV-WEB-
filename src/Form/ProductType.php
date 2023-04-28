@@ -3,9 +3,11 @@
 namespace App\Form;
 
 use App\Entity\Produit;
+use App\Entity\Categorie;
 use Symfony\Component\Form\AbstractType;
 use Vich\UploaderBundle\Form\Type\VichFileType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 
@@ -23,7 +25,18 @@ class ProductType extends AbstractType
             ->add('prix')
             ->add('quantite')
             // ->add('etat')
-            // ->add('categorie')
+            ->add('categorie',EntityType::class
+               , [
+                'class' => Categorie::class,
+                'choice_label' => 'nom',
+                'label' => 'Categorie Produit',
+                'placeholder' => 'Choose a categorie',
+                'required' => true,
+                'attr' => [
+                    'class' => 'form-control'
+                ]
+                
+                ])
             // ->add('stores')
             ->add('save', SubmitType::class, [
                 'label' => 'Create new +',

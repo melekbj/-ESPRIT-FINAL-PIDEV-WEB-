@@ -340,6 +340,72 @@
 		</div>
 	</div>
 
+	<!-- Our stores -->
+
+	<div class="best_sellers">
+		<div class="container">
+			<div class="row">
+				<div class="col text-center">
+					<div class="section_title new_arrivals_title">
+						<h2>Our Stores</h2>
+					</div>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col">
+					<div class="product_slider_container">
+						<div class="owl-carousel owl-theme product_slider">
+
+							<!-- Slide 1 -->
+							{% for s in stores %}
+
+							<div class="owl-item product_slider_item">
+							<a href="{{path('app_stores_detail', {'id': s.id})}}">
+								<div class="product-item">
+								
+									<div class="product discount">
+										<div class="product_image">
+											{# <img src="{{ asset('Assets/images/product_1.png')}}" alt=""> #}
+											{% if s.photo %}
+												{% set imageUrl = vich_uploader_asset(s, 'imageFile') %}
+												<img src="{{ asset(imageUrl) }}" alt="img" />
+											{% endif %}
+										</div>
+										<div class="favorite favorite_left"></div>
+										{# <div class="product_bubble product_bubble_right product_bubble_red d-flex flex-column align-items-center"><span>-$20</span></div> #}
+										<div class="product_info mb-2 mt-5">
+											<div class="product_name">{{s.nom}}</div>
+										</div>
+										<div class="product_info mb-2">
+											<div class="product_name">{{s.location}}</div>
+										</div>
+										<div class="product_info mb-2">
+											<div class="product_name">{{s.categorie.libelle}}</div>
+										</div>
+										<br>
+										<div class="blue_button add_to_cart_button mt-3"><a href="#">Reserver</a></div>
+									</div>
+								</div>
+							</div>
+							</a>
+							{% endfor %}
+							
+						</div>
+
+						<!-- Slider Navigation -->
+
+						<div class="product_slider_nav_left product_slider_nav d-flex align-items-center justify-content-center flex-column">
+							<i class="fa fa-chevron-left" aria-hidden="true"></i>
+						</div>
+						<div class="product_slider_nav_right product_slider_nav d-flex align-items-center justify-content-center flex-column">
+							<i class="fa fa-chevron-right" aria-hidden="true"></i>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
 	<!-- liste events -->
 
 	<div class="best_sellers">
@@ -357,7 +423,7 @@
 						<div class="owl-carousel owl-theme product_slider">
 
 							<!-- Slide 1 -->
-{% for e in events %}
+							{% for e in events %}
 
 							<div class="owl-item product_slider_item">
 							<a href="{{path('app_events_detail', {'id': e.id})}}">
@@ -388,7 +454,7 @@
 								</div>
 							</div>
 							</a>
-{% endfor %}
+							{% endfor %}
 							
 						</div>
 
