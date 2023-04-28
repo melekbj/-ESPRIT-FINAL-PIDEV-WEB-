@@ -3,11 +3,13 @@
 namespace App\Controller;
 
 use App\Entity\User;
+use App\Entity\Store;
 use App\Entity\Produit;
 use App\Entity\Evenement;
 use App\Entity\Reservation;
 use App\Form\ReservationType;
 use App\Service\QrcodeService;
+use App\Repository\StoreRepository;
 use App\Repository\EvenementRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -25,10 +27,18 @@ class HomeController extends AbstractController
         $eventrepo = $entityManager->getRepository(Evenement::class);
         $events = $eventrepo->findAll();
 
+        $storeRepo = $entityManager->getRepository(Store::class);
+        $stores = $storeRepo->findAll();
+
+        $produitRepository = $entityManager->getRepository(Produit::class);
+        $produits = $produitRepository->findBy(['etat' => [1]]);
+
         
         return $this->render('home/index.html.twig', [
             'controller_name' => 'HomeController',
             'events' => $events,
+            'stores' => $stores,
+            'produits' => $produits,
         ]);
     }
 
@@ -36,7 +46,7 @@ class HomeController extends AbstractController
     public function produitIndex(EntityManagerInterface $entityManager): Response
     {
         $produitRepository = $entityManager->getRepository(Produit::class);
-        $produits = $produitRepository->findAll();
+        $produits = $produitRepository->findBy(['etat' => [1]]);
 
         
         
@@ -100,6 +110,7 @@ class HomeController extends AbstractController
         $event = new Reservation();
         $event->setUser($user); // set the authenticated user in the $event object
         $event->setEvent($evenement); // set the event based on the $id parameter
+        $event->setDate(new \DateTime()); // set the authenticated user in the $event object
         $form = $this->createForm(ReservationType::class, $event);
         $form->handleRequest($request);
 
@@ -119,6 +130,41 @@ class HomeController extends AbstractController
             'evenement' => $evenement,
             // 'image' => $image,
             'form' =>$form->createView(),
+        ]);
+    }
+
+    #[Route('/detailStore/{id}', name: 'app_stores_detail', methods: ["GET", "POST"] )]
+    public function showStore($id, StoreRepository $rep, Request $request, PersistenceManagerRegistry $doctrine): Response
+    {
+        $user = $this->getUser();
+        // Get the image associated with the user
+        // $image = $user->getImage();
+        //Utiliser find by id
+        $stores = $rep->find($id);
+        // dd($evenement);
+
+        // $event = new Reservation();
+        // $event->setUser($user); // set the authenticated user in the $event object
+        // $event->setEvent($evenement); // set the event based on the $id parameter
+        // $form = $this->createForm(ReservationType::class, $event);
+        // $form->handleRequest($request);
+
+        // if($form->isSubmitted() && $form->isValid()){
+        //     $entityManager = $doctrine->getManager();
+        //     $entityManager->persist($event);
+        //     $entityManager->flush();
+        //     $this->addFlash('success', 'Reservation ajouté avec succès');
+        //     if ($this->getUser()->getRoles() == 'ROLE_PARTNER') {
+        //         return $this->redirectToRoute('app_partner');
+        //     } else {
+        //         return $this->redirectToRoute('app_client_index');
+        //     }
+        // }
+
+        return $this->render('home/detailStore.html.twig', [
+            'stores' => $stores,
+            // 'image' => $image,
+            // 'form' =>$form->createView(),
         ]);
     }
 

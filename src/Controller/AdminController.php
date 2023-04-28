@@ -6,8 +6,10 @@ use App\Entity\User;
 use App\Entity\Store;
 use App\Entity\Rating;
 use App\Form\UserType;
+use App\Entity\Produit;
 use App\Form\FormEvent;
 use Twilio\Rest\Client;
+use App\Entity\Categorie;
 use App\Entity\Evenement;
 use App\Entity\EventType;
 use App\Form\RegisterType;
@@ -19,8 +21,11 @@ use App\Entity\TypeReclamation;
 use App\Service\SendSmsService;
 use App\Service\SendMailService;
 use App\Form\ReclamationTypeType;
+use App\Form\CategorieProduitType;
 use App\Repository\UserRepository;
 use App\Repository\StoreRepository;
+use App\Repository\ProduitRepository;
+use App\Repository\CategorieRepository;
 use App\Repository\EvenementRepository;
 use App\Repository\EventTypeRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -421,6 +426,8 @@ class AdminController extends AbstractController
         $image = $user->getImage();
 
         $events = new Evenement();
+        $events->setDateDebut(new \DateTime());
+        $events->setDateFin(new \DateTime());
         $form = $this->createForm(FormEvent::class, $events);
         $form->handleRequest($request);
 
@@ -654,7 +661,7 @@ class AdminController extends AbstractController
             $reclamation = $rep->find($id);
     
             if (!$reclamation) {
-                throw $this->createNotFoundException('User not found');
+                throw $this->createNotFoundException('Reclamation not found');
             }
     
             // Set the reclamation's etat to -1
@@ -671,6 +678,7 @@ class AdminController extends AbstractController
     
             return $this->redirectToRoute('app_reclamations_list');
     }
+
     #[Route('/refuseR/{id}', name: 'app_refusR')]
     public function refusR($id, ReclamationRepository $rep, ManagerRegistry $doctrine): Response
     {
@@ -678,7 +686,7 @@ class AdminController extends AbstractController
             $reclamation = $rep->find($id);
     
             if (!$reclamation) {
-                throw $this->createNotFoundException('User not found');
+                throw $this->createNotFoundException('Reclamation not found');
             }
     
             // Set the reclamation's etat to -1
@@ -760,5 +768,137 @@ class AdminController extends AbstractController
         ]);
     }
 
+// ................................................ Gesion Produits..................................................................................................... 
+
+    #[Route('/liste_des_produits', name: 'app_products_list')]
+    public function ListeProducts(Request $request,PaginatorInterface $paginator,EntityManagerInterface $entityManager): Response
+    {
+            // Get the current user
+            $user = $this->getUser();
+            // Get the image associated with the user
+            $image = $user->getImage();
+
+            $prodRepo = $entityManager->getRepository(Produit::class);
+            $produits = $prodRepo->findAll();
+
+            $catProd = new Categorie();
+            $form = $this->createForm(CategorieProduitType::class, $catProd);
+            $form->handleRequest($request);
+
+            if ($form->isSubmitted() && $form->isValid()) {
+                $entityManager = $this->getDoctrine()->getManager();
+                $entityManager->persist($catProd);
+                $entityManager->flush();
+
+                $this->addFlash('success', 'Category added successfully.');
+
+                return $this->redirectToRoute('app_products_list');
+            }
+            
+
+            return $this->render('admin/produit/listeProduit.html.twig', [
+                'image' => $image,
+                'produits' => $produits,
+                'typeForm' => $form->createView(),
+            ]);
+    }
+
+    #[Route('/liste_des_categories_produits', name: 'app_category_products_list')]
+    public function ListeCatProducts(Request $request,PaginatorInterface $paginator,EntityManagerInterface $entityManager): Response
+    {
+            // Get the current user
+            $user = $this->getUser();
+            // Get the image associated with the user
+            $image = $user->getImage();
+
+            $prodRepo = $entityManager->getRepository(Categorie::class);
+            $categories = $prodRepo->findAll();
+
+            // $reclamationType = new TypeReclamation();
+            // $form = $this->createForm(ReclamationTypeType::class, $reclamationType);
+            // $form->handleRequest($request);
+
+            // if ($form->isSubmitted() && $form->isValid()) {
+            //     $entityManager = $this->getDoctrine()->getManager();
+            //     $entityManager->persist($reclamationType);
+            //     $entityManager->flush();
+
+            //     $this->addFlash('success', 'Reclamation type added successfully.');
+
+            //     return $this->redirectToRoute('app_produits_list');
+            // }
+            
+
+            return $this->render('admin/produit/listeCategoriesProduit.html.twig', [
+                'image' => $image,
+                'categories' => $categories,
+                // 'typeForm' => $form->createView(),
+            ]);
+    }
+
+    #[Route('/delete_product_type/{id}', name: 'app_deleteProductType')]
+    public function deleteProductType($id, CategorieRepository $rep, ManagerRegistry $doctrine ): Response
+    {
+        //recuperer la classe a supprimer
+        $categories = $rep->find($id);
+        $rep=$doctrine->getManager();
+        //supprimer la classe        
+        $rep->remove($categories);
+        $rep->flush();
+        //flash message
+        $this->addFlash('success', 'Category deleted successfully!');
+        return $this->redirectToRoute('app_category_products_list'); 
+        
+    }
+
+    #[Route('/acceptP/{id}', name: 'app_acceptP')]
+    public function acceptProduct($id, ProduitRepository $rep, ManagerRegistry $doctrine): Response
+    {
+            // Get the reclamation to deactivate
+            $produit = $rep->find($id);
+    
+            if (!$produit) {
+                throw $this->createNotFoundException('Produit not found');
+            }
+    
+            // Set the produit's etat to 1
+            $produit->setEtat(1);
+    
+    
+            $em = $doctrine->getManager();
+            $em->persist($produit);
+            $em->flush();
+            
+          
+            //flash message
+            $this->addFlash('success', 'Produit accepeted successfully!');
+    
+            return $this->redirectToRoute('app_products_list');
+    }
+
+    #[Route('/refusP/{id}', name: 'app_refusP')]
+    public function rejectProduct($id, ProduitRepository $rep, ManagerRegistry $doctrine): Response
+    {
+            // Get the reclamation to deactivate
+            $produit = $rep->find($id);
+    
+            if (!$produit) {
+                throw $this->createNotFoundException('Produit not found');
+            }
+    
+            // Set the produit's etat to 1
+            $produit->setEtat(-1);
+    
+    
+            $em = $doctrine->getManager();
+            $em->persist($produit);
+            $em->flush();
+            
+          
+            //flash message
+            $this->addFlash('success', 'Produit accepeted successfully!');
+    
+            return $this->redirectToRoute('app_products_list');
+    }
 
 }

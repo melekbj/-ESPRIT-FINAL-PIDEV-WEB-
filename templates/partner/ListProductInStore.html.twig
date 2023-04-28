@@ -72,6 +72,10 @@
 										<td>{{ product.quantite }}</td>
                     {% if product.etat == 0 %}
                       <td class="text-info"> <strong>Pending</strong></td>
+                    {% elseif product.etat == 1 %}
+                      <td class="text-success"> <strong>Published</strong></td>
+                    {% else %}
+                    <td class="text-danger"> <strong>Rejected</strong></td>
                     {% endif %}
                     
                     <td>

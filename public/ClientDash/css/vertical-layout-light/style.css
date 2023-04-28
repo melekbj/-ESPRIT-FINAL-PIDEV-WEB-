@@ -23242,7 +23242,7 @@ body.avgrund-active {
   -webkit-align-items: center;
   align-items: center;
   white-space: nowrap;
-  padding: 0.75rem 1.75rem 0.75rem 1.75rem;
+  /* padding: 0.75rem 1.75rem 0.75rem 1.75rem; */
   color: #939393;
   -webkit-transition-duration: 0.45s;
   -moz-transition-duration: 0.45s;

@@ -39,40 +39,65 @@
 														
 
 
-<form action="{{ path('app_store_index') }}" method="get">
-    <input type="text" name="nom">
-    <select  name="localtion" class="form-group">
- <option value="">None</option>
- <option value="Ariana">Ariana</option>
-  <option value="Beja">Beja</option>
-  <option value="Ben Arous">Ben Arous</option>
-  <option value="Bizerte">Bizerte</option>   
-  <option value="Gabes">Gabes</option>    
-  <option value="Gafsa">Gafsa</option>    
-  <option value="Jendouba">Jendouba</option>    
-  <option value="Kairouan">Kairouan</option>    
-  <option value="Kasserine">Kasserine</option>    
-  <option value="Kebili">Kebili</option>  
-  <option value="Kef">Kef</option>    
-  <option value="Mahdia">Mahdia</option>      
-    <option value="Manouba">Manouba</option>   
-  <option value="Medenine">Medenine</option>    
-  <option value="Monastir">Monastir</option>    
-  <option value="Nabeul">Nabeul</option>    
-  <option value="Sfax">Sfax</option>    
-  <option value="Sidi Bouzid">Sidi Bouzid</option>    
-  <option value="Siliana">Siliana</option>  
-  <option value="Sousse">Sousse</option>    
-  <option value="Tataouine">Tataouine</option>     
-    <option value="Tozeur">Tozeur</option>   
-  <option value="Tunis">Tunis</option>    
-  <option value="Zaghouan">Zaghouan</option>    
-  
+
+<form action="{{ path('app_store_index') }}" method="GET" class="form-inline">
+	<div class="container">
+		<div class="row">
+			<div class="col-sm-4">
+				<div class="form-group">
+					<label for="nom">Name:</label>
+					<input type="text" name="nom" id="nom" class="form-control">
+				</div>
+			</div>
+			{# <div class="col-sm-4">
+				<div class="form-group">
+					<label for="location">Location:</label>
+					<select name="location" id="location" class="form-control">
+						<option value="">None</option>
+						<option value="Ariana">Ariana</option>
+						<option value="Beja">Beja</option>
+						<option value="Ben Arous">Ben Arous</option>
+						<option value="Bizerte">Bizerte</option>
+						<option value="Gabes">Gabes</option>
+						<option value="Gafsa">Gafsa</option>
+						<option value="Jendouba">Jendouba</option>
+						<option value="Kairouan">Kairouan</option>
+						<option value="Kasserine">Kasserine</option>
+						<option value="Kebili">Kebili</option>
+						<option value="Kef">Kef</option>
+						<option value="Mahdia">Mahdia</option>
+						<option value="Manouba">Manouba</option>
+						<option value="Medenine">Medenine</option>
+						<option value="Monastir">Monastir</option>
+						<option value="Nabeul">Nabeul</option>
+						<option value="Sfax">Sfax</option>
+						<option value="Sidi Bouzid">Sidi Bouzid</option>
+						<option value="Siliana">Siliana</option>
+						<option value="Sousse">Sousse</option>
+						<option value="Tataouine">Tataouine</option>
+						<option value="Tozeur">Tozeur</option>
+						<option value="Tunis">Tunis</option>
+						<option value="Zaghouan">Zaghouan</option>
+					</select>
+				</div>
+			</div> #}
+			<div class="col-sm-4">
+				<div class="mt-4">
+					<button class="btn btn-primary" type="submit">Filter</button>
+				</div>
+			</div>
+		</div>
+	</div>
 
 
-  </select>
-    <button class="btn btn-primary" type="submit">Filter</button>
-    </form>
+</form>
+
+
+
+
+
+
+
     <br>
     <table class="table">
         <thead>
