@@ -209,11 +209,29 @@
 													<div class="product_price">{{produit.prix}} DT<span>{{produit.quantite}} </span></div>
 												</div>
 											</div>
-											<div class="red_button add_to_cart_button"><a href="#">add to cart</a></div>
+											<!-- <a href="{{path('app_cart_addscript',{'id':produit.id})}}" >Add to Cart</a> -->
+					{% set addToCartPath = path('app_cart_addscript', {'id': produit.id}) %}
+					{# <button type="button" onclick="addToCart('{{ addToCartPath }}')">Add to Cart</button> #}
+											<div class="red_button add_to_cart_button"><a onclick="addToCart('{{ addToCartPath }}')" href="#">add to cart</a></div>
 										</div>
 									{% endfor %}
 
+	<script>
+		function addToCart(currentid) {
 
+
+var xhr = new XMLHttpRequest();
+xhr.open('POST', currentid, true);
+xhr.onload = function () {
+if (xhr.status === 200) {
+console.log('item added = ' + currentid);
+} else {
+console.log('Request failed.  Returned status of ' + xhr.status);
+}
+};
+xhr.send();
+}
+	</script>
 									
 
 									<!-- Product 2 -->

@@ -1,0 +1,141 @@
+{% extends 'baseClient.html.twig' %}
+
+{% block title %}SS | Home{% endblock %}
+
+{% block body %}
+
+
+<div class="row" id="proBanner">
+     
+    </div>
+    <div class="container-scroller">
+        <div class="main-panel">
+          <div class="content-wrapper">
+            <div class="row">
+            <div class="">
+                <form method="get" action="{{ path('app_historique') }}">
+                    <label>État:</label>
+                    <select name="etat">
+                        <option value="">Tous</option>
+                        <option value="Pending">Pending</option>
+                        <option value="Progress">Progress</option>
+                        <option value="Completed">Completed</option>
+                    </select>
+                    <label>Prix:</label>
+                    <select name="prixOrder">
+                        <option value="">Aucun</option>
+                        <option value="ASC">Prix croissant</option>
+                        <option value="DESC">Prix décroissant</option>
+                    </select>
+                    <label for="min">Min price</label>
+                    <input name="min">
+                    <label for="max">max price</label>
+                    <input name="max">
+                    <input type="submit" value="Filtrer">
+                </form>
+
+            </div>
+
+
+              <div class=" grid-margin stretch-card">
+              <div class="card">
+                <div class="card-body">
+                  <h4 class="card-title">Historique des reclamations</h4>
+                  <div class="table-responsive pt-3">
+                
+                    <table class="table table-bordered">
+                      <thead>
+                        <tr>
+                          {# <th>
+                            ID
+                          </th>
+                          <th>
+                            User
+                          </th> #}
+                          <th>
+                            User Name
+                          </th>
+                          <th>
+                            Price
+                          </th>
+                          <th>
+                            Etat
+                          </th>
+                          <th>
+                            Destination
+                          </th>
+                          <th>
+                            Actions
+                          </th>
+
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {% for completeCommande in historiquecommande %}
+                        <tr>
+                          {# <td>
+                            {{rec.id}}
+                          </td>
+                          <td>
+                            {{rec.user.nom}}
+                          </td> #}
+                            <td>
+                                {{completeCommande.user.nom}}
+                            </td>
+                            <td>
+                                {{completeCommande.prix }} DT
+                            </td>
+                            <td>
+                                {{ completeCommande.etat }}
+
+                            </td>
+
+                            <td>
+                                {{ completeCommande.destination }}
+
+                            </td>
+
+                            <td>
+                                <form>
+                                    <input name="commandedetail" value="{{ completeCommande.id }}" hidden>
+                                    <input type="submit" value="commande detail">
+                                </form><br>
+                               
+                            </td>
+                            <td> {% if completeCommande.etat == "Pending" %}
+
+                                    <a href="{{ path('app_commande_delete', {'id': completeCommande.id}) }}" onclick="return confirm('Are you sure you want to cancel this order?')">Cancel</a>
+                                {% endif %}</td>
+
+                          
+                          
+                        </tr>
+                        {% endfor %}
+
+                      </tbody>
+                    </table>
+                    
+                  </div>
+                </div>
+              </div>
+            </div>
+            </div>
+
+          </div>
+          <!-- content-wrapper ends -->
+          <!-- partial:partials/_footer.html -->
+         
+          <!-- partial -->
+        </div>
+        <!-- main-panel ends -->
+
+      <!-- page-body-wrapper ends -->
+    </div
+
+
+
+
+
+
+
+{% endblock %}

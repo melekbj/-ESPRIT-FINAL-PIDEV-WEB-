@@ -1,0 +1,84 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+{# <table>
+        <th>Erreur </th>
+
+        <td>
+       ==    
+           <h3 style="background-color: red;">  {{error}}</h3>
+
+        </td>
+
+
+    </table>
+<div class="cart-list">
+<div ><p> Commande ID = ==== == === = =</p>
+<h1>
+{{command.id}}
+</h1>
+<h3>
+{{command.user.id}}
+</h3>
+<h3>
+{{command.user.nom}}
+</h3>
+
+<h1>
+{{command.destination}}
+</h1>
+<h1>
+{{command.prix}}
+</h1>
+<h1>
+{{command.etat}}
+</h1>
+
+</div>
+ {% set sum = 0 %}
+    {% for product in produits %}
+        
+    {% set sum = sum +  product.produit.prix * product.quantity %}
+
+                                                    <div class="product-widget">
+                                                        <div class="product-img">
+                                                            <img src="{{asset('Assets/img/product01.png')}}" alt="">
+                                                        </div>
+                                                        <div class="product-body">
+                                                            <h3 class="product-name"><a href="#"> {{product.produit.nom}} </a></h3>
+                                                            <h4 class="product-price"><span class="qty"> {{product.quantity}} x</span>$ {{product.produit.prix}} 
+                                                             </h4>
+                                                              <h5>TOTAL: $ {{product.quantity * product.produit.prix}} </h5>
+
+                                                          
+                                                          {% if product.quantity > product.produit.quantite %}
+    <h3 style="background-color: red;"> Available quantity = {{ product.produit.quantite }}</h3>
+{% endif %}
+
+
+
+                                                        </div>
+                                                        <button class="delete"><i class="fa fa-close"></i></button>
+                                                     </div>
+                                                    </div>
+                                                    {% endfor %}
+   
+                    
+                                                    <div class="cart-summary">
+                                                     <small> {{ produits|length }}  Item(s) selected</small>
+                                                     <h5>SUBTOTAL: $ {{sum}} </h5>
+                                                    </div> #}
+
+<br><br><br><br><br><br>  
+<div class="mt-5">
+
+{{
+    form(paymentForm)
+}}
+
+</div>  
+
+
+     
+	
+{% endblock %}

@@ -38,6 +38,41 @@ class DetailCommandeRepository extends ServiceEntityRepository
             $this->getEntityManager()->flush();
         }
     }
+    /**
+     * @return DetailCommande[] Returns an array of DetailCommande objects
+     */
+    public function findByCommande($value): array
+    {
+        return $this->createQueryBuilder('d')
+            ->andWhere('d.commande = :val')
+            ->setParameter('val', $value)
+            ->orderBy('d.id', 'ASC')
+            ->getQuery()
+            ->getResult()
+        ;
+    }
+
+          /**
+   * @return DetailCommande[] Returns an array of  Detail_Commande objects
+     */
+    public function findByStore($store,$etat,$order): array
+    {    $qb = $this->createQueryBuilder('c')
+        ->andWhere('c.store = :store')
+        ->setParameter('store', $store)
+        ->orderBy('c.etat',"DESC");
+
+    if ($etat !== null && $etat !== '') {
+        $qb->andWhere('c.etat = :etat')
+            ->setParameter('etat', $etat);
+    }
+
+    if ($order !== null && $order !== '') {
+        $qb->addOrderBy('c.prix_total', $order);
+    }
+
+    return $qb->getQuery()->getResult();
+}
+
 
 //    /**
 //     * @return DetailCommande[] Returns an array of DetailCommande objects
