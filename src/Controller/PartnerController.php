@@ -8,6 +8,7 @@ use App\Entity\Produit;
 use App\Form\StoreType;
 use App\Form\ProductType;
 use App\Entity\CategorieStore;
+use App\Entity\DetailCommande;
 use App\Repository\StoreRepository;
 use App\Repository\RatingRepository;
 use App\Repository\ProduitRepository;
@@ -387,9 +388,81 @@ class PartnerController extends AbstractController
     }
 
 
+// .........................................Gestion Commande..........................................................
 
 
+    #[Route('/commands', name: 'app_par_commands')]
+    public function partnercommande(Request $request, ManagerRegistry $doctrine): Response
+    {
+        $user=$this->getUser();
+        $store = $doctrine->getRepository(Store::class)->findBy(['user'=>$user->getId()]);
+        // Get the query parameters from the URL
+        $etat = $request->query->get('etat');
+        $order = $request->query->get('prixOrder');
+        $etatswitch = $request->query->get('etatswitch');
+        $commandedetail = $request->query->get('commandedetail');
+        $displaydetail = null;
+        // neeeds to completed the prix filter  gonna update and try few things and comeback to this wael3
+        // Get the commandes and details from the database
 
+        //  $commande = $doctrine->getRepository(Commande::class)->findByStore($client,$etat,$min,$max,$order);
+        if ($commandedetail !== null && ($etatswitch === "Completed" || $etatswitch === "Pending"  || $etatswitch === "Progress")) {
+            $detail = $doctrine->getRepository(DetailCommande::class)->find($commandedetail);
+
+            $detail->setEtat($etatswitch);
+            $doctrine->getManager()->persist($detail);
+            $doctrine->getManager()->flush();
+            $entityManager = $doctrine->getManager();
+
+            // Get the original commande
+            $originalCommande = $detail->getCommande();
+
+            // Get all details associated with the original commande
+            $details = $doctrine->getRepository(DetailCommande::class)->findBy(['commande' => $originalCommande]);
+
+            // Determine the minimum etat among all details
+            $countPending = 0;
+            $countProgress = 0;
+            $countCompleted = 0;
+            foreach ($details as $d) {
+                if ($d->getEtat() === "Pending") {
+                    $countPending++;
+                }
+                if ($d->getEtat() === "Progress") {
+                    $countProgress++;
+                }
+                if ($d->getEtat() === "Completed" || $d->getEtat() === "Canceled" ) {
+                    $countCompleted++;;
+                }
+            }
+
+            // Update the etat of the original commande if the minimum etat is less than the current etat
+            $currentEtat = $originalCommande->getEtat();
+            
+                if ($countProgress === 0 && $countPending === 0) {
+                    
+                        $originalCommande->setEtat("Completed");
+                        $entityManager->persist($originalCommande);
+                        $entityManager->flush();
+                    
+                } else {
+                    $originalCommande->setEtat("Progress");
+                    $entityManager->persist($originalCommande);
+                    $entityManager->flush();
+                }
+            
+        }
+
+        $displaydetail = $doctrine->getRepository(DetailCommande::class)->findByStore($store, $etat, $order);
+
+
+        return $this->render('partner/commands.html.twig', [
+            //     'historiquecommande' => $commande,
+            'selecteddetails' => $displaydetail,
+            'testinput' => $commandedetail,
+            'user' => $user,
+        ]);
+    }
 
 
 

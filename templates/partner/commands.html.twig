@@ -1,0 +1,136 @@
+{% extends 'basePartner.html.twig' %}
+
+{% block title %}Hello ClientController!
+{% endblock %}
+
+{% block body %}
+
+{# Affichage Structure complete #}
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+
+<br>
+<br>
+<br>
+<form method="get">
+	<label>État:</label>
+	<select name="etat">
+		<option value="">Tous</option>
+		<option value="Pending">Pending</option>
+		<option value="Progress">Progress</option>
+		<option value="Completed">Completed</option>
+	</select>
+	<label>Prix:</label>
+	<select name="prixOrder">
+		<option value="">Aucun</option>
+		<option value="ASC">Prix croissant</option>
+		<option value="DESC">Prix décroissant</option>
+	</select>
+	<input type="submit" value="Filtrer">
+    </form>
+
+<table border="5">
+	<th>
+		User id
+	</th>
+    <th>
+		Detail Id 
+	</th>
+	<th>
+		Produit
+	</th>
+	<th>
+			Destination
+	</th>
+	<th>
+	Etat
+	</th>
+	<th>
+		Change Status
+	</th>
+	{# Affichage historique Commande par Commande complete #}
+	{% for completeCommande in selecteddetails %}
+		<tr>
+			<td>
+				{{completeCommande.commande.user.nom}}
+			</td>
+            <td>
+				{{completeCommande.id}}
+			</td>
+			<td>
+			<div class="cart-list">
+						<div class="product-widget">
+							<div
+								class="product-img">
+								<!-- to modify with the item image-->
+								<img src="{{asset('Assets/img/product01.png')}}" alt="">
+							</div>
+							<div class="product-body">
+								<h3 class="product-name">
+								{{completeCommande.produit.nom }}
+								</h3>
+								<h4 class="product-price">
+									<span class="qty"> {{completeCommande.quantite}} x</span>
+									{{completeCommande.produit.prix}} </h4>
+                                    <h3>Total : {{completeCommande.prixtotal  }}  </h3>
+							</div>
+						
+			</td>
+			<td>
+				{{ completeCommande.commande.destination }}
+
+			</td>
+			<td>
+				{{ completeCommande.etat }}
+			</td>
+            <td>
+            
+    {% if completeCommande.etat !="Completed" and completeCommande.etat !="Canceled" %}
+         <form>
+					<input name="commandedetail" value="{{ completeCommande.id }}" hidden>
+                    <select name="etatswitch">
+		            <option value="Pending">Pending</option>
+		            <option value="Progress">Progress</option>
+		            <option value="Completed">Completed</option>
+	                </select>
+					<input type="submit" value="Modifier Etat">
+				</form>
+                {% endif %}
+			</td>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+			
+		</tr>
+	</td>
+</tr>{% endfor %}</table>
+    
+		
+   
+{% endblock %}
