@@ -5,9 +5,7 @@
 {% block body %}
 
 
-<div class="row" id="proBanner">
-     
-    </div>
+
     <div class="container-scroller">
         <div class="main-panel">
           <div class="content-wrapper">
@@ -38,82 +36,190 @@
 
 
               <div class=" grid-margin stretch-card">
-              <div class="card">
+              <div class="card ">
                 <div class="card-body">
-                  <h4 class="card-title">Historique des reclamations</h4>
+                  <h4 class="card-title">Historique des commandes</h4>
                   <div class="table-responsive pt-3">
                 
                     <table class="table table-bordered">
-                      <thead>
-                        <tr>
-                          {# <th>
-                            ID
-                          </th>
-                          <th>
-                            User
-                          </th> #}
-                          <th>
-                            User Name
-                          </th>
-                          <th>
-                            Price
-                          </th>
-                          <th>
-                            Etat
-                          </th>
-                          <th>
-                            Destination
-                          </th>
-                          <th>
-                            Actions
-                          </th>
+                        <thead>
+                            <tr>
+                                {# <th>
+                                                            ID
+                                                        </th>
+                                                        <th>
+                                                            User
+                                                        </th> #}
+                                <th>
+                                    User Name
+                                </th>
+                                <th>
+                                    Price
+                                </th>
+                                <th>
+                                    Etat
+                                </th>
+                                <th>
+                                    Destination
+                                </th>
+                                <th>
+                                    Actions
+                                </th>
 
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {% for completeCommande in historiquecommande %}
-                        <tr>
-                          {# <td>
-                            {{rec.id}}
-                          </td>
-                          <td>
-                            {{rec.user.nom}}
-                          </td> #}
-                            <td>
-                                {{completeCommande.user.nom}}
-                            </td>
-                            <td>
-                                {{completeCommande.prix }} DT
-                            </td>
-                            <td>
-                                {{ completeCommande.etat }}
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for completeCommande in historiquecommande %}
+                                <tr>
+                                    {# <td>
+                                                                {{rec.id}}
+                                                            </td>
+                                                            <td>
+                                                                {{rec.user.nom}}
+                                                            </td> #}
+                                    <td>
+                                        {{completeCommande.user.nom}}
+                                    </td>
+                                    <td>
+                                        {{completeCommande.prix }}
+                                        DT
+                                    </td>
+                                    <td>
+                                        {{ completeCommande.etat }}
 
-                            </td>
+                                    </td>
 
-                            <td>
-                                {{ completeCommande.destination }}
+                                    <td>
+                                        {{ completeCommande.destination }}
 
-                            </td>
+                                    </td>
 
-                            <td>
-                                <form>
-                                    <input name="commandedetail" value="{{ completeCommande.id }}" hidden>
-                                    <input type="submit" value="commande detail">
-                                </form><br>
-                               
-                            </td>
-                            <td> {% if completeCommande.etat == "Pending" %}
+                                    <td>
+                                        {# <form>
+                                                                            <input name="commandedetail" value="{{ completeCommande.id }}" hidden>
+                                                                            <input type="submit" value="commande detail">
+                                                                        </form><br> #}
 
-                                    <a href="{{ path('app_commande_delete', {'id': completeCommande.id}) }}" onclick="return confirm('Are you sure you want to cancel this order?')">Cancel</a>
-                                {% endif %}</td>
+                                        <div class="dropdown">
+                                            <button class="btn btn-danger dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                Actions
+                                            </button>
+                                            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                                <form action="">
+                                                    <input class="dropdown-item" name="commandedetail" value="{{ completeCommande.id }}" hidden>
+                                                    <input class="dropdown-item" type="submit" value="commande detail">
+                                                </form>
+                                                {% if completeCommande.etat == "Pending" %}
 
-                          
-                          
-                        </tr>
-                        {% endfor %}
+                                                    <a class="dropdown-item" href="{{ path('app_commande_delete', {'id': completeCommande.id}) }}" onclick="return confirm('Are you sure you want to cancel this order?')">Cancel</a>
+                                                {% endif %}
+                                                {# <a class="dropdown-item" href="#">Option 3</a> #}
+                                            </div>
+                                        </div>
 
-                      </tbody>
+                                    </td>
+
+
+                                </tr>
+                            {% endfor %}
+
+                        </tbody>
                     </table>
+                    <hr>
+                    {% if testinput is not null %}
+                        <table
+                            class="table-info">
+                            {# //display flash messages from controller #}
+                            {% for message in app.flashes('success') %}
+                                <div class="alert alert-success">
+                                    {{ message }}
+                                </div>
+                            {% endfor %}
+                            {% for message in app.flashes('error') %}
+                                <div class="alert alert-danger">
+                                    {{ message }}
+                                </div>
+                            {% endfor %}
+
+
+                            <thead>
+                                <tr>
+                                    {# <th>Commande</th> #}
+                                    <th>Produit</th>
+                                    <th>Store Name</th>
+                                    <th>Quantite</th>
+                                    <th>Prix total</th>
+                                    <th>Date</th>
+                                    <th>Etat</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody class="table-border-bottom-0">
+
+                                {% for detail in selecteddetails %}
+
+
+                                    <tr class="table">
+
+
+                                        {# <td>{{ detail.commande.id }}
+                                        </td> #}
+                                        <td>
+                                        {# {{ detail.produit.nom }} #}
+                                       {% if detail.produit.photo %}
+														{% set imageUrl = vich_uploader_asset(detail.produit, 'imageFile') %}
+														<img style="width:60px;" src="{{ asset(imageUrl) }}" alt="img" />
+													{% endif %}
+                                        
+                                        </td>
+                                        <td>{{ detail.store.nom }}</td>
+                                        <td>
+                                            <h4 class="product-price">
+                                                <span class="qty">
+                                                    {{detail.quantite}}
+                                                    x</span>
+                                                {{detail.produit.prix}}</h4>
+                                        </td>
+                                        <td>{{ detail.prixtotal }}</td>
+                                        <td>{{ detail.commande.date|date('Y-m-d H:i:s') }}</td>
+                                        {% if detail.etat is same as('Pending') %}
+                                            <td>
+                                                <span class="badge bg-label-info me-1">Pending</span>
+                                            </td>
+                                        {% elseif detail.etat is same as('Progress')  %}
+                                            <td>
+                                                <span class="badge bg-label-secondary me-1">Progress</span>
+                                            </td>
+                                        {% elseif detail.etat is same as('Completed') %}
+                                            <td>
+                                                <span class="badge bg-label-success me-1">Completed</span>
+                                            </td>
+                                        {% else %}
+                                            <td>
+                                                <span class="badge bg-label-danger me-1">Canceled</span>
+                                            </td>
+                                        {% endif %}
+
+                                        <td>
+                                            {% if detail.etat == "Pending" %}
+                                                <div>
+                                                    <a href="{{ path('app_detailcommande_delete', {'id': detail.id}) }}" onclick="return confirm('Are you sure you want to cancel this order?')">Cancel</a>
+
+                                                </div>
+                                            {% endif %}
+                                        </td>
+                                    </tr>
+
+
+                                {% endfor %}
+
+
+                            </tbody>
+                        </table>
+                    {% endif %}
+
+
+
                     
                   </div>
                 </div>

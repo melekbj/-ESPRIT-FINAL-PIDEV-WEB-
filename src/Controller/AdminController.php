@@ -9,6 +9,7 @@ use App\Form\UserType;
 use App\Entity\Produit;
 use App\Form\FormEvent;
 use Twilio\Rest\Client;
+use App\Entity\Commande;
 use App\Entity\Categorie;
 use App\Entity\Evenement;
 use App\Entity\EventType;
@@ -16,6 +17,7 @@ use App\Form\RegisterType;
 use App\Entity\Reclamation;
 use App\Form\FormEventType;
 use App\Entity\CategorieStore;
+use App\Entity\DetailCommande;
 use App\Service\QrcodeService;
 use App\Entity\TypeReclamation;
 use App\Service\SendSmsService;
@@ -899,6 +901,50 @@ class AdminController extends AbstractController
             $this->addFlash('success', 'Produit accepeted successfully!');
     
             return $this->redirectToRoute('app_products_list');
+    }
+
+
+// ................................................ Gesion commande..................................................................................................... 
+
+    #[Route('/liste_des_commandes/{userc?}', name: 'app_commande_admin')]
+    public function ListeCommande($userc): Response
+    {
+        // Get the current user
+        $user = $this->getUser();
+        // Get image associated with user
+        $image = $user->getImage();
+    
+        
+        //recuperer le repository
+        $repository = $this->getDoctrine()->getRepository(Commande::class);
+        //utiliser findAll() pour recuperer toutes les classes
+        $commandes =$userc? $repository->findBy(['user' =>$userc ]) : $repository->findAll();
+
+        return $this->render('admin/commande/ListeCommande.html.twig', [
+            'commandes' => $commandes,
+            'image' => $image
+            
+        ]);
+    }
+
+
+    #[Route('/liste_detail_commandes/{commande?}', name: 'app_detailcommande_admin')]
+    public function ListedetailCommande($commande): Response
+    {
+        // Get the current user
+        $user = $this->getUser();
+        $image = $user->getImage();
+    
+        //recuperer le repository
+        $repository = $this->getDoctrine()->getRepository(DetailCommande::class);
+        //utiliser findAll() pour recuperer toutes les classes
+        $details =$commande? $repository->findBy(['commande' =>$commande ]) : $repository->findAll();
+
+        return $this->render('admin/commande/ListeDetails.html.twig', [
+            'details' => $details,
+            'image' => $image
+            
+        ]);
     }
 
 }
