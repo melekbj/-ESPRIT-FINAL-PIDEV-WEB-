@@ -21,6 +21,7 @@ class ReservationRepository extends ServiceEntityRepository
         parent::__construct($registry, Reservation::class);
     }
 
+
     public function save(Reservation $entity, bool $flush = false): void
     {
         $this->getEntityManager()->persist($entity);

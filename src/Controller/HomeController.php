@@ -101,28 +101,42 @@ class HomeController extends AbstractController
     public function showev($id, EvenementRepository $rep, Request $request, PersistenceManagerRegistry $doctrine): Response
     {
         $user = $this->getUser();
-        // Get the image associated with the user
-        // $image = $user->getImage();
-        //Utiliser find by id
         $evenement = $rep->find($id);
-        // dd($evenement);
-
         $event = new Reservation();
         $event->setUser($user); // set the authenticated user in the $event object
-        $event->setEvent($evenement); // set the event based on the $id parameter
         $event->setDate(new \DateTime()); // set the authenticated user in the $event object
+        $event->setEvent($evenement);
         $form = $this->createForm(ReservationType::class, $event);
         $form->handleRequest($request);
 
-        if($form->isSubmitted() && $form->isValid()){
+        if ($form->isSubmitted() && $form->isValid()) {
             $entityManager = $doctrine->getManager();
-            $entityManager->persist($event);
-            $entityManager->flush();
-            $this->addFlash('success', 'Reservation ajouté avec succès');
-            if ($this->getUser()->getRoles() == 'ROLE_PARTNER') {
-                return $this->redirectToRoute('app_partner');
+            
+            $nbPlacesReserved = $event->getNbPlaces();
+            $availablePlaces = $evenement->getNbMax();
+
+            // Decrement the nbMax field by the number of places reserved
+            $evenement->setNbMax($evenement->getNbMax() - $nbPlacesReserved);
+
+            
+
+            if ($nbPlacesReserved > 10) { // Check if the user tries to reserve more than 10 places
+                $this->addFlash('error', 'Vous ne pouvez pas réserver plus de 10 places.');
             } else {
-                return $this->redirectToRoute('app_client_index');
+                // Check if there are enough places available
+                if ($availablePlaces >= $nbPlacesReserved) {
+                    // Decrement the nbPlaces field by the number of places reserved
+                    $event->setNbPlaces($nbPlacesReserved);
+                    $entityManager = $doctrine->getManager();
+                    $entityManager->persist($event);
+                    $entityManager->flush();
+                    $evenement->setNbMax($availablePlaces - $nbPlacesReserved);
+                    $entityManager->persist($evenement);
+                    $entityManager->flush();
+                    $this->addFlash('success', 'Reservation ajouté avec succès. Places restantes: '. 10 - $event->getNbPlaces());
+                } else {
+                    $this->addFlash('error', 'Il ne reste que '.$availablePlaces.' places disponibles pour cet événement.');
+                }
             }
         }
 
