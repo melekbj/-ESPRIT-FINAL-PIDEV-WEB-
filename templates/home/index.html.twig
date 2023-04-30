@@ -131,23 +131,49 @@
 					<div class="product-grid" data-isotope='{ "itemSelector": ".product-item", "layoutMode": "fitRows" }'>
 
 						<!-- Product 1 -->
-
+{% for produit in produits %}
 						<div class="product-item men">
 							<div class="product discount product_filter">
 								<div class="product_image">
-									<img src="{{ asset('Assets/images/product_1.png')}}" alt="">
+									{% if produit.photo %}
+												{% set imageUrl = vich_uploader_asset(produit, 'imageFile') %}
+												<img src="{{ asset(imageUrl) }}" alt="img" />
+											{% endif %}
 								</div>
 								<div class="favorite favorite_left"></div>
 								<div class="product_bubble product_bubble_right product_bubble_red d-flex flex-column align-items-center"><span>-$20</span></div>
 								<div class="product_info">
-									<h6 class="product_name"><a href="single.html">Fujifilm X100T 16 MP Digital Camera (Silver)</a></h6>
-									<div class="product_price">$520.00<span>$590.00</span></div>
+									<h6 class="product_name mt-3"><a href="single.html">{{produit.nom}}</a></h6>
+											<h6 class="product_name mt-3"><a href="single.html">{{produit.quantite}} piéces en stock</a></h6>
+											<div class="product_price">{{produit.prix}} DT</div>
 								</div>
 							</div>
-							<div class="red_button add_to_cart_button"><a href="#">add to cart</a></div>
+							<!-- <a href="{{path('app_cart_addscript',{'id':produit.id})}}" >Add to Cart</a> -->
+					{% set addToCartPath = path('app_cart_addscript', {'id': produit.id}) %}
+					{# <button type="button" onclick="addToCart('{{ addToCartPath }}')">Add to Cart</button> #}
+							<div class="red_button add_to_cart_button"><a onclick="addToCart('{{ addToCartPath }}')">add to cart</a></div>
 						</div>
+{% endfor %}
 
-						<!-- Product 2 -->
+
+		<script>
+			function addToCart(currentid) {
+
+
+		var xhr = new XMLHttpRequest();
+		xhr.open('POST', currentid, true);
+		xhr.onload = function () {
+		if (xhr.status === 200) {
+		console.log('item added = ' + currentid);
+		} else {
+		console.log('Request failed.  Returned status of ' + xhr.status);
+		}
+		};
+		xhr.send();
+		}
+		</script>
+
+						{# <!-- Product 2 -->
 
 						<div class="product-item women">
 							<div class="product product_filter">
@@ -293,7 +319,7 @@
 								</div>
 							</div>
 							<div class="red_button add_to_cart_button"><a href="#">add to cart</a></div>
-						</div>
+						</div> #}
 					</div>
 				</div>
 			</div>
@@ -443,10 +469,10 @@
 											<div class="product_name">{{e.titreEv}}</div>
 										</div>
 										<div class="product_info mb-2">
-											<div class="product_name">{{e.DescEv}}</div>
+											<div class="product_name"> Nombre de places disponibles : {{e.nbMax}}</div>
 										</div>
 										<div class="product_info mb-2">
-											<div class="product_name">{{e.lieuEv}}</div>
+											<div class="product_name">Lieu : à {{e.lieuEv}}</div>
 										</div>
 										<br>
 										<div class="blue_button add_to_cart_button mt-3"><a href="{{path('app_events_detail', {'id': e.id})}}">Reserver</a></div>
