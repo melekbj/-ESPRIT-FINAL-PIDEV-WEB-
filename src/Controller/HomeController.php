@@ -148,39 +148,29 @@ class HomeController extends AbstractController
     }
 
     #[Route('/detailStore/{id}', name: 'app_stores_detail', methods: ["GET", "POST"] )]
-    public function showStore($id, StoreRepository $rep, Request $request, PersistenceManagerRegistry $doctrine): Response
+    public function showStore($id, EntityManagerInterface $entityManager, StoreRepository $rep, Request $request, PersistenceManagerRegistry $doctrine): Response
     {
         $user = $this->getUser();
-        // Get the image associated with the user
-        // $image = $user->getImage();
-        //Utiliser find by id
-        $stores = $rep->find($id);
-        // dd($evenement);
-
-        // $event = new Reservation();
-        // $event->setUser($user); // set the authenticated user in the $event object
-        // $event->setEvent($evenement); // set the event based on the $id parameter
-        // $form = $this->createForm(ReservationType::class, $event);
-        // $form->handleRequest($request);
-
-        // if($form->isSubmitted() && $form->isValid()){
-        //     $entityManager = $doctrine->getManager();
-        //     $entityManager->persist($event);
-        //     $entityManager->flush();
-        //     $this->addFlash('success', 'Reservation ajouté avec succès');
-        //     if ($this->getUser()->getRoles() == 'ROLE_PARTNER') {
-        //         return $this->redirectToRoute('app_partner');
-        //     } else {
-        //         return $this->redirectToRoute('app_client_index');
-        //     }
-        // }
+        $store = $rep->find($id);
+        
+        $produitRepository = $entityManager->getRepository(Produit::class);
+        $produits = $produitRepository->createQueryBuilder('p')
+            ->select('p')
+            ->leftJoin('p.stores', 's')
+            ->where('p.etat = :etat')
+            ->andWhere('s.id = :storeId')
+            ->setParameter('etat', 1)
+            ->setParameter('storeId', $store->getId())
+            ->getQuery()
+            ->getResult();
 
         return $this->render('home/detailStore.html.twig', [
-            'stores' => $stores,
-            // 'image' => $image,
-            // 'form' =>$form->createView(),
+            'stores' => $store,
+            'produits' => $produits,
         ]);
     }
+
+
 
 
 

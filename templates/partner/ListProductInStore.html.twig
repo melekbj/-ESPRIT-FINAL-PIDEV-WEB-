@@ -3,15 +3,8 @@
 {% block title %}Hello PartnerController!{% endblock %}
 
 {% block body %}
-{# <br><br><br><br><br><br><br><br>
-  {% if app.user %}
-        <div class="mb-3">
-            You are logged in as {{ app.user.userIdentifier }}, <a href="{{ path('app_logout') }}">Logout</a>
-        </div>
-    {% endif %} #}
-    <div class="col-md-6">
-      
-    </div>
+
+
     
 
     <div class="wrapper">
@@ -39,82 +32,94 @@
               </div>
               <div class="card-body ">
               
-               <table class="table">
-					{# //display flash messages from controller #}
-					{% for message in app.flashes('success') %}
-						<div class="alert alert-success">
-							{{ message }}
-						</div>
-					{% endfor %}
-					{% for message in app.flashes('error') %}
-						<div class="alert alert-danger">
-							{{ message }}
-						</div>
-					{% endfor %}
-						<thead>
-							<tr>
-								<th>Nom Produit</th>
-								<th>image</th>
-								<th>prix</th>
-								<th>Quantite</th>
-                <th>Etat</th>
-										</tr>
-									</thead>
-									<tbody class="table-border-bottom-0">
+              <table
+                class="table">
+                {# //display flash messages from controller #}
+                {% for message in app.flashes('success') %}
+                  <div class="alert alert-success">
+                    {{ message }}
+                  </div>
+                {% endfor %}
+                {% for message in app.flashes('error') %}
+                  <div class="alert alert-danger">
+                    {{ message }}
+                  </div>
+                {% endfor %}
+                <thead>
+                  <tr>
+                    <th>Nom Produit</th>
+                    <th>image</th>
+                    <th>prix</th>
+                    <th>Quantite</th>
+                    <th>Etat</th>
+                  </tr>
+                </thead>
+                <tbody class="table-border-bottom-0">
 
-									{% for product in produits %}
+                  {% for product in produits %}
 
-										<tr class="table">
-										<td>{{ product.nom }}</td>
-										{% set imageUrl = vich_uploader_asset(product, 'imageFile') %}
-										<td><img style="width:100px;" src="{{ asset(imageUrl) }}" alt="user-avatar" ></td>
-										<td>{{ product.prix }}.DT</td>
-										<td>{{ product.quantite }}</td>
-                    {% if product.etat == 0 %}
-                      <td class="text-info"> <strong>Pending</strong></td>
-                    {% elseif product.etat == 1 %}
-                      <td class="text-success"> <strong>Published</strong></td>
-                    {% else %}
-                    <td class="text-danger"> <strong>Rejected</strong></td>
-                    {% endif %}
-                    
-                    <td>
-                      <div class="dropdown">
-                        <button class="btn btn-danger dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                          Actions
-                        </button>
-                        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                          <form action="{{path('app_updateProduct',{'id':product.id})}}">
-                            <button class="dropdown-item">
-                              <i class='bx bx-block'></i>
-                              Edit
-                            </button>
-                          </form>
-                          <form action="{{path('app_deleteProduct',{'id':product.id})}}">
-                            <button class="dropdown-item">
-                              <i class='bx bx-block'></i>
-                              Remove
-                            </button>
-                          </form>
-                          {# <a class="dropdown-item" href="#">Option 3</a> #}
+                    <tr class="table">
+                      <td>{{ product.nom }}</td>
+                      {% set imageUrl = vich_uploader_asset(product, 'imageFile') %}
+                      <td><img style="width:100px;" src="{{ asset(imageUrl) }}" alt="user-avatar"></td>
+                      <td>{{ product.prix }}.DT</td>
+                      <td>{{ product.quantite }}</td>
+                      {% if product.etat == 0 %}
+                        <td class="text-info">
+                          <strong>Pending</strong>
+                        </td>
+                      {% elseif product.etat == 1 %}
+                        <td class="text-success">
+                          <strong>Published</strong>
+                        </td>
+                      {% else %}
+                        <td class="text-danger">
+                          <strong>Rejected</strong>
+                        </td>
+                      {% endif %}
+
+                      <td>
+                        <div class="dropdown">
+                          <button class="btn btn-danger dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            Actions
+                          </button>
+                          <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                         
+                          
+                            <form action="{{path('app_updateProduct',{'id':product.id})}}">
+                              <button class="dropdown-item">
+                                <i class='bx bx-block'></i>
+                                Edit
+                              </button>
+                            </form>
+                             {% if product.etat == 0 %}
+                            <form action="{{path('app_deleteProduct',{'id':product.id})}}">
+                              <button class="dropdown-item">
+                                <i class='bx bx-block'></i>
+                                Remove
+                              </button>
+                            </form>
+                            {% endif %}
+                            {# <a class="dropdown-item" href="#">Option 3</a> #}
+                          </div>
                         </div>
-                      </div>
-                    </td>
-
-									
-							</tr>
- {# <form action="{{path('app_disapproveU',{'id':user.id})}}">
-                            <button onclick="return confirm('Are you sure you want to disapprove this account?')" class="dropdown-item">
-                              <i class='bx bx-block'></i>
-                              Disapprove
-                            </button>
-                          </form> #}
-
-									{% endfor %}
+                      </td>
 
 
-												</tbody>
-											</table>
+                    </tr>
+                    {# <form action="{{path('app_disapproveU',{'id':user.id})}}">
+                                                <button onclick="return confirm('Are you sure you want to disapprove this account?')" class="dropdown-item">
+                                                  <i class='bx bx-block'></i>
+                                                  Disapprove
+                                                </button>
+                                              </form> #}
+
+                  {% endfor %}
+
+
+                </tbody>
+              </table>
+
                 {# {% if app.user.getRoles() == 'ROLE_PARTNER' %}
                     <a href="{{ path('app_store_edit_partner', {'id': store.id}) }}">Edit</a>
                 {% endif %} #}
