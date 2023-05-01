@@ -56,15 +56,59 @@
 						<h2>{{stores.nom}}</h2>
 						<p>Nam tempus turpis at metus scelerisque placerat nulla deumantos solicitud felis. Pellentesque diam dolor, elementum etos lobortis des mollis ut...</p>
 					</div>
-					<div class="free_delivery d-flex flex-row align-items-center justify-content-center">
+					<div>
+					{% if app.user.getRoles() == 'ROLE_CLIENT' %}
+					{{ form_start(form) }}
+                    {{ form_widget(form.rate, { 'attr': {'class': 'star-rating'} }) }}
+					<div class="star-rating">
+                            {% set ratingValue = rating|round(1) %}
+                            {% set fullStars = ratingValue|round(0, 'ceil') %}
+                            {% set emptyStars = 5 - fullStars %}
+                            {% for i in 1..fullStars %}
+                               <i class="fa fa-star" aria-hidden="true"></i>
+                            {% endfor %}
+                            {% if ratingValue > fullStars %}
+                                <i class="fa fa-star-o" aria-hidden="true"></i>
+                                {% set emptyStars = emptyStars - 1 %}
+                            {% endif %}
+                            {% for i in 1..emptyStars %}
+                                <i class="fa fa-star-o" aria-hidden="true"></i>
+                            {% endfor %}
+                            <span class="rating-value">{{ ratingValue }}</span>
+                        </div>
+                    {{ form_end(form) }}
+                {% else %}
+                    {% if rating %}
+                        <div class="star-rating">
+                            {% set ratingValue = rating|round(1) %}
+                            {% set fullStars = ratingValue|round(0, 'ceil') %}
+                            {% set emptyStars = 5 - fullStars %}
+                            {% for i in 1..fullStars %}
+                                <i class="fa fa-star" aria-hidden="true"></i>
+                            {% endfor %}
+                            {% if ratingValue > fullStars %}
+                               <i class="fa fa-star-o" aria-hidden="true"></i>
+                                {% set emptyStars = emptyStars - 1 %}
+                            {% endif %}
+                            {% for i in 1..emptyStars %}
+                                <i class="fa fa-star" aria-hidden="true"></i>
+                            {% endfor %}
+                            <span class="rating-value">{{ ratingValue }}</span>
+                        </div>
+                    {% endif %}
+                {% endif %}
+					
+					</div>
+					{# <div class="free_delivery d-flex flex-row align-items-center justify-content-center">
 						<span class="ti-truck"></span>
 						<span>free delivery</span>
-					</div>
+					</div> #}
 				</div>
 
 
 			</div>
-			<div class="best_sellers" style ="margin-top:-250px;">
+		
+			<div class="best_sellers" style ="margin-top:-150px;">
 				<div class="container">
 					<div class="row">
 						<div class="col text-center">
@@ -78,43 +122,43 @@
 							<div class="product_slider_container">
 								<div
 									class="owl-carousel owl-theme product_slider">
-{% if  produits is empty %}
-	<p>Aucun produit disponible pour le moment.</p>
+									{% if  produits is empty %}
+										<p>Aucun produit disponible pour le moment.</p>
 
-{% else %}
+									{% else %}
 
 
-	<!-- Slide 1 -->
-	{% for produit in produits %}
-		<div class="owl-item product_slider_item">
-			<div class="product-item">
-				<div class="product discount">
-					<div class="product_image">
-						{% if produit.photo %}
-							{% set imageUrl = vich_uploader_asset(produit, 'imageFile') %}
-							<img src="{{ asset(imageUrl) }}" alt="img"/>
-						{% endif %}
-					</div>
-					<div class="favorite favorite_left"></div>
-					<div class="product_bubble product_bubble_right product_bubble_red d-flex flex-column align-items-center">
-						<span>-$20</span>
-					</div>
-					<div class="product_info">
-						<h6 class="product_name mt-3">
-							<a href="single.html">{{produit.nom}}</a>
-						</h6>
-						<h6 class="product_name mt-3">
-							<a href="single.html">{{produit.quantite}}
-								piéces en stock</a>
-						</h6>
-						<div class="product_price">{{produit.prix}}
-							DT</div>
-					</div>
-				</div>
-			</div>
-		</div>
-	{% endfor %}
-{% endif %}
+										<!-- Slide 1 -->
+										{% for produit in produits %}
+											<div class="owl-item product_slider_item">
+												<div class="product-item">
+													<div class="product discount">
+														<div class="product_image">
+															{% if produit.photo %}
+																{% set imageUrl = vich_uploader_asset(produit, 'imageFile') %}
+																<img src="{{ asset(imageUrl) }}" alt="img"/>
+															{% endif %}
+														</div>
+														<div class="favorite favorite_left"></div>
+														<div class="product_bubble product_bubble_right product_bubble_red d-flex flex-column align-items-center">
+															<span>-$20</span>
+														</div>
+														<div class="product_info">
+															<h6 class="product_name mt-3">
+																<a href="single.html">{{produit.nom}}</a>
+															</h6>
+															<h6 class="product_name mt-3">
+																<a href="single.html">{{produit.quantite}}
+																	piéces en stock</a>
+															</h6>
+															<div class="product_price">{{produit.prix}}
+																DT</div>
+														</div>
+													</div>
+												</div>
+											</div>
+										{% endfor %}
+									{% endif %}
 
 
 								</div>

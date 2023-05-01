@@ -133,6 +133,8 @@
 						<!-- Product 1 -->
 {% for produit in produits %}
 						<div class="product-item men">
+						<a href="{{path('app_detail', {'id': produit.id})}}">
+
 							<div class="product discount product_filter">
 								<div class="product_image">
 									{% if produit.photo %}
@@ -148,6 +150,7 @@
 											<div class="product_price">{{produit.prix}} DT</div>
 								</div>
 							</div>
+							</a>
 							<!-- <a href="{{path('app_cart_addscript',{'id':produit.id})}}" >Add to Cart</a> -->
 					{% set addToCartPath = path('app_cart_addscript', {'id': produit.id}) %}
 					{# <button type="button" onclick="addToCart('{{ addToCartPath }}')">Add to Cart</button> #}

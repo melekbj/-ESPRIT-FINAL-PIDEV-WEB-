@@ -21,6 +21,7 @@ use App\Entity\TypeReclamation;
 use App\Repository\CommandeRepository;
 use App\Repository\EvenementRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use App\Repository\ReservationRepository;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -116,68 +117,35 @@ class ClientController extends AbstractController
 
 // .........................................Gestion Reclamation..........................................................
 
-    #[Route('/addReclamationProduit', name: 'app_reclamation')]
-    public function addAction(Request $request, EntityManagerInterface $entityManager, SluggerInterface $slugger, int $userId = null): Response
+    #[Route('/addReclamationProduit/{id}', name: 'app_reclamation')]
+    public function addAction($id,Request $request, EntityManagerInterface $entityManager, SluggerInterface $slugger, int $userId = null): Response
     {
         $user = $this->getUser();
-        // Get the image associated with the user
         $image = $user->getImage();
-        
-        $reclamation = new Reclamation();
-        $reclamation->setUser($user);
-        $typeReclamation = $entityManager->getRepository(TypeReclamation::class)->findOneBy(['nom' => 'Produit']);
-        $reclamation->setEtat('pending'); // Set default value for etat
-        $reclamation->setType($typeReclamation); // Set default value for type
-        $reclamation->setDate(new \DateTime());
 
+        $reclamation = new Reclamation();
         $form = $this->createForm(ReclamationType::class, $reclamation);
         $form->handleRequest($request);
-        if ($form->isSubmitted() && !$form->isValid())
-        {
-            $this->addFlash('error', $e->getMessage());
-                return $this->redirectToRoute('app_reclamation');
-        }
+
         if ($form->isSubmitted() && $form->isValid()) {
-            
-            $reclamation->setDescription($form->get('description')->getData());
-    
-            // $image = $form->get('image')->getData();
-
-            // if ($image) {
-            //     $originalFilename = pathinfo($image->getClientOriginalName(), PATHINFO_FILENAME);
-            //     $safeFilename = $slugger->slug($originalFilename);
-            //     $newFilename = $safeFilename.'-'.uniqid().'.'.$image->guessExtension();
-
-            //     try {
-            //         $image->move(
-            //             $this->getParameter('reclamation_images_directory'),
-            //             $newFilename
-            //         );
-            //     } catch (FileException $e) {
-            //     $message = 'An error occurred while uploading the file: ' . $e->getMessage();
-            //     $session->getFlashBag()->add('error', $message);
-
-            //     // Redirect back to the form
-            //     return $this->redirectToRoute('app_reclamation');                }
-
-            //     $reclamation->setimage($newFilename);
-            // }
-            // $user = $this->getUser();
-            // if ($user) {
-            //     $reclamation->setClientId($user->getId());
-            // }
-            $entityManager = $this->getDoctrine()->getManager();
+            $reclamation->setUser($user);
+            $reclamation->setDate(new \DateTime());
+            $reclamation->setEtat("pending");
+            $reclamation->setProduit($entityManager->getRepository(DetailCommande::class)->find($id)->getProduit());
+            $reclamation->setCommande($entityManager->getRepository(DetailCommande::class)->find($id)->getCommande());
             $entityManager->persist($reclamation);
             $entityManager->flush();
             $this->addFlash('success', 'Reclamation added successfully!');
-            return $this->redirectToRoute('app_reclamation');
+            return $this->redirectToRoute('app_reclamation_list');
         }
+
 
         return $this->render('client/reclamation/add.html.twig', [
             'form' => $form->createView(),
             'image' => $image,
         ]);
     }
+
 
 
     #[Route('/liste_reclamation', name: 'app_reclamation_list')]
@@ -314,15 +282,103 @@ class ClientController extends AbstractController
 
 
     }
-    // test purpose dint work ,, not deleting it might need it  could contain                                                           {{ render(controller('App\\Controller\\ClientController::fillcart')) }}
-    //  {{ render(controller('App\\Controller\\ClientController::fillcart')) }} in base.html.twig
+   
 
-    // afficher la panier courrante cart courante 
     #[Route('/cartview', name: 'app_cartview')]
-    public function cartview(Request $request, ManagerRegistry $doctrine, SessionInterface $session, EntityManagerInterface $em): Response
+    public function cartview(Request $request, ManagerRegistry $doctrine, SessionInterface $session): Response
     {
 
+        // Get the session storage data sent in the request
+        $cart = $session->get('cart', []);
+        $error = $session->get('carterror', '');
+        $session->remove('carterror');
+        // Get the cart data from the session object
+
+        // Retrieve the products from the database based on the cart data
+        $produits = [];
+        foreach ($cart as $itemId => $quantity) {
+            $produit = $doctrine->getRepository(Produit::class)->find($itemId);
+            if ($produit) {
+                $produits[] = [
+                    'produit' => $produit,
+                    'quantity' => $quantity,
+                ];
+            }
+        }
+
+        // Render the cart view template with the product data
+        return $this->render('client/commande/cartview.html.twig', [
+            'produits' => $produits,
+            'error' => $error,
+        ]);
+    }
+    // button ajouter commadne
+    #[Route('/cart/confirm', name: 'app_cart_confirm')]
+    public function confirmercart(EntityManagerInterface $em, SessionInterface $session, Request $request)
+    {
+        // $client = '1';
         $user = $this->getUser();
+        //  $client=$user->getId();
+        //   $user = $em->getRepository(User::class)->find($client);
+
+        $cart = $session->get('cart', []);
+
+        if (empty($cart)) {
+            $session->set('carterror', 'cart is empty.');
+            return $this->redirectToRoute('app_cartview');
+        }
+
+        $totalPrice = 0;
+        $command = new Commande();
+        $command->setUser($user);
+        $command->setDestination($request->request->get('destination'));
+        if (strlen($request->request->get('destination')) <= 10) {
+            $session->set('carterror', 'Destination not set or too short.');
+            return $this->redirectToRoute('app_cartview');
+        }
+        $command->setDate(new \DateTime());
+        $command->setEtat('Pending');
+        foreach ($cart as $productId => $quantity) {
+            $product = $em->getRepository(Produit::class)->find($productId);
+            if ($product->getQuantite() < $quantity) {
+                $session->set('carterror', 'some products may not have the correct amount of availeble quantitys');
+                return $this->redirectToRoute('app_cartview');
+                break;
+            }
+            $price = $product->getPrix() * $quantity;
+            $totalPrice += $price;
+            $detailCommande = new DetailCommande();
+            $detailCommande->setCommande($command);
+            $detailCommande->setProduit($product);
+            $detailCommande->setStore($product->getStores()->first());
+            $detailCommande->setQuantite($quantity);
+            $detailCommande->setPrixTotal($price);
+            $detailCommande->setEtat('Pending');
+        }
+
+        $command->setPrix($totalPrice);
+
+
+        $session->set('commande', $command);
+
+        if (!empty($cart) && strlen($request->request->get('destination')) > 10) {
+            return $this->redirectToRoute('app_cart_payement');
+        }
+
+
+        return $this->redirectToRoute('app_historiquesecond');
+    }
+
+ 
+
+    #[Route('/cart/payment', name: 'app_cart_payement')]
+    public function Payementprocess(EntityManagerInterface $em, SessionInterface $session, Request $request, ManagerRegistry $doctrine)
+    {
+
+        //  $client = '1';
+        $user = $this->getUser();
+        //   $client=$user->getId();
+        //     $user = $em->getRepository(User::class)->find($client);
 
         $cart = $session->get('cart', []);
 
@@ -344,7 +400,7 @@ class ClientController extends AbstractController
             // create a card object with the informations
             $card = new Card();
             $card->number = $paymentData['cardNumber']; // 16 numere
-            $card->exp_month = $paymentData['expirationMonth']; // 01-12
+             $card->exp_month = $paymentData['expirationMonth']; // 01-12
             $card->exp_year = $paymentData['expirationYear']; // > current year
             $card->cvc = $paymentData['cvc']; // secret code
             $card->address_zip = '12345';
@@ -401,201 +457,19 @@ class ClientController extends AbstractController
             } catch (\Stripe\Exception\CardException $e) {
                 // The card has been declined
                 $session->set('carderror', $e->getMessage());
-                return $this->redirectToRoute('app_cartview');
+                return $this->redirectToRoute('app_cart_payement');
             }
             // if payment is sucess to redirect
             return $this->redirectToRoute('app_historique');
         }
         $error = $session->get('carderror' | '');
-
-
-
-
-
-
-
-        // Get the session storage data sent in the request
-        // $cart = $session->get('cart', []);
-        $error = $session->get('carterror', '');
-        $session->remove('carterror');
-        // Get the cart data from the session object
-
-        // Retrieve the products from the database based on the cart data
-        $produits = [];
-        foreach ($cart as $itemId => $quantity) {
-            $produit = $doctrine->getRepository(Produit::class)->find($itemId);
-            if ($produit) {
-                $produits[] = [
-                    'produit' => $produit,
-                    'quantity' => $quantity,
-                ];
-            }
-        }
-
-        // Render the cart view template with the product data
-        return $this->render('client/commande/cartview.html.twig', [
+        return $this->render('client/commande/Payment.html.twig', [
             'produits' => $produits,
             'error' => $error,
             'paymentForm' => $paymentForm->createView(),
             'command' => $command,
         ]);
     }
-    // button ajouter commadne
-    #[Route('/cart/confirm', name: 'app_cart_confirm')]
-    public function confirmercart(EntityManagerInterface $em, SessionInterface $session, Request $request)
-    {
-        // $client = '1';
-        $user = $this->getUser();
-        //  $client=$user->getId();
-        //   $user = $em->getRepository(User::class)->find($client);
-
-        $cart = $session->get('cart', []);
-
-        if (empty($cart)) {
-            $session->set('carterror', 'cart is empty.');
-            return $this->redirectToRoute('app_cartview');
-        }
-
-        $totalPrice = 0;
-        $command = new Commande();
-        $command->setUser($user);
-        $command->setDestination($request->request->get('destination'));
-        if (strlen($request->request->get('destination')) <= 10) {
-            // $session->set('carterror', 'Destination not set or too short.');
-            $this->addFlash('error', 'Destination not set or too short.');
-            return $this->redirectToRoute('app_cartview');
-        }
-        $command->setDate(new \DateTime());
-        $command->setEtat('Pending');
-        foreach ($cart as $productId => $quantity) {
-            $product = $em->getRepository(Produit::class)->find($productId);
-            if ($product->getQuantite() < $quantity) {
-                $session->set('carterror', 'some products may not have the correct amount of availeble quantitys');
-                return $this->redirectToRoute('app_cartview');
-                break;
-            }
-            $price = $product->getPrix() * $quantity;
-            $totalPrice += $price;
-            $detailCommande = new DetailCommande();
-            $detailCommande->setCommande($command);
-            $detailCommande->setProduit($product);
-            $detailCommande->setStore($product->getStores()->first());
-            $detailCommande->setQuantite($quantity);
-            $detailCommande->setPrixTotal($price);
-            $detailCommande->setEtat('Pending');
-        }
-
-        $command->setPrix($totalPrice);
-
-
-        $session->set('commande', $command);
-
-        if (!empty($cart) && strlen($request->request->get('destination')) > 10) {
-            return $this->redirectToRoute('app_cartview');
-        }
-
-
-        return $this->redirectToRoute('app_historiquesecond');
-    }
-
-    // #[Route('/cart/payment', name: 'adddd')]
-    // public function Payementprocess(EntityManagerInterface $em, SessionInterface $session, Request $request, ManagerRegistry $doctrine)
-    // {
-
-    //     //  $client = '1';
-    //     $user = $this->getUser();
-
-    //     $cart = $session->get('cart', []);
-
-    //     foreach ($cart as $itemid => $quantity) {
-    //         $produit = $doctrine->getRepository(Produit::class)->find($itemid);
-    //         $produits[] = [
-    //             'produit' => $produit,
-    //             'quantity' => $quantity,
-    //         ];
-    //     }
-    //     $command = $session->get('commande');
-    //     $paymentForm = $this->createForm(PaymentType::class);
-    //     $paymentForm->handleRequest($request);
-    //     if ($paymentForm->isSubmitted() && $paymentForm->isValid()) {
-    //         $paymentData = $paymentForm->getData();
-
-    //         // Set your Stripe API secret key
-    //         Stripe::setApiKey('sk_test_51Mf0S6FwJ7wXIwXewSc2z6FyXoFWAJZFy0Iuk4OZxzTVzLENEvBnnqug21baEIiV0MEDXTYl0y4Ajnp2LDWRZtC300mrwZe2j2');
-    //         // create a card object with the informations
-    //         $card = new Card();
-    //         $card->number = $paymentData['cardNumber']; // 16 numere
-    //          $card->exp_month = $paymentData['expirationMonth']; // 01-12
-    //         $card->exp_year = $paymentData['expirationYear']; // > current year
-    //         $card->cvc = $paymentData['cvc']; // secret code
-    //         $card->address_zip = '12345';
-    //         // Create a new Stripe customer
-    //         // Create a new Stripe token from the card details
-    //         $token = Token::create([
-    //             'card' => [
-    //                 'number' => $card->number,
-    //                 'exp_month' => $card->exp_month,
-    //                 'exp_year' => $card->exp_year,
-    //                 'cvc' => $card->cvc,
-    //                 'address_zip' => $card->address_zip,
-    //             ],
-    //         ]);
-    //         // Create a new Stripe customer
-    //         $customer = Customer::create([
-    //             'email' => $user->getEmail(),
-    //             'source' => $token->id, // pass the token ID as the value of 'source'
-    //         ]);
-
-    //         // Create a new Stripe charge
-    //         try {
-    //             $charge = Charge::create([
-    //                 'amount' => $command->getPrix() * 100, // amount in cents
-    //                 'currency' => 'usd', // or 'eur', 'gbp', etc.
-    //                 'description' => 'My Awesome Ecommerce Payment',
-    //                 'customer' => $customer->id, // add the customer to the charge
-    //             ]);
-
-    //             // on sucess 
-    //             $totalPrice = 0;
-    //             $command = $session->get('commande');
-    //             $em->persist($command);
-    //             $command->setPayment($charge->id);
-    //             foreach ($cart as $productId => $quantity) {
-    //                 $product = $em->getRepository(Produit::class)->find($productId);
-    //                 $price = $product->getPrix() * $quantity;
-    //                 $product->setQuantite($product->getQuantite() - $quantity);
-    //                 $em->persist($product);
-    //                 $detailCommande = new DetailCommande();
-    //                 $detailCommande->setCommande($command);
-    //                 $detailCommande->setProduit($product);
-    //                 $detailCommande->setStore($product->getStores()->first());
-    //                 $detailCommande->setQuantite($quantity);
-    //                 $detailCommande->setPrixTotal($price);
-    //                 $detailCommande->setEtat('Pending');
-    //                 $em->persist($detailCommande);
-    //             }
-
-    //             $command->setUser($user);
-    //             $em->flush();  // only after the charge is succesfull
-    //             $session->remove('commande');
-    //             $session->remove('cart');
-    //         } catch (\Stripe\Exception\CardException $e) {
-    //             // The card has been declined
-    //             // $session->set('carderror', $e->getMessage());
-    //             $this->addFlash('error', $e->getMessage());
-    //             return $this->redirectToRoute('app_cartview');
-    //         }
-    //         // if payment is sucess to redirect
-    //         return $this->redirectToRoute('app_historique');
-    //     }
-    //     $error = $session->get('carderror' | '');
-    //     return $this->render('client/commande/Payment.html.twig', [
-    //         'produits' => $produits,
-    //         'error' => $error,
-    //         'paymentForm' => $paymentForm->createView(),
-    //         'command' => $command,
-    //     ]);
-    // }
 
     // not realy delete  and more like Cancel
     #[Route('/cancel/commande/{id}', name: 'app_commande_delete')]
@@ -706,4 +580,44 @@ class ClientController extends AbstractController
         return $this->redirect($referer);
     }
    
+
+// .........................................gestion Reservation..........................................................
+
+    #[Route('/deleteReservation/{id}', name: 'app_reservation_delete')]
+    public function deleteReservation($id, ReservationRepository $reservationRepository, EvenementRepository $evenementRepository, PersistenceManagerRegistry $doctrine): Response
+    {
+        $reservation = $reservationRepository->find($id);
+        $evenement = $evenementRepository->find($reservation->getEvent()->getId());
+        
+        if (!$reservation) {
+            $this->addFlash('error', 'La réservation n\'a pas été trouvée.');
+            return $this->redirectToRoute('app_reservation_list');
+        }
+
+        $reservationDate = $reservation->getDate();
+        $currentDate = new \DateTime();
+
+        $diff = $currentDate->diff($reservationDate);
+
+        if ($diff->days > 0 || $diff->h > 24) {
+            $this->addFlash('error', 'La réservation ne peut pas être supprimée car elle a plus de 24 heures.');
+            return $this->redirectToRoute('app_reservation_list');
+        }
+
+        $entityManager = $doctrine->getManager();
+        $entityManager->remove($reservation);
+        $evenement->setNbMax($evenement->getNbMax() + $reservation->getNbPlaces());
+        $entityManager->persist($evenement);
+        $entityManager->flush();
+
+        $this->addFlash('success', 'La réservation a été supprimée avec succès.');
+
+        return $this->redirectToRoute('app_reservation_list');
+    } 
+
+
+    
+
+
+
 }

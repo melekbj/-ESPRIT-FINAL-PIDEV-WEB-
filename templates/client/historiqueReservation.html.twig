@@ -21,6 +21,16 @@
                   <div class="table-responsive pt-3">
                 
                     <table class="table table-bordered">
+                    {% for message in app.flashes('success') %}
+                    <div class="alert alert-success">
+                      {{ message }}
+                    </div>
+                  {% endfor %}
+                  {% for message in app.flashes('error') %}
+                    <div class="alert alert-danger">
+                      {{ message }}
+                    </div>
+                  {% endfor %}
                       <thead>
                         <tr>
                           {# <th>
@@ -38,6 +48,9 @@
                           <th>
                             Nombre de places
                           </th>
+                          <th>
+                            Actions
+                          </th>
                         </tr>
                       </thead>
                       <tbody>
@@ -53,10 +66,23 @@
                             {{res.event.titreEv}}
                           </td>
                           <td>
-                            {{res.date| date('Y-M-D')}}
+                            {{res.date| date('Y-M-D H:i:s')}}
                           </td>
                           <td>
                             {{res.nbPlaces}}
+                          </td>
+                          <td>
+                          
+                          <form action="{{path('app_reservation_delete', {'id': res.id})}}"  method="post">
+                          
+                          <button class="btn btn-info">Delete Event</button>
+                          </form>
+                          {# <form action="">
+                          <button>Update Event</button>
+                          </form> #}
+                          
+                          
+                          
                           </td>
                           
                           

@@ -119,6 +119,8 @@
 
                                     </td>
 
+                                     
+
 
                                 </tr>
                             {% endfor %}
@@ -208,6 +210,15 @@
                                                 </div>
                                             {% endif %}
                                         </td>
+{% if detail.etat == "Completed" %}
+                                        <td>
+                  
+                                    <form action="{{path('app_reclamation', {'id': detail.id})}}" >
+                                    <button class="btn btn-info" type="submit">Reclamer</button>
+                                    </form>
+                                    
+                                    </td>
+{% endif %}
                                     </tr>
 
 

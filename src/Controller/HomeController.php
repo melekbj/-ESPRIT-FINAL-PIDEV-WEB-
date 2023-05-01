@@ -5,7 +5,9 @@ namespace App\Controller;
 use DateTime;
 use App\Entity\User;
 use App\Entity\Store;
+use App\Entity\Rating;
 use App\Entity\Produit;
+use App\Form\RatingType;
 use App\Entity\Evenement;
 use App\Entity\Commentaire;
 use App\Entity\Reservation;
@@ -13,6 +15,7 @@ use App\Form\CommentaireType;
 use App\Form\ReservationType;
 use App\Service\QrcodeService;
 use App\Repository\StoreRepository;
+use App\Repository\RatingRepository;
 use App\Repository\ProduitRepository;
 use App\Repository\EvenementRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -170,10 +173,55 @@ class HomeController extends AbstractController
     }
 
     #[Route('/detailStore/{id}', name: 'app_stores_detail', methods: ["GET", "POST"] )]
-    public function showStore($id, EntityManagerInterface $entityManager, StoreRepository $rep, Request $request, PersistenceManagerRegistry $doctrine): Response
+    public function showStore($id, EntityManagerInterface $entityManager, StoreRepository $rep, Request $request, PersistenceManagerRegistry $doctrine, RatingRepository $ratingRepository): Response
     {
         $user = $this->getUser();
         $store = $rep->find($id);
+        // 000000000000000000000
+
+        if ($id === null) {
+            return $this->redirectToRoute('app_client');
+        } else {
+            // Create a new Rating entity
+            $userRating = new Rating();
+            $form = $this->createForm(RatingType::class, $userRating);
+            $form->handleRequest($request);   
+            if ($form->isSubmitted() && $form->isValid()) {
+                // Set the user and store for the rating entity
+                $rating = $this->getDoctrine()
+                ->getRepository(Rating::class)
+                ->findRatingByStoreAndUser($id, $user->getId());
+            
+            if ($rating) {
+                $rating->setRate($userRating->getRate());
+               
+
+                $ratingRepository->save($rating, true);
+
+                // $flashy->warning('Welcome to your store', 'https://your-awesome-link.com');
+
+            } else {
+                $userRating->setStore($store);
+                $userRating->setUser($user);
+
+                $entityManager = $this->getDoctrine()->getManager();
+                $entityManager->persist($userRating);
+                $entityManager->flush();  
+                //add flash message 
+                $this->addFlash('success', 'Votre note a bien été enregistrée.');
+                
+                // $flashy->success('rating successfully inserted', 'https://your-awesome-link.com');
+
+            }
+
+            }
+            $store = $rep->find($id);
+            $rating = $ratingRepository->getAverageStoreRating($id);
+
+
+
+
+        // 000000000000000000000
         
         $produitRepository = $entityManager->getRepository(Produit::class);
         $produits = $produitRepository->createQueryBuilder('p')
@@ -189,6 +237,8 @@ class HomeController extends AbstractController
         return $this->render('home/detailStore.html.twig', [
             'stores' => $store,
             'produits' => $produits,
+            'rating' => $rating,
+            'form' => $form->createView(),
         ]);
     }
 
@@ -196,7 +246,7 @@ class HomeController extends AbstractController
 
 
 
-
+    }
 
 
 }

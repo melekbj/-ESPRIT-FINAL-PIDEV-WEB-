@@ -15,6 +15,7 @@ use App\Entity\Evenement;
 use App\Entity\EventType;
 use App\Form\RegisterType;
 use App\Entity\Reclamation;
+use App\Entity\Reservation;
 use App\Form\FormEventType;
 use App\Entity\CategorieStore;
 use App\Entity\DetailCommande;
@@ -22,6 +23,7 @@ use App\Service\QrcodeService;
 use App\Entity\TypeReclamation;
 use App\Service\SendSmsService;
 use App\Service\SendMailService;
+use App\Form\CategorieStoreType ;
 use App\Form\ReclamationTypeType;
 use App\Form\CategorieProduitType;
 use App\Repository\UserRepository;
@@ -135,7 +137,7 @@ class AdminController extends AbstractController
         $users = $paginator->paginate(
             $users,
             $request->query->getInt('page', 1),
-            3 // items per page
+            2 // items per page
         );
         
 
@@ -559,7 +561,7 @@ class AdminController extends AbstractController
 // .........................................Gestion Store..........................................................
 
 
-    #[Route('/list_stores', name: 'app_store_index', methods: ['GET'])]
+    #[Route('/list_stores', name: 'app_store_index', methods: ['GET','POST'])]
     public function liststore(StoreRepository $storeRepository, EntityManagerInterface $entityManager,Request $request): Response
     {
             $user = $this->getUser();
@@ -586,11 +588,26 @@ class AdminController extends AbstractController
                 }
                 $averageRatings[$store->getId()] = $averageRating;
             }
+
+            $storecategory = new CategorieStore();
+            $form = $this->createForm(CategorieStoreType::class, $storecategory);
+            $form->handleRequest($request);
+
+            if ($form->isSubmitted() && $form->isValid()) {
+                $entityManager = $this->getDoctrine()->getManager();
+                $entityManager->persist($storecategory);
+                $entityManager->flush();
+
+                $this->addFlash('success', 'Category store added successfully.');
+
+                return $this->redirectToRoute('app_store_index');
+            }
     
             return $this->render('admin/store/index.html.twig', [
                 'stores' => $stores,
                 'averageRatings' => $averageRatings,
                 'image' => $image,
+                'typeForm' => $form->createView(),
             ]);
     }
 
@@ -612,13 +629,92 @@ class AdminController extends AbstractController
             $user = $this->getUser();
             // Get the image associated with the user
             $image = $user->getImage();
+
             $cat = $entityManager->getRepository(CategorieStore::class);
             $categoriestores = $cat->findAll();
-
+        
             return $this->render('admin/categorie_store/index.html.twig', [
-                'categorie_store' => $categoriestores,
+                'categorie_stores' => $categoriestores,
                 'image' => $image,
             ]);
+    }
+
+// .........................................Gestion Categorie Store..........................................................
+
+    // #[Route('/categorie_store/new', name: 'app_categorie_store_new', methods: ['GET', 'POST'])]
+    // public function new(Request $request, CategorieStoreRepository $categorieStoreRepository): Response
+    // {
+    //     $categorieStore = new CategorieStore();
+    //     $form = $this->createForm(CategorieStoreType::class, $categorieStore);
+    //     $form->handleRequest($request);
+
+    //     if ($form->isSubmitted() && $form->isValid()) {
+    //         try {
+    //             $categorieStoreRepository->save($categorieStore, true);
+    
+    //             return $this->redirectToRoute('app_categorie_store_index', [], Response::HTTP_SEE_OTHER);
+    //         } catch (UniqueConstraintViolationException $e) {
+    //             $this->addFlash('error', 'This category already exists.');
+    //             // Render the form again with the error message
+    //             return $this->renderForm('admin/categorie_store/new.html.twig', [
+    //                 'categorie_store' => $categorieStore,
+    //                 'form' =>  $form,
+    //             ]);
+    //         }
+    //     }
+
+    //     return $this->renderForm('admin/categorie_store/new.html.twig', [
+    //         'categorie_store' => $categorieStore,
+    //         'form' =>  $form,
+    //     ]);
+    // }
+
+
+    #[Route('/categorie_store/{id}/edit', name: 'app_categorie_store_edit', methods: ['GET', 'POST'])]
+    public function edit(Request $request, CategorieStore $categorieStore, CategorieStoreRepository $categorieStoreRepository): Response
+    {
+        $user = $this->getUser();
+            // Get the image associated with the user
+            $image = $user->getImage();
+        $form = $this->createForm(CategorieStoreType::class, $categorieStore);
+        $form->handleRequest($request);
+
+    
+        if ($form->isSubmitted() && $form->isValid()) {
+            try {
+                $categorieStoreRepository->save($categorieStore, true);
+    
+                return $this->redirectToRoute('app_categorie_store_index', [], Response::HTTP_SEE_OTHER);
+            } catch (UniqueConstraintViolationException $e) {
+                $this->addFlash('error', 'This category already exists.');
+                // Render the form again with the error message
+                return $this->renderForm('admin/categorie_store/edit.html.twig', [
+                    'categorie_store' => $categorieStore,
+                    'form' =>  $form,
+                ]);
+            }
+        }
+
+        return $this->renderForm('admin/categorie_store/edit.html.twig', [
+            'categorie_store' => $categorieStore,
+            'form' =>  $form,
+            'image' => $image,
+        ]);
+    }
+
+    #[Route('/categorie_store/{id}', name: 'app_categorie_store_delete', methods: ['POST'])]
+    public function delete(Request $request, $id, CategorieStore $categorieStore, StoreRepository $StoreRepository, CategorieStoreRepository $categorieStoreRepository): Response
+    {
+        $storedefault = $categorieStoreRepository->find('6');
+        $stores = $StoreRepository->findBy(['categorie' => $id]);
+        foreach ($stores as $store) {
+            $store->setCategorie($storedefault);
+            $StoreRepository->save($store, true);
+        }
+        if ($this->isCsrfTokenValid('delete' . $categorieStore->getId(), $request->request->get('_token'))) {
+            $categorieStoreRepository->remove($categorieStore, true);
+        }
+        return $this->redirectToRoute('app_categorie_store_index', [], Response::HTTP_SEE_OTHER);
     }
 
 // .........................................Gestion Reclamation..........................................................
@@ -739,7 +835,7 @@ class AdminController extends AbstractController
         
     }
 
-    #[Route('/delete_Reclamation_type/{id}', name: 'app_updatetypeReclamation')]
+    #[Route('/update_Reclamation_type/{id}', name: 'app_updatetypeReclamation')]
     public function updateReclamationType($id, Request $request, TypeReclamationRepository $rep, ManagerRegistry $doctrine): Response
     {
         // Get the current user
@@ -946,5 +1042,28 @@ class AdminController extends AbstractController
             
         ]);
     }
+// ................................................ Gesion reservation..................................................................................................... 
+
+
+    #[Route('/liste_des_reservation', name: 'app_reservations_list')]
+    public function ListeReservations(Request $request,PaginatorInterface $paginator,EntityManagerInterface $entityManager): Response
+    {
+            // Get the current user
+            $user = $this->getUser();
+            // Get the image associated with the user
+            $image = $user->getImage();
+
+            $recRepo = $entityManager->getRepository(Reservation::class);
+            $reservations = $recRepo->findAll();
+
+            return $this->render('admin/listeReservations.html.twig', [
+                'image' => $image,
+                'reservations' => $reservations,
+              
+            ]);
+    }
+
+
+
 
 }

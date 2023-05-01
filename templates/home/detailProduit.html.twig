@@ -22,6 +22,7 @@
 
 		<div class="row">
 			<div class="col-lg-7">
+			
 				<div class="single_product_pics">
 					<div class="row">
 						<div class="col-lg-3 thumbnails_col order-lg-1 order-2">
@@ -110,10 +111,23 @@
 			
 			<div class="row">
 				<div class="col-md-5" style="margin-left:40%;">
+				{% for message in app.flashes('success') %}
+				<div class="alert alert-success">
+					{{ message }}
+				</div>
+			{% endfor %}
+			{% for message in app.flashes('error') %}
+				<div class="alert alert-danger">
+					{{ message }}
+				</div>
+			{% endfor %}
+				{% if not app.user %}
 			<h5>Connect to add a comment -> <a href="{{path('app_login')}}">Sign in</a> </h5>	
+			{% endif %}
 				{% if app.user %}
 				
 				{{form(commentform)}}
+
 				{% endif %}
 
 				

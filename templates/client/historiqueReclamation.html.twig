@@ -19,7 +19,16 @@
                 <div class="card-body">
                   <h4 class="card-title">Historique des reclamations</h4>
                   <div class="table-responsive pt-3">
-                
+                {% for message in app.flashes('success') %}
+                  <div class="alert alert-success">
+                    {{ message }}
+                  </div>
+                {% endfor %}
+                {% for message in app.flashes('error') %}
+                  <div class="alert alert-danger">
+                    {{ message }}
+                  </div>
+                {% endfor %}
                     <table class="table table-bordered">
                       <thead>
                         <tr>
