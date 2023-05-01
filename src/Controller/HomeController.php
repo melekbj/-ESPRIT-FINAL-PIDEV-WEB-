@@ -2,14 +2,18 @@
 
 namespace App\Controller;
 
+use DateTime;
 use App\Entity\User;
 use App\Entity\Store;
 use App\Entity\Produit;
 use App\Entity\Evenement;
+use App\Entity\Commentaire;
 use App\Entity\Reservation;
+use App\Form\CommentaireType;
 use App\Form\ReservationType;
 use App\Service\QrcodeService;
 use App\Repository\StoreRepository;
+use App\Repository\ProduitRepository;
 use App\Repository\EvenementRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -69,11 +73,29 @@ class HomeController extends AbstractController
     //     ]);
     // }
 
-    #[Route('products/details', name: 'app_detail')]
-    public function storeIndex(): Response
+    #[Route('/detailProduit/{id}', name: 'app_detail')]
+    public function storeIndex($id,PersistenceManagerRegistry $doctrine, Produit $produit,EntityManagerInterface $entityManager, ProduitRepository $rep, Request $request): Response
     {
-        return $this->render('home/detail.html.twig', [
+        $user = $this->getUser();
+        $produit = $rep->find($id);
+        $comment = new Commentaire();
+        $form = $this->createForm(CommentaireType::class, $comment);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $comment->setCreatedAt(new DateTime());
+            $comment->setProduit($produit);
+            $comment->setUser($user);
+            $entityManager = $doctrine->getManager();
+            $entityManager->persist($comment);
+            $entityManager->flush();
+            $this->addFlash('success', 'Votre commentaire a bien été ajouté');
+            return $this->redirectToRoute('app_detail', [ 'id' => $produit->getId() ]);
+        }
+              return $this->render('home/detailProduit.html.twig', [
             'controller_name' => 'HomeController',
+            'produits' => $produit,
+            'commentform' => $form->createView()
         ]);
     }
 
