@@ -52,10 +52,11 @@
 																<tr>
 																	<th>Commande</th>
 																	<th>User</th>
-																	<th>Produit</th>
+																	<th>Product Name</th>
+																	<th>Product Photo</th>
 																	<th>Store</th>
-																	<th>Quantite</th>
 																	<th>Prix</th>
+																	<th>Date</th>
 																	<th>Etat</th>
 																	{# <th>Actions</th> #}
 																</tr>
@@ -76,13 +77,14 @@
 
 																		<td>
 																			<a href="{{ path('app_commande_admin', {'userc': detail.commande.user.id}) }}">
-																				{{ detail.commande.user.nom }}
+																				{{ detail.commande.user.nom }} {{ detail.commande.user.prenom }}
 																			</a>
 
 
 																		</td>
+																		<td>{{ detail.produit.nom }}</td>
 																		<td>
-																		{{ detail.produit.nom }}
+																		
 
 																		{% if detail.produit.photo %}
 																			{% set imageUrl = vich_uploader_asset( detail.produit, 'imageFile') %}
@@ -91,7 +93,7 @@
 																		
 																		</td>
 																		<td>{{ detail.store.nom }}</td>
-																		<td>{{ detail.prixtotal }}</td>
+																		<td>{{ detail.prixtotal }} DT</td>
 																		<td>{{ detail.commande.date|date('Y-m-d H:i:s') }}</td>
 																		{% if detail.etat is same as('Pending') %}
 																			<td>

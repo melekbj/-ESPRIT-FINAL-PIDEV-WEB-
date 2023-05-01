@@ -12,5 +12,5 @@
     {% if form_errors(form.libelle) %}
         <div class="alert alert-danger">{{ form_errors(form.libelle) }}</div>
     {% endif %}
-    <button class="btn">{{ button_label|default('Save') }}</button>
+    {# <button class="btn">{{ button_label|default('Save') }}</button> #}
 {{ form_end(form) }}

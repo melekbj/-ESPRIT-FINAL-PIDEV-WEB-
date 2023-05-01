@@ -19,7 +19,7 @@
                 <td>{{ categorie_store.id }}</td>
                 <td>{{ categorie_store.libelle }}</td>
                 <td>
-                    <a href="{{ path('app_categorie_store_show', {'id': categorie_store.id}) }}">show</a>
+                    {# <a href="{{ path('app_categorie_store_show', {'id': categorie_store.id}) }}">show</a> #}
                     <a href="{{ path('app_categorie_store_edit', {'id': categorie_store.id}) }}">edit</a>
                 </td>
             </tr>
@@ -31,5 +31,4 @@
         </tbody>
     </table>
 
-    <a href="{{ path('app_categorie_store_new') }}">Create new</a>
 {% endblock %}
