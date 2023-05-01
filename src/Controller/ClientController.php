@@ -114,38 +114,6 @@ class ClientController extends AbstractController
     }
 
 
-    // #[Route('/detailEvent/{id}', name: 'app_event_detail', methods: ["GET", "POST"] )]
-    // public function showev($id, EvenementRepository $rep, Request $request, PersistenceManagerRegistry $doctrine): Response
-    // {
-    //     $user = $this->getUser();
-    //     // Get the image associated with the user
-    //     $image = $user->getImage();
-    //     //Utiliser find by id
-    //     $evenement = $rep->find($id);
-    //     // dd($evenement);
-
-    //     // $event = new Reservation();
-    //     // $event->setUser($user); // set the authenticated user in the $event object
-    //     // $event->setEvent($evenement); // set the event based on the $id parameter
-    //     // $form = $this->createForm(ReservationType::class, $event);
-    //     // $form->handleRequest($request);
-
-    //     // if($form->isSubmitted() && $form->isValid()){
-    //     //     $entityManager = $doctrine->getManager();
-    //     //     $entityManager->persist($event);
-    //     //     $entityManager->flush();
-    //     //     $this->addFlash('success', 'Event type ajouté avec succès');
-    //     //     return $this->redirectToRoute('app_client_index');
-    //     // }
-
-    //     return $this->render('client/ReservationEvent/detail.html.twig', [
-    //         'evenement' => $evenement,
-    //         'image' => $image,
-    //         'form' =>$form->createView(),
-    //     ]);
-    // }
-
-
 // .........................................Gestion Reclamation..........................................................
 
     #[Route('/addReclamationProduit', name: 'app_reclamation')]
@@ -249,493 +217,493 @@ class ClientController extends AbstractController
 
 // .........................................Gestion Commande..........................................................
 
-#[Route('/historique', name: 'app_historique')]
-public function historique(Request $request, ManagerRegistry $doctrine, CommandeRepository $cc): Response
-{
-    $user = $this->getUser();
-    $image = $user->getImage();
-    $client = $user->getId();
-    // $client = '1';
-    // Get the query parameters from the URL
-    $etat = $request->query->get('etat');
-    $order = $request->query->get('prixOrder');
-    $min = $request->query->get('min');
-    $max = $request->query->get('max');
-    $commandedetail = $request->query->get('commandedetail');
-    $displaydetail = null;
-    // neeeds to completed the prix filter  gonna update and try few things and comeback to this wael3
-    // Get the commandes and details from the database
+    #[Route('/historique', name: 'app_historique')]
+    public function historique(Request $request, ManagerRegistry $doctrine, CommandeRepository $cc): Response
+    {
+        $user = $this->getUser();
+        $image = $user->getImage();
+        $client = $user->getId();
+        // $client = '1';
+        // Get the query parameters from the URL
+        $etat = $request->query->get('etat');
+        $order = $request->query->get('prixOrder');
+        $min = $request->query->get('min');
+        $max = $request->query->get('max');
+        $commandedetail = $request->query->get('commandedetail');
+        $displaydetail = null;
+        // neeeds to completed the prix filter  gonna update and try few things and comeback to this wael3
+        // Get the commandes and details from the database
 
-    // $commande = $doctrine->getRepository(Commande::class)->findByClientByEtatByPrice2($client, $etat, $min, $max, $order);
-    $commande = $cc->findByClientByEtatByPrice2($client, $etat, $min, $max, $order);
+        // $commande = $doctrine->getRepository(Commande::class)->findByClientByEtatByPrice2($client, $etat, $min, $max, $order);
+        $commande = $cc->findByClientByEtatByPrice2($client, $etat, $min, $max, $order);
 
-    $displaydetail = $doctrine->getRepository(DetailCommande::class)->findByCommande($commandedetail);
+        $displaydetail = $doctrine->getRepository(DetailCommande::class)->findByCommande($commandedetail);
 
-    return $this->render('client/historiqueCommande.html.twig', [
-        'historiquecommande' => $commande,
-        'selecteddetails' => $displaydetail,
-        'testinput' => $commandedetail,
-        'image' => $image,
-    ]);
-}
-// loads a list of product for safa ( just need the button )
-#[Route('/products', name: 'app_viewproduit')]
-public function listview(ManagerRegistry $doctrine): Response
-{
-
-    $produits = $doctrine->getRepository(Produit::class)->findAll();
-
-
-    return $this->render('home/products.html.twig', [
-        'produits' => $produits,
-    ]);
-}
-
-
-#[Route('/cart/add/{id}', name: 'app_cart_addscript')]
-public function listviewscript($id, SessionInterface $session, ManagerRegistry $doctrine, Request $request): Response
-{
-    $cart = $session->get('cart', []);
-    if (!empty($cart[$id])) {
-        // makes sure to not execced the limit of availeble quantity
-        $produit = $doctrine->getRepository(Produit::class)->find($id);
-        if ($produit->getQuantite() > $cart[$id]) {
-
-            $cart[$id]++;
-        } else {
-            $session->addFlash('carterror', 'you have exceeded the availeble quantity');
-            // $this->addFlash('error', 'New password and confirm password do not match.');
-        }
-    } else {
-        $cart[$id] = 1;
-    }
-    $session->set('cart', $cart);
-    $referer = $request->headers->get('referer');
-
-    return $this->redirect($referer);
-
-
-
-    //------test purpose to clear all stored items inside the session--------
-    //   $session->clear();
-    //---------test session stored item cart----------
-    //  dd($session->get('cart'));
-
-
-}
-#[Route('/cart/remove/{id}', name: 'app_cart_removescript')]
-public function listviewscript2($id, SessionInterface $session, ManagerRegistry $doctrine, Request $request): Response
-{
-    $cart = $session->get('cart', []);
-    if ($cart[$id] > 1) {
-        $cart[$id]--;
-    } else {
-        unset($cart[$id]);
-    }
-    $session->set('cart', $cart);
-    $referer = $request->headers->get('referer');
-
-    return $this->redirect($referer);
-
-
-
-    //------test purpose to clear all stored items inside the session--------
-    //   $session->clear();
-    //---------test session stored item cart----------
-    //  dd($session->get('cart'));
-
-
-}
-// test purpose dint work ,, not deleting it might need it  could contain                                                           {{ render(controller('App\\Controller\\ClientController::fillcart')) }}
-//  {{ render(controller('App\\Controller\\ClientController::fillcart')) }} in base.html.twig
-
-// afficher la panier courrante cart courante 
-#[Route('/cartview', name: 'app_cartview')]
-public function cartview(Request $request, ManagerRegistry $doctrine, SessionInterface $session, EntityManagerInterface $em): Response
-{
-
-    $user = $this->getUser();
-
-    $cart = $session->get('cart', []);
-
-    foreach ($cart as $itemid => $quantity) {
-        $produit = $doctrine->getRepository(Produit::class)->find($itemid);
-        $produits[] = [
-            'produit' => $produit,
-            'quantity' => $quantity,
-        ];
-    }
-    $command = $session->get('commande');
-    $paymentForm = $this->createForm(PaymentType::class);
-    $paymentForm->handleRequest($request);
-    if ($paymentForm->isSubmitted() && $paymentForm->isValid()) {
-        $paymentData = $paymentForm->getData();
-
-        // Set your Stripe API secret key
-        Stripe::setApiKey('sk_test_51Mf0S6FwJ7wXIwXewSc2z6FyXoFWAJZFy0Iuk4OZxzTVzLENEvBnnqug21baEIiV0MEDXTYl0y4Ajnp2LDWRZtC300mrwZe2j2');
-        // create a card object with the informations
-        $card = new Card();
-        $card->number = $paymentData['cardNumber']; // 16 numere
-         $card->exp_month = $paymentData['expirationMonth']; // 01-12
-        $card->exp_year = $paymentData['expirationYear']; // > current year
-        $card->cvc = $paymentData['cvc']; // secret code
-        $card->address_zip = '12345';
-        // Create a new Stripe customer
-        // Create a new Stripe token from the card details
-        $token = Token::create([
-            'card' => [
-                'number' => $card->number,
-                'exp_month' => $card->exp_month,
-                'exp_year' => $card->exp_year,
-                'cvc' => $card->cvc,
-                'address_zip' => $card->address_zip,
-            ],
+        return $this->render('client/historiqueCommande.html.twig', [
+            'historiquecommande' => $commande,
+            'selecteddetails' => $displaydetail,
+            'testinput' => $commandedetail,
+            'image' => $image,
         ]);
-        // Create a new Stripe customer
-        $customer = Customer::create([
-            'email' => $user->getEmail(),
-            'source' => $token->id, // pass the token ID as the value of 'source'
+    }
+    // loads a list of product for safa ( just need the button )
+    #[Route('/products', name: 'app_viewproduit')]
+    public function listview(ManagerRegistry $doctrine): Response
+    {
+
+        $produits = $doctrine->getRepository(Produit::class)->findAll();
+
+
+        return $this->render('home/products.html.twig', [
+            'produits' => $produits,
         ]);
+    }
 
-        // Create a new Stripe charge
-        try {
-            $charge = Charge::create([
-                'amount' => $command->getPrix() * 100, // amount in cents
-                'currency' => 'usd', // or 'eur', 'gbp', etc.
-                'description' => 'My Awesome Ecommerce Payment',
-                'customer' => $customer->id, // add the customer to the charge
-            ]);
 
-            // on sucess 
-            $totalPrice = 0;
-            $command = $session->get('commande');
-            $em->persist($command);
-            $command->setPayment($charge->id);
-            foreach ($cart as $productId => $quantity) {
-                $product = $em->getRepository(Produit::class)->find($productId);
-                $price = $product->getPrix() * $quantity;
-                $product->setQuantite($product->getQuantite() - $quantity);
-                $em->persist($product);
-                $detailCommande = new DetailCommande();
-                $detailCommande->setCommande($command);
-                $detailCommande->setProduit($product);
-                $detailCommande->setStore($product->getStores()->first());
-                $detailCommande->setQuantite($quantity);
-                $detailCommande->setPrixTotal($price);
-                $detailCommande->setEtat('Pending');
-                $em->persist($detailCommande);
+    #[Route('/cart/add/{id}', name: 'app_cart_addscript')]
+    public function listviewscript($id, SessionInterface $session, ManagerRegistry $doctrine, Request $request): Response
+    {
+        $cart = $session->get('cart', []);
+        if (!empty($cart[$id])) {
+            // makes sure to not execced the limit of availeble quantity
+            $produit = $doctrine->getRepository(Produit::class)->find($id);
+            if ($produit->getQuantite() > $cart[$id]) {
+
+                $cart[$id]++;
+            } else {
+                $session->addFlash('carterror', 'you have exceeded the availeble quantity');
+                // $this->addFlash('error', 'New password and confirm password do not match.');
             }
-
-            $command->setUser($user);
-            $em->flush();  // only after the charge is succesfull
-            $session->remove('commande');
-            $session->remove('cart');
-        } catch (\Stripe\Exception\CardException $e) {
-            // The card has been declined
-            $session->set('carderror', $e->getMessage());
-            return $this->redirectToRoute('app_cartview');
+        } else {
+            $cart[$id] = 1;
         }
-        // if payment is sucess to redirect
-        return $this->redirectToRoute('app_historique');
+        $session->set('cart', $cart);
+        $referer = $request->headers->get('referer');
+
+        return $this->redirect($referer);
+
+
+
+        //------test purpose to clear all stored items inside the session--------
+        //   $session->clear();
+        //---------test session stored item cart----------
+        //  dd($session->get('cart'));
+
+
     }
-    $error = $session->get('carderror' | '');
+    #[Route('/cart/remove/{id}', name: 'app_cart_removescript')]
+    public function listviewscript2($id, SessionInterface $session, ManagerRegistry $doctrine, Request $request): Response
+    {
+        $cart = $session->get('cart', []);
+        if ($cart[$id] > 1) {
+            $cart[$id]--;
+        } else {
+            unset($cart[$id]);
+        }
+        $session->set('cart', $cart);
+        $referer = $request->headers->get('referer');
+
+        return $this->redirect($referer);
 
 
 
+        //------test purpose to clear all stored items inside the session--------
+        //   $session->clear();
+        //---------test session stored item cart----------
+        //  dd($session->get('cart'));
 
 
+    }
+    // test purpose dint work ,, not deleting it might need it  could contain                                                           {{ render(controller('App\\Controller\\ClientController::fillcart')) }}
+    //  {{ render(controller('App\\Controller\\ClientController::fillcart')) }} in base.html.twig
 
+    // afficher la panier courrante cart courante 
+    #[Route('/cartview', name: 'app_cartview')]
+    public function cartview(Request $request, ManagerRegistry $doctrine, SessionInterface $session, EntityManagerInterface $em): Response
+    {
 
-    // Get the session storage data sent in the request
-    // $cart = $session->get('cart', []);
-    $error = $session->get('carterror', '');
-    $session->remove('carterror');
-    // Get the cart data from the session object
+        $user = $this->getUser();
 
-    // Retrieve the products from the database based on the cart data
-    $produits = [];
-    foreach ($cart as $itemId => $quantity) {
-        $produit = $doctrine->getRepository(Produit::class)->find($itemId);
-        if ($produit) {
+        $cart = $session->get('cart', []);
+
+        foreach ($cart as $itemid => $quantity) {
+            $produit = $doctrine->getRepository(Produit::class)->find($itemid);
             $produits[] = [
                 'produit' => $produit,
                 'quantity' => $quantity,
             ];
         }
-    }
+        $command = $session->get('commande');
+        $paymentForm = $this->createForm(PaymentType::class);
+        $paymentForm->handleRequest($request);
+        if ($paymentForm->isSubmitted() && $paymentForm->isValid()) {
+            $paymentData = $paymentForm->getData();
 
-    // Render the cart view template with the product data
-    return $this->render('client/commande/cartview.html.twig', [
-        'produits' => $produits,
-        'error' => $error,
-        'paymentForm' => $paymentForm->createView(),
-        'command' => $command,
-    ]);
-}
-// button ajouter commadne
-#[Route('/cart/confirm', name: 'app_cart_confirm')]
-public function confirmercart(EntityManagerInterface $em, SessionInterface $session, Request $request)
-{
-    // $client = '1';
-    $user = $this->getUser();
-    //  $client=$user->getId();
-    //   $user = $em->getRepository(User::class)->find($client);
-
-    $cart = $session->get('cart', []);
-
-    if (empty($cart)) {
-        $session->set('carterror', 'cart is empty.');
-        return $this->redirectToRoute('app_cartview');
-    }
-
-    $totalPrice = 0;
-    $command = new Commande();
-    $command->setUser($user);
-    $command->setDestination($request->request->get('destination'));
-    if (strlen($request->request->get('destination')) <= 10) {
-        // $session->set('carterror', 'Destination not set or too short.');
-        $this->addFlash('error', 'Destination not set or too short.');
-        return $this->redirectToRoute('app_cartview');
-    }
-    $command->setDate(new \DateTime());
-    $command->setEtat('Pending');
-    foreach ($cart as $productId => $quantity) {
-        $product = $em->getRepository(Produit::class)->find($productId);
-        if ($product->getQuantite() < $quantity) {
-            $session->set('carterror', 'some products may not have the correct amount of availeble quantitys');
-            return $this->redirectToRoute('app_cartview');
-            break;
-        }
-        $price = $product->getPrix() * $quantity;
-        $totalPrice += $price;
-        $detailCommande = new DetailCommande();
-        $detailCommande->setCommande($command);
-        $detailCommande->setProduit($product);
-        $detailCommande->setStore($product->getStores()->first());
-        $detailCommande->setQuantite($quantity);
-        $detailCommande->setPrixTotal($price);
-        $detailCommande->setEtat('Pending');
-    }
-
-    $command->setPrix($totalPrice);
-
-
-    $session->set('commande', $command);
-
-    if (!empty($cart) && strlen($request->request->get('destination')) > 10) {
-        return $this->redirectToRoute('app_cartview');
-    }
-
-
-    return $this->redirectToRoute('app_historiquesecond');
-}
-
-#[Route('/cart/payment', name: 'adddd')]
-public function Payementprocess(EntityManagerInterface $em, SessionInterface $session, Request $request, ManagerRegistry $doctrine)
-{
-
-    //  $client = '1';
-    $user = $this->getUser();
-
-    $cart = $session->get('cart', []);
-
-    foreach ($cart as $itemid => $quantity) {
-        $produit = $doctrine->getRepository(Produit::class)->find($itemid);
-        $produits[] = [
-            'produit' => $produit,
-            'quantity' => $quantity,
-        ];
-    }
-    $command = $session->get('commande');
-    $paymentForm = $this->createForm(PaymentType::class);
-    $paymentForm->handleRequest($request);
-    if ($paymentForm->isSubmitted() && $paymentForm->isValid()) {
-        $paymentData = $paymentForm->getData();
-
-        // Set your Stripe API secret key
-        Stripe::setApiKey('sk_test_51Mf0S6FwJ7wXIwXewSc2z6FyXoFWAJZFy0Iuk4OZxzTVzLENEvBnnqug21baEIiV0MEDXTYl0y4Ajnp2LDWRZtC300mrwZe2j2');
-        // create a card object with the informations
-        $card = new Card();
-        $card->number = $paymentData['cardNumber']; // 16 numere
-         $card->exp_month = $paymentData['expirationMonth']; // 01-12
-        $card->exp_year = $paymentData['expirationYear']; // > current year
-        $card->cvc = $paymentData['cvc']; // secret code
-        $card->address_zip = '12345';
-        // Create a new Stripe customer
-        // Create a new Stripe token from the card details
-        $token = Token::create([
-            'card' => [
-                'number' => $card->number,
-                'exp_month' => $card->exp_month,
-                'exp_year' => $card->exp_year,
-                'cvc' => $card->cvc,
-                'address_zip' => $card->address_zip,
-            ],
-        ]);
-        // Create a new Stripe customer
-        $customer = Customer::create([
-            'email' => $user->getEmail(),
-            'source' => $token->id, // pass the token ID as the value of 'source'
-        ]);
-
-        // Create a new Stripe charge
-        try {
-            $charge = Charge::create([
-                'amount' => $command->getPrix() * 100, // amount in cents
-                'currency' => 'usd', // or 'eur', 'gbp', etc.
-                'description' => 'My Awesome Ecommerce Payment',
-                'customer' => $customer->id, // add the customer to the charge
+            // Set your Stripe API secret key
+            Stripe::setApiKey('sk_test_51Mf0S6FwJ7wXIwXewSc2z6FyXoFWAJZFy0Iuk4OZxzTVzLENEvBnnqug21baEIiV0MEDXTYl0y4Ajnp2LDWRZtC300mrwZe2j2');
+            // create a card object with the informations
+            $card = new Card();
+            $card->number = $paymentData['cardNumber']; // 16 numere
+            $card->exp_month = $paymentData['expirationMonth']; // 01-12
+            $card->exp_year = $paymentData['expirationYear']; // > current year
+            $card->cvc = $paymentData['cvc']; // secret code
+            $card->address_zip = '12345';
+            // Create a new Stripe customer
+            // Create a new Stripe token from the card details
+            $token = Token::create([
+                'card' => [
+                    'number' => $card->number,
+                    'exp_month' => $card->exp_month,
+                    'exp_year' => $card->exp_year,
+                    'cvc' => $card->cvc,
+                    'address_zip' => $card->address_zip,
+                ],
+            ]);
+            // Create a new Stripe customer
+            $customer = Customer::create([
+                'email' => $user->getEmail(),
+                'source' => $token->id, // pass the token ID as the value of 'source'
             ]);
 
-            // on sucess 
-            $totalPrice = 0;
-            $command = $session->get('commande');
-            $em->persist($command);
-            $command->setPayment($charge->id);
-            foreach ($cart as $productId => $quantity) {
-                $product = $em->getRepository(Produit::class)->find($productId);
-                $price = $product->getPrix() * $quantity;
-                $product->setQuantite($product->getQuantite() - $quantity);
-                $em->persist($product);
-                $detailCommande = new DetailCommande();
-                $detailCommande->setCommande($command);
-                $detailCommande->setProduit($product);
-                $detailCommande->setStore($product->getStores()->first());
-                $detailCommande->setQuantite($quantity);
-                $detailCommande->setPrixTotal($price);
-                $detailCommande->setEtat('Pending');
-                $em->persist($detailCommande);
-            }
+            // Create a new Stripe charge
+            try {
+                $charge = Charge::create([
+                    'amount' => $command->getPrix() * 100, // amount in cents
+                    'currency' => 'usd', // or 'eur', 'gbp', etc.
+                    'description' => 'My Awesome Ecommerce Payment',
+                    'customer' => $customer->id, // add the customer to the charge
+                ]);
 
-            $command->setUser($user);
-            $em->flush();  // only after the charge is succesfull
-            $session->remove('commande');
-            $session->remove('cart');
-        } catch (\Stripe\Exception\CardException $e) {
-            // The card has been declined
-            // $session->set('carderror', $e->getMessage());
-            $this->addFlash('error', $e->getMessage());
+                // on sucess 
+                $totalPrice = 0;
+                $command = $session->get('commande');
+                $em->persist($command);
+                $command->setPayment($charge->id);
+                foreach ($cart as $productId => $quantity) {
+                    $product = $em->getRepository(Produit::class)->find($productId);
+                    $price = $product->getPrix() * $quantity;
+                    $product->setQuantite($product->getQuantite() - $quantity);
+                    $em->persist($product);
+                    $detailCommande = new DetailCommande();
+                    $detailCommande->setCommande($command);
+                    $detailCommande->setProduit($product);
+                    $detailCommande->setStore($product->getStores()->first());
+                    $detailCommande->setQuantite($quantity);
+                    $detailCommande->setPrixTotal($price);
+                    $detailCommande->setEtat('Pending');
+                    $em->persist($detailCommande);
+                }
+
+                $command->setUser($user);
+                $em->flush();  // only after the charge is succesfull
+                $session->remove('commande');
+                $session->remove('cart');
+            } catch (\Stripe\Exception\CardException $e) {
+                // The card has been declined
+                $session->set('carderror', $e->getMessage());
+                return $this->redirectToRoute('app_cartview');
+            }
+            // if payment is sucess to redirect
+            return $this->redirectToRoute('app_historique');
+        }
+        $error = $session->get('carderror' | '');
+
+
+
+
+
+
+
+        // Get the session storage data sent in the request
+        // $cart = $session->get('cart', []);
+        $error = $session->get('carterror', '');
+        $session->remove('carterror');
+        // Get the cart data from the session object
+
+        // Retrieve the products from the database based on the cart data
+        $produits = [];
+        foreach ($cart as $itemId => $quantity) {
+            $produit = $doctrine->getRepository(Produit::class)->find($itemId);
+            if ($produit) {
+                $produits[] = [
+                    'produit' => $produit,
+                    'quantity' => $quantity,
+                ];
+            }
+        }
+
+        // Render the cart view template with the product data
+        return $this->render('client/commande/cartview.html.twig', [
+            'produits' => $produits,
+            'error' => $error,
+            'paymentForm' => $paymentForm->createView(),
+            'command' => $command,
+        ]);
+    }
+    // button ajouter commadne
+    #[Route('/cart/confirm', name: 'app_cart_confirm')]
+    public function confirmercart(EntityManagerInterface $em, SessionInterface $session, Request $request)
+    {
+        // $client = '1';
+        $user = $this->getUser();
+        //  $client=$user->getId();
+        //   $user = $em->getRepository(User::class)->find($client);
+
+        $cart = $session->get('cart', []);
+
+        if (empty($cart)) {
+            $session->set('carterror', 'cart is empty.');
             return $this->redirectToRoute('app_cartview');
         }
-        // if payment is sucess to redirect
-        return $this->redirectToRoute('app_historique');
-    }
-    $error = $session->get('carderror' | '');
-    return $this->render('client/commande/Payment.html.twig', [
-        'produits' => $produits,
-        'error' => $error,
-        'paymentForm' => $paymentForm->createView(),
-        'command' => $command,
-    ]);
-}
 
-// not realy delete  and more like Cancel
-#[Route('/cancel/commande/{id}', name: 'app_commande_delete')]
-public function delete_commande(CommandeRepository $commandeRepository, $id, EntityManagerInterface $em, Request $request): Response
-{
-    Stripe::setApiKey('sk_test_51Mf0S6FwJ7wXIwXewSc2z6FyXoFWAJZFy0Iuk4OZxzTVzLENEvBnnqug21baEIiV0MEDXTYl0y4Ajnp2LDWRZtC300mrwZe2j2');
-
-    $commande = $commandeRepository->find($id);
-    if ($commande->getEtat() === "Pending") {
-        $chargeid = $commande->getPayment();
-        $charge = Charge::retrieve($chargeid);
-        $refund = Refund::create([
-            'charge' => $charge->id,
-            'amount' => $commande->getPrix() * 100,
-        ]);
-
-        if ($refund->status === 'succeeded') {
-            // Refund was succefull
-            $commande->setEtat("Canceled");
-            $details = $commande->getDetailCommandes();
-            foreach ($details as $detail) {
-                if ($detail->getEtat()!=="Completed")
-                {
-                    $detail->setEtat("Canceled");
-                    //adding the quantity back to the product
-                     $detail->getProduit()->setQuantite($detail->getProduit()->getQuantite()+$detail->getQuantite());
-                }
-                # code...
-            }
-            $commande->setPrix('0');
-            $em->persist($commande);
-            $em->flush();
+        $totalPrice = 0;
+        $command = new Commande();
+        $command->setUser($user);
+        $command->setDestination($request->request->get('destination'));
+        if (strlen($request->request->get('destination')) <= 10) {
+            // $session->set('carterror', 'Destination not set or too short.');
+            $this->addFlash('error', 'Destination not set or too short.');
+            return $this->redirectToRoute('app_cartview');
         }
-    }
-
-
-
-    $referer = $request->headers->get('referer');
-    return $this->redirect($referer);
-}
-// not realy Delete and more like Cancel
-#[Route('/cancel/detailcommande/{id}', name: 'app_detailcommande_delete')]
-public function delete_detail_commande(DetailCommandeRepository $detailCommandeRepository, $id, EntityManagerInterface $em, Request $request): Response
-{
-    // stripe Key usage :: this the third 3rd line in this page
-    Stripe::setApiKey('sk_test_51Mf0S6FwJ7wXIwXewSc2z6FyXoFWAJZFy0Iuk4OZxzTVzLENEvBnnqug21baEIiV0MEDXTYl0y4Ajnp2LDWRZtC300mrwZe2j2');
-
-    $detailcommande = $detailCommandeRepository->find($id);
-    if ($detailcommande->getEtat() === "Pending") {
-        $chargeid = $detailcommande->getCommande()->getPayment();
-        // retrive the charge  from the ID
-        $charge = Charge::retrieve($chargeid);
-        // create the Refund from the Charge
-        $refund = Refund::create([
-            'charge' => $charge->id,
-            'amount' => $detailcommande->getPrixTotal() * 100,
-        ]);
-        if ($refund->status === 'succeeded') {
-            // Refund was succefull
-            // Reduce the Command Total Prix
-            $detailcommande->getCommande()->setPrix(
-                $detailcommande->getCommande()->getPrix() - $detailcommande->getPrixTotal()
-            );
-            $detailcommande->setEtat("Canceled");
-             //adding the quantity back to the product
-            $detailcommande->getProduit()->setQuantite($detailcommande->getProduit()->getQuantite()+$detailcommande->getQuantite());
-           
-
-            // Recalculate the ETAT of the entire Commande from a specific detailCommande
-            $countPending = 0;
-            $countProgress = 0;
-            $countCompleted = 0;
-            $countCanceled = 0;
-            $totalcount = count($detailcommande->getCommande()->getDetailCommandes());
-            foreach ($detailcommande->getCommande()->getDetailCommandes() as $d) {
-                if ($d->getEtat() === "Pending") {
-                    $countPending++;
-                }
-                if ($d->getEtat() === "Progress") {
-                    $countProgress++;
-                }
-                if ($d->getEtat() === "Completed" || $d->getEtat() === "Canceled") {
-                    $countCompleted++;;
-                }
-                if ($d->getEtat() === "Canceled") {
-                    $countCanceled++;;
-                }
+        $command->setDate(new \DateTime());
+        $command->setEtat('Pending');
+        foreach ($cart as $productId => $quantity) {
+            $product = $em->getRepository(Produit::class)->find($productId);
+            if ($product->getQuantite() < $quantity) {
+                $session->set('carterror', 'some products may not have the correct amount of availeble quantitys');
+                return $this->redirectToRoute('app_cartview');
+                break;
             }
-                // Setting the Commande Etat when needed 
-            if ($countProgress === 0 && $countPending === 0) {
-
-                if ($countCompleted !== 0 &&  $countCompleted === $totalcount && $countCanceled !== $totalcount) {
-
-                    $detailcommande->getCommande()->setEtat("Completed");
-                } else {
-                    $detailcommande->getCommande()->setEtat("Canceled");
-                }
-            }
-            // save the variable 
-            // we use only 1 variable as it tracks everything within it
-            $em->persist($detailcommande);
-            $em->flush();
+            $price = $product->getPrix() * $quantity;
+            $totalPrice += $price;
+            $detailCommande = new DetailCommande();
+            $detailCommande->setCommande($command);
+            $detailCommande->setProduit($product);
+            $detailCommande->setStore($product->getStores()->first());
+            $detailCommande->setQuantite($quantity);
+            $detailCommande->setPrixTotal($price);
+            $detailCommande->setEtat('Pending');
         }
+
+        $command->setPrix($totalPrice);
+
+
+        $session->set('commande', $command);
+
+        if (!empty($cart) && strlen($request->request->get('destination')) > 10) {
+            return $this->redirectToRoute('app_cartview');
+        }
+
+
+        return $this->redirectToRoute('app_historiquesecond');
     }
 
-    // basicly it refresh the page with new informations
-    $referer = $request->headers->get('referer');
-    return $this->redirect($referer);
-}
+    // #[Route('/cart/payment', name: 'adddd')]
+    // public function Payementprocess(EntityManagerInterface $em, SessionInterface $session, Request $request, ManagerRegistry $doctrine)
+    // {
+
+    //     //  $client = '1';
+    //     $user = $this->getUser();
+
+    //     $cart = $session->get('cart', []);
+
+    //     foreach ($cart as $itemid => $quantity) {
+    //         $produit = $doctrine->getRepository(Produit::class)->find($itemid);
+    //         $produits[] = [
+    //             'produit' => $produit,
+    //             'quantity' => $quantity,
+    //         ];
+    //     }
+    //     $command = $session->get('commande');
+    //     $paymentForm = $this->createForm(PaymentType::class);
+    //     $paymentForm->handleRequest($request);
+    //     if ($paymentForm->isSubmitted() && $paymentForm->isValid()) {
+    //         $paymentData = $paymentForm->getData();
+
+    //         // Set your Stripe API secret key
+    //         Stripe::setApiKey('sk_test_51Mf0S6FwJ7wXIwXewSc2z6FyXoFWAJZFy0Iuk4OZxzTVzLENEvBnnqug21baEIiV0MEDXTYl0y4Ajnp2LDWRZtC300mrwZe2j2');
+    //         // create a card object with the informations
+    //         $card = new Card();
+    //         $card->number = $paymentData['cardNumber']; // 16 numere
+    //          $card->exp_month = $paymentData['expirationMonth']; // 01-12
+    //         $card->exp_year = $paymentData['expirationYear']; // > current year
+    //         $card->cvc = $paymentData['cvc']; // secret code
+    //         $card->address_zip = '12345';
+    //         // Create a new Stripe customer
+    //         // Create a new Stripe token from the card details
+    //         $token = Token::create([
+    //             'card' => [
+    //                 'number' => $card->number,
+    //                 'exp_month' => $card->exp_month,
+    //                 'exp_year' => $card->exp_year,
+    //                 'cvc' => $card->cvc,
+    //                 'address_zip' => $card->address_zip,
+    //             ],
+    //         ]);
+    //         // Create a new Stripe customer
+    //         $customer = Customer::create([
+    //             'email' => $user->getEmail(),
+    //             'source' => $token->id, // pass the token ID as the value of 'source'
+    //         ]);
+
+    //         // Create a new Stripe charge
+    //         try {
+    //             $charge = Charge::create([
+    //                 'amount' => $command->getPrix() * 100, // amount in cents
+    //                 'currency' => 'usd', // or 'eur', 'gbp', etc.
+    //                 'description' => 'My Awesome Ecommerce Payment',
+    //                 'customer' => $customer->id, // add the customer to the charge
+    //             ]);
+
+    //             // on sucess 
+    //             $totalPrice = 0;
+    //             $command = $session->get('commande');
+    //             $em->persist($command);
+    //             $command->setPayment($charge->id);
+    //             foreach ($cart as $productId => $quantity) {
+    //                 $product = $em->getRepository(Produit::class)->find($productId);
+    //                 $price = $product->getPrix() * $quantity;
+    //                 $product->setQuantite($product->getQuantite() - $quantity);
+    //                 $em->persist($product);
+    //                 $detailCommande = new DetailCommande();
+    //                 $detailCommande->setCommande($command);
+    //                 $detailCommande->setProduit($product);
+    //                 $detailCommande->setStore($product->getStores()->first());
+    //                 $detailCommande->setQuantite($quantity);
+    //                 $detailCommande->setPrixTotal($price);
+    //                 $detailCommande->setEtat('Pending');
+    //                 $em->persist($detailCommande);
+    //             }
+
+    //             $command->setUser($user);
+    //             $em->flush();  // only after the charge is succesfull
+    //             $session->remove('commande');
+    //             $session->remove('cart');
+    //         } catch (\Stripe\Exception\CardException $e) {
+    //             // The card has been declined
+    //             // $session->set('carderror', $e->getMessage());
+    //             $this->addFlash('error', $e->getMessage());
+    //             return $this->redirectToRoute('app_cartview');
+    //         }
+    //         // if payment is sucess to redirect
+    //         return $this->redirectToRoute('app_historique');
+    //     }
+    //     $error = $session->get('carderror' | '');
+    //     return $this->render('client/commande/Payment.html.twig', [
+    //         'produits' => $produits,
+    //         'error' => $error,
+    //         'paymentForm' => $paymentForm->createView(),
+    //         'command' => $command,
+    //     ]);
+    // }
+
+    // not realy delete  and more like Cancel
+    #[Route('/cancel/commande/{id}', name: 'app_commande_delete')]
+    public function delete_commande(CommandeRepository $commandeRepository, $id, EntityManagerInterface $em, Request $request): Response
+    {
+        Stripe::setApiKey('sk_test_51Mf0S6FwJ7wXIwXewSc2z6FyXoFWAJZFy0Iuk4OZxzTVzLENEvBnnqug21baEIiV0MEDXTYl0y4Ajnp2LDWRZtC300mrwZe2j2');
+
+        $commande = $commandeRepository->find($id);
+        if ($commande->getEtat() === "Pending") {
+            $chargeid = $commande->getPayment();
+            $charge = Charge::retrieve($chargeid);
+            $refund = Refund::create([
+                'charge' => $charge->id,
+                'amount' => $commande->getPrix() * 100,
+            ]);
+
+            if ($refund->status === 'succeeded') {
+                // Refund was succefull
+                $commande->setEtat("Canceled");
+                $details = $commande->getDetailCommandes();
+                foreach ($details as $detail) {
+                    if ($detail->getEtat()!=="Completed")
+                    {
+                        $detail->setEtat("Canceled");
+                        //adding the quantity back to the product
+                        $detail->getProduit()->setQuantite($detail->getProduit()->getQuantite()+$detail->getQuantite());
+                    }
+                    # code...
+                }
+                $commande->setPrix('0');
+                $em->persist($commande);
+                $em->flush();
+            }
+        }
+
+
+
+        $referer = $request->headers->get('referer');
+        return $this->redirect($referer);
+    }
+    // not realy Delete and more like Cancel
+    #[Route('/cancel/detailcommande/{id}', name: 'app_detailcommande_delete')]
+    public function delete_detail_commande(DetailCommandeRepository $detailCommandeRepository, $id, EntityManagerInterface $em, Request $request): Response
+    {
+        // stripe Key usage :: this the third 3rd line in this page
+        Stripe::setApiKey('sk_test_51Mf0S6FwJ7wXIwXewSc2z6FyXoFWAJZFy0Iuk4OZxzTVzLENEvBnnqug21baEIiV0MEDXTYl0y4Ajnp2LDWRZtC300mrwZe2j2');
+
+        $detailcommande = $detailCommandeRepository->find($id);
+        if ($detailcommande->getEtat() === "Pending") {
+            $chargeid = $detailcommande->getCommande()->getPayment();
+            // retrive the charge  from the ID
+            $charge = Charge::retrieve($chargeid);
+            // create the Refund from the Charge
+            $refund = Refund::create([
+                'charge' => $charge->id,
+                'amount' => $detailcommande->getPrixTotal() * 100,
+            ]);
+            if ($refund->status === 'succeeded') {
+                // Refund was succefull
+                // Reduce the Command Total Prix
+                $detailcommande->getCommande()->setPrix(
+                    $detailcommande->getCommande()->getPrix() - $detailcommande->getPrixTotal()
+                );
+                $detailcommande->setEtat("Canceled");
+                //adding the quantity back to the product
+                $detailcommande->getProduit()->setQuantite($detailcommande->getProduit()->getQuantite()+$detailcommande->getQuantite());
+            
+
+                // Recalculate the ETAT of the entire Commande from a specific detailCommande
+                $countPending = 0;
+                $countProgress = 0;
+                $countCompleted = 0;
+                $countCanceled = 0;
+                $totalcount = count($detailcommande->getCommande()->getDetailCommandes());
+                foreach ($detailcommande->getCommande()->getDetailCommandes() as $d) {
+                    if ($d->getEtat() === "Pending") {
+                        $countPending++;
+                    }
+                    if ($d->getEtat() === "Progress") {
+                        $countProgress++;
+                    }
+                    if ($d->getEtat() === "Completed" || $d->getEtat() === "Canceled") {
+                        $countCompleted++;;
+                    }
+                    if ($d->getEtat() === "Canceled") {
+                        $countCanceled++;;
+                    }
+                }
+                    // Setting the Commande Etat when needed 
+                if ($countProgress === 0 && $countPending === 0) {
+
+                    if ($countCompleted !== 0 &&  $countCompleted === $totalcount && $countCanceled !== $totalcount) {
+
+                        $detailcommande->getCommande()->setEtat("Completed");
+                    } else {
+                        $detailcommande->getCommande()->setEtat("Canceled");
+                    }
+                }
+                // save the variable 
+                // we use only 1 variable as it tracks everything within it
+                $em->persist($detailcommande);
+                $em->flush();
+            }
+        }
+
+        // basicly it refresh the page with new informations
+        $referer = $request->headers->get('referer');
+        return $this->redirect($referer);
+    }
    
 }

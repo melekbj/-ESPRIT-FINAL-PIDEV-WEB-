@@ -142,24 +142,41 @@
 									<ul class="navbar_user">
 										<li><a href="#"><i class="fa fa-search" aria-hidden="true"></i></a></li>
 										{% if app.user and app.user.getRoles() == 'ROLE_CLIENT'%}
-										<li><a href="{{path('app_client_index')}}"><i class="fa fa-user" aria-hidden="true"></i></a></li>
-										
+											<li>
+												<a href="{{path('app_client_index')}}">
+													<i class="fa fa-user" aria-hidden="true"></i>
+												</a>
+											</li>
+
 										{% elseif app.user and app.user.getRoles() == 'ROLE_ADMIN' %}
-										<li><a href="{{path('app_admin')}}"><i class="fa fa-user" aria-hidden="true"></i></a></li>
+											<li>
+												<a href="{{path('app_admin')}}">
+													<i class="fa fa-user" aria-hidden="true"></i>
+												</a>
+											</li>
 										{% elseif app.user and app.user.getRoles() == 'ROLE_PARTNER' %}
-																			<li><a href="{{path('app_partner')}}"><i class="fa fa-user" aria-hidden="true"></i></a></li>
+											<li>
+												<a href="{{path('app_partner')}}">
+													<i class="fa fa-user" aria-hidden="true"></i>
+												</a>
+											</li>
 										{% else %}
-											<li><a href="{{path('app_login')}}"><i class="fa fa-user" aria-hidden="true"></i></a></li>
+											<li>
+												<a href="{{path('app_login')}}">
+													<i class="fa fa-user" aria-hidden="true"></i>
+												</a>
+											</li>
 
 										{% endif %}
-										
-										
-										<li class="checkout">
-											<a href="#">
-												<i class="fa fa-shopping-cart" aria-hidden="true"></i>
-												<span id="checkout_items" class="checkout_items">2</span>
-											</a>
-										</li>
+
+										{% if app.user  %}
+											<li class="checkout">
+												<a href="{{path('app_cartview')}}">
+													<i class="fa fa-shopping-cart" aria-hidden="true"></i>
+													{# <span id="checkout_items" class="checkout_items">2</span> #}
+												</a>
+											</li>
+										{% endif %}
 									</ul>
 									<div class="hamburger_container">
 										<i class="fa fa-bars" aria-hidden="true"></i>

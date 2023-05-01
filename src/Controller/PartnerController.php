@@ -2,13 +2,16 @@
 
 namespace App\Controller;
 
+use App\Entity\User;
 use App\Entity\Store;
 use App\Form\UserType;
 use App\Entity\Produit;
 use App\Form\StoreType;
+use Twilio\Rest\Client;
 use App\Form\ProductType;
 use App\Entity\CategorieStore;
 use App\Entity\DetailCommande;
+use App\Service\SendSmsService;
 use App\Repository\StoreRepository;
 use App\Repository\RatingRepository;
 use App\Repository\ProduitRepository;
@@ -22,6 +25,7 @@ use Vich\UploaderBundle\Handler\UploadHandler;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Doctrine\Persistence\ManagerRegistry as PersistenceManagerRegistry;
+
 
 
 
@@ -301,9 +305,32 @@ class PartnerController extends AbstractController
             $entityManager->persist($product);
             $entityManager->flush();
 
-            // return $this->redirectToRoute('app_store_show_partner', ['id' => $id]);
+            $accountSid = 'ACbc46db0068633b4bdf2fd949f0c11672';
+            $authToken = '01578a75bd79f53a0d95d62e82fb90cf';
+            $fromNumber = '+16812025444';
+        
+            // Instantiate the Twilio client
+            $twilio = new Client($accountSid, $authToken);
+        
+            // Instantiate the SendSmsService and set the required parameters
+            $sms = new SendSmsService();
+            $sms->setAccountSid($accountSid);
+            $sms->setAuthToken($authToken);
+            $sms->setFromNumber($fromNumber);
+            $sms->setClient($twilio);
+
+            $admin = new User();
+            $admin->setPhone('+21621184125');
+        
+            // Send an SMS to the user
+            $sms->send($admin->getPhone(), 'You have a new product pending approval.');
+
+
+            $this->addFlash('success', 'Product created successfully!');
             return $this->redirectToRoute('app_products_store_liste');
         }
+
+       
 
         $user = $this->getUser();
         $image = $user->getImage(); 
@@ -463,6 +490,9 @@ class PartnerController extends AbstractController
             'user' => $user,
         ]);
     }
+
+
+
 
 
 
