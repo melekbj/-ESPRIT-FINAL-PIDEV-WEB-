@@ -9,6 +9,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Doctrine\Persistence\ManagerRegistry as PersistenceManagerRegistry;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
@@ -23,12 +24,30 @@ class UserJsonController extends AbstractController
         ]);
     }
 
+
+    #[Route('/listeUsers', name: 'liste_users')]
+    public function EventsTypes(
+        Request $request,
+        NormalizerInterface $normalizer, 
+        PersistenceManagerRegistry $doctrine, 
+        EntityManagerInterface $entityManager
+    ): Response
+    {
+        $userRepo = $entityManager->getRepository(User::class);
+        $users = $userRepo->findAll();
+        $usersNormalises = $normalizer->normalize($users, 'json', ['groups'=>"addUser"]);
+        $usersJson = json_encode($usersNormalises);
+        $response = new Response($usersJson);
+
+        return $response;
+    }
+
     #[Route('/registerJson', name: 'app_registration_json')]
     public function registration(
-    Request $request,
-    PersistenceManagerRegistry $doctrine, 
-    UserPasswordHasherInterface $passwordHashed,
-    NormalizerInterface $normalizer
+        Request $request,
+        PersistenceManagerRegistry $doctrine, 
+        UserPasswordHasherInterface $passwordHashed,
+        NormalizerInterface $normalizer
     ): Response
     {
         
@@ -49,28 +68,56 @@ class UserJsonController extends AbstractController
         $em->persist($user);
         $em->flush();
         $jsonContent = $normalizer->normalize($user, 'json', ['groups' => 'addUser']);
-        $retour = json_encode($jsonContent);
-        return new Response($retour);
+        return new Response("User added successfully" . json_encode($jsonContent));
 
     }
 
 
-    #[Route('/listeUsers', name: 'liste_users')]
-    public function EventsTypes(
+    #[Route('/deleteUserJson/{id}', name: 'app_delete_user_json')]
+    public function deleteUser(
         Request $request,
-        NormalizerInterface $normalizer, 
-        PersistenceManagerRegistry $doctrine, 
-        EntityManagerInterface $entityManager
-    ): Response
-    {
-        $userRepo = $entityManager->getRepository(User::class);
-        $users = $userRepo->findAll();
-        $usersNormalises = $normalizer->normalize($users, 'json', ['groups'=>"addUser"]);
-        $usersJson = json_encode($usersNormalises);
-        $response = new Response($usersJson);
+        PersistenceManagerRegistry $doctrine,
+        NormalizerInterface $normalizer,
+        int $id
+    ): Response {
+        $em = $doctrine->getManager();
+        $user = $em->getRepository(User::class)->find($id);
 
-        return $response;
+        if (!$user) {
+            throw new NotFoundHttpException('User not found');
+        }
+
+        $em->remove($user);
+        $em->flush();
+
+        $usersNormalises = $normalizer->normalize($user, 'json', ['groups'=>"addUser"]);
+        return new Response("User deleted successfully" . json_encode($usersNormalises));
     }
+
+    #[Route('/updateUserJson/{id}', name: 'app_update_user_json')]
+    public function updateUser(
+        Request $request,
+        PersistenceManagerRegistry $doctrine,
+        NormalizerInterface $normalizer,
+        int $id
+    ): Response {
+        $em = $doctrine->getManager();
+        $user = $em->getRepository(User::class)->find($id);
+
+        if (!$user) {
+            throw new NotFoundHttpException('User not found');
+        }
+
+        $user->setNom('habbalni');
+        // $user->setEmail();
+
+        $em->flush();
+
+        // Normalize and return updated user data in JSON format
+        $userNormalizes = $normalizer->normalize($user, 'json', ['groups' => 'addUser']);
+        return new Response("User updated successfully" . json_encode($userNormalizes));
+    }
+
 
 
 
