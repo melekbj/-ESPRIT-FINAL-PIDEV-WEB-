@@ -57,7 +57,7 @@
 						<p>Nam tempus turpis at metus scelerisque placerat nulla deumantos solicitud felis. Pellentesque diam dolor, elementum etos lobortis des mollis ut...</p>
 					</div>
 					<div>
-					{% if app.user.getRoles() == 'ROLE_CLIENT' %}
+					{# {% if not app.user or app.user.getRoles() == 'ROLE_CLIENT'  %} #}
 					{{ form_start(form) }}
                     {{ form_widget(form.rate, { 'attr': {'class': 'star-rating'} }) }}
 					<div class="star-rating">
@@ -77,8 +77,8 @@
                             <span class="rating-value">{{ ratingValue }}</span>
                         </div>
                     {{ form_end(form) }}
-                {% else %}
-                    {% if rating %}
+                {# {% else %} #}
+                    {# {% if rating %}
                         <div class="star-rating">
                             {% set ratingValue = rating|round(1) %}
                             {% set fullStars = ratingValue|round(0, 'ceil') %}
@@ -95,8 +95,8 @@
                             {% endfor %}
                             <span class="rating-value">{{ ratingValue }}</span>
                         </div>
-                    {% endif %}
-                {% endif %}
+                    {% endif %} #}
+                {# {% endif %} #}
 					
 					</div>
 					{# <div class="free_delivery d-flex flex-row align-items-center justify-content-center">

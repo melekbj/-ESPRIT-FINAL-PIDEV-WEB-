@@ -8,6 +8,7 @@ use Doctrine\Common\Collections\Collection;
 use Symfony\Component\HttpFoundation\File\File;
 // use Symfony\Component\Serializer\Annotation\Ignore;
 use Doctrine\Common\Collections\ArrayCollection;
+use Symfony\Component\Serializer\Annotation\Groups;
 use Vich\UploaderBundle\Mapping\Annotation as Vich;
 use Symfony\Component\Serializer\Annotation\Ignore ;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -28,13 +29,16 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, \Serial
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups("addUser")]
     private ?int $id = null;
 
     #[ORM\Column(length: 180, unique: true)]
     #[Assert\NotBlank(message: 'Email should not be blank')]
+    #[Groups("addUser")]
     private ?string $email = null;
 
     #[ORM\Column]
+    #[Groups("addUser")]
     private ?string $roles = null;
 
     /**
@@ -46,22 +50,27 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, \Serial
         min: 8,
         minMessage: 'The password must be at least {{ limit }} characters long.'
     )]
+    #[Groups("addUser")]
     private ?string $password = null;
 
     #[ORM\Column(length: 50)]
     #[Assert\NotBlank(message: 'Name should not be blank')]
+    #[Groups("addUser")]
     private ?string $nom = null;
 
     #[ORM\Column(length: 50)]
     #[Assert\NotBlank(message: 'Family name should not be blank')]
+    #[Groups("addUser")]
     private ?string $prenom = null;
 
     #[ORM\Column]
     #[Assert\NotBlank(message: 'Age should not be blank')]
+    #[Groups("addUser")]
     private ?int $age = null;
 
     #[ORM\Column(length: 255)]
     #[Assert\NotBlank(message: 'Adresse should not be blank')]
+    #[Groups("addUser")]
     private ?string $adresse = null;
     
     // /**
@@ -78,6 +87,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, \Serial
 
     #[ORM\Column(length: 10)]
     #[Assert\NotBlank(message: 'Family name should not be blank')]
+    #[Groups("addUser")]
     private ?string $genre = null;
 
     #[ORM\Column(length: 50, unique: true)]
@@ -86,10 +96,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, \Serial
         pattern: '/^\+?\d*$/',
         message: 'Phone number should be in the format: +XXXXXXXXXXXX'
     )]
+    #[Groups("addUser")]
     private ?string $phone = null;
     
 
     #[ORM\Column(options: ['default' => 0])]
+    #[Groups("addUser")]
     private ?int $etat = 0;
 
     #[ORM\OneToMany(mappedBy: 'user', targetEntity: Produit::class)]

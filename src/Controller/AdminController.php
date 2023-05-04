@@ -43,6 +43,7 @@ use Symfony\Component\Security\Core\Security;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Doctrine\Persistence\ManagerRegistry as PersistenceManagerRegistry;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
@@ -346,22 +347,22 @@ class AdminController extends AbstractController
             ]
         );
 
-        // $accountSid = 'ACa141e95e70a02a529768fb9df90ebcea';
-        // $authToken = 'f742163ccee2b8b28cfe63cc8b40d341';
-        // $fromNumber = '+15076288954';
+        $accountSid = 'ACa141e95e70a02a529768fb9df90ebcea';
+        $authToken = 'b58e75e03b77e0cdfe6ce29b2e51920b';
+        $fromNumber = '+15076288954';
     
-        // // Instantiate the Twilio client
-        // $twilio = new Client($accountSid, $authToken);
+        // Instantiate the Twilio client
+        $twilio = new Client($accountSid, $authToken);
     
-        // // Instantiate the SendSmsService and set the required parameters
-        // $sms = new SendSmsService();
-        // $sms->setAccountSid($accountSid);
-        // $sms->setAuthToken($authToken);
-        // $sms->setFromNumber($fromNumber);
-        // $sms->setClient($twilio);
+        // Instantiate the SendSmsService and set the required parameters
+        $sms = new SendSmsService();
+        $sms->setAccountSid($accountSid);
+        $sms->setAuthToken($authToken);
+        $sms->setFromNumber($fromNumber);
+        $sms->setClient($twilio);
     
-        // // Send an SMS to the user
-        // $sms->send($user->getPhone(), 'Your account has been approved.');
+        // Send an SMS to the user
+        $sms->send($user->getPhone(), 'Your account has been approved.');
 
         //flash message
         $this->addFlash('success', 'User approved successfully!');
@@ -527,7 +528,7 @@ class AdminController extends AbstractController
 // ................................................ Gesion Types Events..................................................................................................... 
 
     #[Route('/type_events/liste', name: 'app_types_events_liste')]
-    public function EventsTypes(Request $request, PersistenceManagerRegistry $doctrine, EntityManagerInterface $entityManager): Response
+    public function EventsTypes(Request $request,NormalizerInterface $normalizer, PersistenceManagerRegistry $doctrine, EntityManagerInterface $entityManager): Response
     {
         $user = $this->getUser();
         // Get the image associated with the user
@@ -535,6 +536,14 @@ class AdminController extends AbstractController
 
         $eventRepository = $entityManager->getRepository(EventType::class);
         $events = $eventRepository->findAll();
+        // $eventsNormalises = $normalizer->normalize($events, 'json', ['groups'=>"events"]);
+        // $eventsJson = json_encode($eventsNormalises);
+        // $response = new Response($eventsJson);
+
+
+
+        // return $response;
+
 
         return $this->render('admin/Events/listeTypesEvents.html.twig', [
             // 'typeForm' =>$form->createView(),
