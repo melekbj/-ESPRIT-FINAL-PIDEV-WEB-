@@ -218,25 +218,25 @@ class PartnerController extends AbstractController
             $entityManager->persist($product);
             $entityManager->flush();
 
-            // $accountSid = 'ACbc46db0068633b4bdf2fd949f0c11672';
-            // $authToken = '01578a75bd79f53a0d95d62e82fb90cf';
-            // $fromNumber = '+16812025444';
+            $accountSid = 'ACbc46db0068633b4bdf2fd949f0c11672';
+            $authToken = '088b868351f13aad32085929f644bb09';
+            $fromNumber = '+16812025444';
         
-            // // Instantiate the Twilio client
-            // $twilio = new Client($accountSid, $authToken);
+            // Instantiate the Twilio client
+            $twilio = new Client($accountSid, $authToken);
         
-            // // Instantiate the SendSmsService and set the required parameters
-            // $sms = new SendSmsService();
-            // $sms->setAccountSid($accountSid);
-            // $sms->setAuthToken($authToken);
-            // $sms->setFromNumber($fromNumber);
-            // $sms->setClient($twilio);
+            // Instantiate the SendSmsService and set the required parameters
+            $sms = new SendSmsService();
+            $sms->setAccountSid($accountSid);
+            $sms->setAuthToken($authToken);
+            $sms->setFromNumber($fromNumber);
+            $sms->setClient($twilio);
 
-            // $admin = new User();
-            // $admin->setPhone('+21621184125');
+            $admin = new User();
+            $admin->setPhone('+21621184125');
         
-            // // Send an SMS to the user
-            // $sms->send($admin->getPhone(), 'You have a new product pending approval.');
+            // Send an SMS to the user
+            $sms->send($admin->getPhone(), 'You have a new product pending approval.');
 
 
             $this->addFlash('success', 'Product created successfully!');

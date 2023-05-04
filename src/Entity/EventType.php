@@ -6,6 +6,7 @@ use Doctrine\ORM\Mapping as ORM;
 use App\Repository\EventTypeRepository;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\Common\Collections\ArrayCollection;
+use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 #[ORM\Entity(repositoryClass: EventTypeRepository::class)]
@@ -16,9 +17,11 @@ class EventType
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups("events")]
     private ?int $id = null;
 
     #[ORM\Column(length: 255,unique:true)]
+    #[Groups("events")]
     private ?string $libelle = null;
 
     #[ORM\OneToMany(mappedBy: 'type', targetEntity: Evenement::class)]
